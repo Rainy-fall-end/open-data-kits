@@ -1,7 +1,7 @@
 {
-  "name": "open-gov-data-sdk",
-  "version": "0.1.0",
-  "description": "Zero-dependency ESM SDK and CLI for allowlisted paid public-government-data APIs on Apify and RapidAPI.",
+  "name": "open-gov-data",
+  "version": "0.2.0",
+  "description": "Zero-dependency Node.js SDK for twelve allowlisted public government-data products on Apify and RapidAPI.",
   "type": "module",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -37,8 +37,8 @@
     "sec-edgar",
     "clinicaltrials",
     "openfda",
-    "uk-tenders",
-    "singapore-bca"
+    "public-tenders",
+    "usaspending"
   ],
   "license": "MIT",
   "author": "apify-works contributors",
@@ -46,7 +46,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/fall-rainy/apify-works.git",
-    "directory": "codex-work/ts-sdk-open-gov-data"
+    "directory": "codex-work/js-sdk-open-gov-v2"
   },
   "bugs": {
     "url": "https://github.com/fall-rainy/apify-works/issues"

@@ -19,9 +19,7 @@ export function sendJson(response, statusCode, value, headers = {}) {
 
 export async function withLoopbackServer(handler, action) {
   const server = createServer((request, response) => {
-    Promise.resolve(handler(request, response)).catch(() => {
-      response.destroy();
-    });
+    Promise.resolve(handler(request, response)).catch(() => response.destroy());
   });
   server.on('clientError', (error, socket) => socket.destroy(error));
   await new Promise((resolve, reject) => {

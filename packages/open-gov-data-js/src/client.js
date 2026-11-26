@@ -2,11 +2,13 @@ import { inspect } from 'node:util';
 
 import { APIFY_SOURCES, RAPIDAPI_SOURCES } from './catalog.js';
 import { OpenGovDataError } from './errors.js';
+import { APIFY_INPUT_SCHEMAS, RAPIDAPI_QUERY_SCHEMAS } from './schemas.js';
 import {
   MAX_RESPONSE_BYTES,
   compareMaxTotalChargeUsd,
   parseInput,
   rapidApiQueryValue,
+  validateAgainstSchema,
   validateCredential,
   validateMaxItems,
   validateMaxTotalChargeUsd,
@@ -14,10 +16,28 @@ import {
 } from './validation.js';
 
 export const APIFY_BASE_URL = 'https://api.apify.com';
-export const USER_AGENT = 'open-gov-data-sdk/0.1.0 (Node.js)';
+export const USER_AGENT = 'open-gov-data/0.2.0 (Node.js)';
 
 const CUSTOM_INSPECT = inspect.custom;
 const LOOPBACK_HOSTS = new Set(['127.0.0.1', '[::1]', 'localhost']);
+
+const TYPED_ACTOR_SOURCES = Object.freeze({
+  atsJobsHiringSignals: 'atsJobsHiringSignals',
+  secEdgarIntelligence: 'secEdgar',
+  globalPublicTenders: 'globalPublicTenders',
+  pharmaPipelineIntelligence: 'pharmaPipelineIntelligence',
+  usaspendingContracts: 'usaspendingContracts',
+  clinicalTrials: 'clinicalTrials',
+  ukGovTenders: 'ukGovTenders',
+  sgGreenMark: 'singaporeGreenMark',
+});
+
+const TYPED_RAPIDAPI_SOURCES = Object.freeze({
+  secEdgarCorporateFilings: 'secEdgar',
+  clinicaltrialsStudies: 'clinicalTrials',
+  openfdaRecalls: 'openFda',
+  sgGreenMarkBuildings: 'singaporeGreenMark',
+});
 
 function endpointError() {
   return new OpenGovDataError(
@@ -71,7 +91,7 @@ async function cancelBody(response) {
   try {
     await response.body?.cancel();
   } catch {
-    // Intentionally discard transport cleanup failures.
+    // Transport cleanup failures never replace the stable public error.
   }
 }
 
@@ -98,7 +118,7 @@ async function readLimitedBody(response) {
         try {
           await reader.cancel();
         } catch {
-          // Intentionally discard transport cleanup failures.
+          // Transport cleanup failures never replace the stable public error.
         }
         throw new OpenGovDataError(
           'RESPONSE_TOO_LARGE',
@@ -242,38 +262,7 @@ export class OpenGovDataClient {
     const definition = validateSource(APIFY_SOURCES, source);
     const input = parseInput(actorInput);
     const maxItems = validateMaxItems(options?.maxItems ?? 10);
-    const credential = validateCredential('apify', this.#apifyToken);
-    const chargeCap = validateMaxTotalChargeUsd(
-      options?.maxTotalChargeUsd ?? this.#maxTotalChargeUsd,
-    );
-    if (compareMaxTotalChargeUsd(chargeCap, this.#maxTotalChargeUsd) > 0) {
-      throw new OpenGovDataError(
-        'COST_LIMIT_EXCEEDED',
-        'Per-request charge cap cannot exceed the client hard limit',
-      );
-    }
-
-    delete input.maxItems;
-    delete input.maxTotalChargeUsd;
-    input.maxItems = maxItems;
-
-    const url = new URL(
-      `/v2/acts/${encodeURIComponent(definition.actorId)}/run-sync-get-dataset-items`,
-      this.#apifyBaseUrl,
-    );
-    url.searchParams.set('maxTotalChargeUsd', chargeCap);
-    url.searchParams.set('clean', 'true');
-
-    return this.#fetchJson(url, {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        authorization: `Bearer ${credential}`,
-        'content-type': 'application/json; charset=utf-8',
-        'user-agent': USER_AGENT,
-      },
-      body: JSON.stringify(input),
-    });
+    return this.#runActorRequest(definition, input, maxItems, options?.maxTotalChargeUsd);
   }
 
   async queryRapidApi(source, query = {}, options = {}) {
@@ -303,6 +292,118 @@ export class OpenGovDataClient {
         'x-rapidapi-host': definition.host,
         'x-rapidapi-key': credential,
       },
+    });
+  }
+
+  async atsJobsHiringSignals(input = {}, options = {}) {
+    return this.#runTypedActor('atsJobsHiringSignals', input, options);
+  }
+
+  async secEdgarIntelligence(input = {}, options = {}) {
+    return this.#runTypedActor('secEdgarIntelligence', input, options);
+  }
+
+  async globalPublicTenders(input = {}, options = {}) {
+    return this.#runTypedActor('globalPublicTenders', input, options);
+  }
+
+  async pharmaPipelineIntelligence(input = {}, options = {}) {
+    return this.#runTypedActor('pharmaPipelineIntelligence', input, options);
+  }
+
+  async usaspendingContracts(input = {}, options = {}) {
+    return this.#runTypedActor('usaspendingContracts', input, options);
+  }
+
+  async clinicalTrials(input = {}, options = {}) {
+    return this.#runTypedActor('clinicalTrials', input, options);
+  }
+
+  async ukGovTenders(input = {}, options = {}) {
+    return this.#runTypedActor('ukGovTenders', input, options);
+  }
+
+  async sgGreenMark(input = {}, options = {}) {
+    return this.#runTypedActor('sgGreenMark', input, options);
+  }
+
+  async secEdgarCorporateFilings(query = {}, options = {}) {
+    return this.#runTypedRapidApi('secEdgarCorporateFilings', query, options);
+  }
+
+  async clinicaltrialsStudies(query = {}, options = {}) {
+    return this.#runTypedRapidApi('clinicaltrialsStudies', query, options);
+  }
+
+  async openfdaRecalls(query = {}, options = {}) {
+    return this.#runTypedRapidApi('openfdaRecalls', query, options);
+  }
+
+  async sgGreenMarkBuildings(query = {}, options = {}) {
+    return this.#runTypedRapidApi('sgGreenMarkBuildings', query, options);
+  }
+
+  async #runTypedActor(method, actorInput, options) {
+    const source = TYPED_ACTOR_SOURCES[method];
+    const definition = validateSource(APIFY_SOURCES, source);
+    const schema = APIFY_INPUT_SCHEMAS[method];
+    const input = parseInput(actorInput);
+    validateAgainstSchema(input, schema, { rejectUnknown: true });
+    const maxItems = options?.maxItems ?? input.maxItems ?? schema.properties.maxItems.default;
+    const completeInput = { ...input, maxItems };
+    validateAgainstSchema(completeInput, schema, { rejectUnknown: true });
+    return this.#runActorRequest(
+      definition,
+      completeInput,
+      maxItems,
+      options?.maxTotalChargeUsd,
+    );
+  }
+
+  async #runTypedRapidApi(method, query, options) {
+    const source = TYPED_RAPIDAPI_SOURCES[method];
+    const schema = RAPIDAPI_QUERY_SCHEMAS[method];
+    const input = parseInput(query);
+    validateAgainstSchema(input, schema, { rejectUnknown: true });
+    const maxItems = options?.maxItems ?? input.limit ?? schema.properties.limit.default;
+    validateAgainstSchema({ ...input, limit: maxItems }, schema, { rejectUnknown: true });
+    delete input.limit;
+    return this.queryRapidApi(source, input, { ...options, maxItems });
+  }
+
+  async #runActorRequest(definition, actorInput, maxItems, requestedChargeCap) {
+    const credential = validateCredential('apify', this.#apifyToken);
+    const chargeCap = validateMaxTotalChargeUsd(
+      requestedChargeCap ?? this.#maxTotalChargeUsd,
+    );
+    if (compareMaxTotalChargeUsd(chargeCap, this.#maxTotalChargeUsd) > 0) {
+      throw new OpenGovDataError(
+        'COST_LIMIT_EXCEEDED',
+        'Per-request charge cap cannot exceed the client hard limit',
+      );
+    }
+
+    const input = { ...actorInput };
+    delete input.maxItems;
+    delete input.maxTotalChargeUsd;
+    input.maxItems = maxItems;
+
+    const url = new URL(
+      `/v2/acts/${encodeURIComponent(definition.actorId)}/run-sync-get-dataset-items`,
+      this.#apifyBaseUrl,
+    );
+    url.searchParams.set('maxTotalChargeUsd', chargeCap);
+    url.searchParams.set('clean', 'true');
+
+    return this.#fetchJson(url, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        authorization: `Bearer ${credential}`,
+        'content-type': 'application/json; charset=utf-8',
+        'user-agent': USER_AGENT,
+      },
+      body: JSON.stringify(input),
     });
   }
 
@@ -339,9 +440,8 @@ export class OpenGovDataClient {
 
       const payload = await readLimitedBody(response);
       if (payload.byteLength === 0) return null;
-      let text;
       try {
-        text = new TextDecoder('utf-8', { fatal: true }).decode(payload);
+        const text = new TextDecoder('utf-8', { fatal: true }).decode(payload);
         return JSON.parse(text);
       } catch {
         throw new OpenGovDataError(

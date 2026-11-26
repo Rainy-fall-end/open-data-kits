@@ -4,7 +4,7 @@ import { APIFY_SOURCES, RAPIDAPI_SOURCES, getCatalog } from './catalog.js';
 import { OpenGovDataClient } from './client.js';
 import { OpenGovDataError, safeError } from './errors.js';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 export const USAGE = `open-gov-data ${VERSION}
 

@@ -7,6 +7,11 @@ export {
 } from './client.js';
 export { OpenGovDataError, safeError } from './errors.js';
 export {
+  ACTOR_SCHEMA_SOURCES,
+  APIFY_INPUT_SCHEMAS,
+  RAPIDAPI_QUERY_SCHEMAS,
+} from './schemas.js';
+export {
   MAX_INPUT_BYTES,
   MAX_INPUT_DEPTH,
   MAX_ITEMS_LIMIT,
@@ -18,6 +23,7 @@ export {
   compareMaxTotalChargeUsd,
   parseInput,
   rapidApiQueryValue,
+  validateAgainstSchema,
   validateCredential,
   validateMaxItems,
   validateMaxTotalChargeUsd,

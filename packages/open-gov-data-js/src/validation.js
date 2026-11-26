@@ -264,3 +264,62 @@ export function rapidApiQueryValue(value) {
   }
   throw fail('INPUT_INVALID', 'RapidAPI query values must be scalar or arrays');
 }
+
+function typeMatches(value, expected) {
+  if (expected === 'object') return value !== null && typeof value === 'object' && !Array.isArray(value);
+  if (expected === 'array') return Array.isArray(value);
+  if (expected === 'integer') return Number.isSafeInteger(value);
+  if (expected === 'number') return typeof value === 'number' && Number.isFinite(value);
+  if (expected === 'null') return value === null;
+  return typeof value === expected;
+}
+
+function schemaFail(path, message) {
+  throw fail('INPUT_SCHEMA_INVALID', `${path} ${message}`);
+}
+
+/** Validate the JSON Schema subset used by the shipped Actor and RapidAPI contracts. */
+export function validateAgainstSchema(value, schema, options = {}, path = '$') {
+  if (schema === null || typeof schema !== 'object' || Array.isArray(schema)) {
+    throw new TypeError('Schema must be an object');
+  }
+  if (schema.type !== undefined && !typeMatches(value, schema.type)) {
+    schemaFail(path, `must be ${schema.type}`);
+  }
+  if (Array.isArray(schema.enum) && !schema.enum.some((item) => Object.is(item, value))) {
+    schemaFail(path, `must be one of: ${schema.enum.join(', ')}`);
+  }
+  if (typeof value === 'string') {
+    if (schema.minLength !== undefined && value.length < schema.minLength) {
+      schemaFail(path, `must contain at least ${schema.minLength} characters`);
+    }
+    if (schema.maxLength !== undefined && value.length > schema.maxLength) {
+      schemaFail(path, `must contain at most ${schema.maxLength} characters`);
+    }
+  }
+  if (typeof value === 'number') {
+    if (schema.minimum !== undefined && value < schema.minimum) {
+      schemaFail(path, `must be at least ${schema.minimum}`);
+    }
+    if (schema.maximum !== undefined && value > schema.maximum) {
+      schemaFail(path, `must be at most ${schema.maximum}`);
+    }
+  }
+  if (Array.isArray(value) && schema.items !== undefined) {
+    value.forEach((item, index) => validateAgainstSchema(item, schema.items, options, `${path}[${index}]`));
+  }
+  if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+    const properties = schema.properties || {};
+    for (const required of schema.required || []) {
+      if (!Object.hasOwn(value, required)) schemaFail(`${path}.${required}`, 'is required');
+    }
+    for (const [key, item] of Object.entries(value)) {
+      if (Object.hasOwn(properties, key)) {
+        validateAgainstSchema(item, properties[key], options, `${path}.${key}`);
+      } else if (options.rejectUnknown === true || schema.additionalProperties === false) {
+        schemaFail(`${path}.${key}`, 'is not an allowed property');
+      }
+    }
+  }
+  return value;
+}

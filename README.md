@@ -47,6 +47,10 @@ Production-ready, **zero-dependency** developer kits, analyst connectors, and fr
 ---
 
 ## Free Browser Tools (`docs/tools/`)
+- [ATS Jobs & Hiring Signals API Guide](https://rainy-fall-end.github.io/open-data-kits/tools/ats-jobs-hiring-signals/) — Greenhouse, Lever & Ashby job board presets + snippet generator.
+- [SEC Form D Startup Funding & XBRL API Guide](https://rainy-fall-end.github.io/open-data-kits/tools/sec-form-d-funding-tracker/) — Live Form D VC rounds & audited 10-K/10-Q XBRL financials.
+- [Global Government Tenders & Grants API Guide](https://rainy-fall-end.github.io/open-data-kits/tools/global-tenders-procurement-api/) — 7-country unified procurement aggregator.
+- [Pharma & Biotech Drug Pipeline API Guide](https://rainy-fall-end.github.io/open-data-kits/tools/pharma-drug-pipeline-api/) — 4-source cross-linked drug dossier intelligence.
 - [Interactive Open-Gov API Playground & Cost Comparator](https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/) — Compare Apify vs RapidAPI cost and generate ready-to-run `curl`, Python, n8n & MCP snippets.
 - [Apify Pay-Per-Event Cost Calculator](https://rainy-fall-end.github.io/open-data-kits/tools/ppe-calculator/) — Estimate exact cloud run budgets before running at scale.
 - [Client-Side JSONL to CSV Converter](https://rainy-fall-end.github.io/open-data-kits/tools/jsonl-to-csv/) — Flatten nested API datasets directly in your browser with formula-injection protection.

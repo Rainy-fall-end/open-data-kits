@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rainy-fall-end.github.io/open-data-kits/sitemap.xml
+
+# Public pages
+# https://rainy-fall-end.github.io/open-data-kits/
+# https://rainy-fall-end.github.io/open-data-kits/tools/
+# https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/
+# https://rainy-fall-end.github.io/open-data-kits/tools/ppe-calculator/
+# https://rainy-fall-end.github.io/open-data-kits/tools/jsonl-to-csv/
+# https://rainy-fall-end.github.io/open-data-kits/tools/ats-jobs-hiring-signals/
+# https://rainy-fall-end.github.io/open-data-kits/tools/sec-form-d-funding-tracker/
+# https://rainy-fall-end.github.io/open-data-kits/tools/global-tenders-procurement-api/
+# https://rainy-fall-end.github.io/open-data-kits/tools/pharma-drug-pipeline-api/

@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; media-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="description" content="Build cross-linked drug and biotech pipeline dossiers from ClinicalTrials.gov, openFDA, ChEMBL, and Europe PMC for $10 per 1,000 records.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pharma Drug Pipeline API | Trials, FDA, ChEMBL &amp; Literature">
+  <meta property="og:description" content="Build cross-linked drug and biotech pipeline dossiers from ClinicalTrials.gov, openFDA, ChEMBL, and Europe PMC for $10 per 1,000 records.">
+  <meta property="og:url" content="https://rainy-fall-end.github.io/open-data-kits/tools/pharma-drug-pipeline-api/">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://rainy-fall-end.github.io/open-data-kits/tools/pharma-drug-pipeline-api/">
+  <title>Pharma Drug Pipeline API | Trials, FDA, ChEMBL &amp; Literature</title>
+  <style>
+:root{color-scheme:dark;--bg:#071019;--surface:#0d1924;--surface-2:#122332;--text:#f6fbff;--muted:#a9bdca;--line:#263b49;--accent:#c084fc;--accent-rgb:192, 132, 252;--max:1180px;--radius:18px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 85% 4%,rgba(var(--accent-rgb),.12),transparent 30rem),var(--bg);color:var(--text);font:16px/1.6 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}button,input,select{font:inherit}.skip{position:absolute;left:-999px;top:0}.skip:focus{left:1rem;top:1rem;z-index:20;background:var(--accent);color:#04100c;padding:.75rem 1rem;border-radius:.5rem}.wrap{width:min(calc(100% - 2rem),var(--max));margin:auto}.site-head{position:sticky;top:0;z-index:10;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(7,16,25,.88);backdrop-filter:blur(14px)}.nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:1rem}.brand{text-decoration:none;font-weight:800;letter-spacing:-.02em}.brand span{color:var(--accent)}.nav-links{display:flex;align-items:center;gap:1.25rem}.nav-links a{color:var(--muted);text-decoration:none;font-size:.92rem}.nav-links a:hover,.nav-links a:focus{color:var(--text)}.hero{padding:6.5rem 0 4rem;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;right:-10rem;top:1rem;width:32rem;height:32rem;border:1px solid rgba(var(--accent-rgb),.25);border-radius:50%;box-shadow:0 0 0 5rem rgba(var(--accent-rgb),.025),0 0 0 10rem rgba(var(--accent-rgb),.018);pointer-events:none}.hero-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:4rem;align-items:end;position:relative;z-index:1}.eyebrow{margin:0 0 1rem;color:var(--accent);font-size:.78rem;line-height:1.3;font-weight:800;letter-spacing:.16em}.hero h1{max-width:850px;margin:0;font-size:clamp(2.65rem,6vw,5.7rem);line-height:.96;letter-spacing:-.055em}.lede{max-width:760px;margin:1.6rem 0 0;color:#c5d5df;font-size:clamp(1.08rem,2vw,1.28rem);line-height:1.65}.actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.7rem 1.05rem;border:1px solid var(--line);border-radius:.72rem;text-decoration:none;font-weight:760;cursor:pointer}.btn-primary{background:var(--accent);border-color:var(--accent);color:#06120e}.btn-secondary{background:rgba(255,255,255,.025);color:var(--text)}.btn:hover,.btn:focus{transform:translateY(-1px);filter:brightness(1.07)}.hero-card{padding:1.5rem;border:1px solid rgba(var(--accent-rgb),.35);border-radius:var(--radius);background:linear-gradient(145deg,rgba(var(--accent-rgb),.1),rgba(13,25,36,.88));box-shadow:0 30px 80px rgba(0,0,0,.3)}.price{display:block;color:var(--accent);font-size:2rem;font-weight:850;letter-spacing:-.04em}.hero-card p{margin:.25rem 0 1.25rem;color:var(--muted)}.chips{display:flex;flex-wrap:wrap;gap:.45rem}.chip{padding:.35rem .6rem;border:1px solid var(--line);border-radius:999px;color:#c5d5df;font-size:.8rem}.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:4rem;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--line);position:relative;z-index:1}.proof div{padding:1.4rem;background:var(--surface)}.proof strong{display:block;color:var(--accent);font-size:1.6rem}.proof span{color:var(--muted);font-size:.88rem}.section{padding:5.5rem 0;border-top:1px solid rgba(255,255,255,.055)}.section-label{margin:0 0 .7rem;color:var(--accent);font-weight:800;font-size:.78rem;letter-spacing:.13em}.section h2{max-width:800px;margin:0;font-size:clamp(2rem,4vw,3.2rem);line-height:1.08;letter-spacing:-.04em}.section-intro{max-width:760px;margin:1rem 0 2.4rem;color:var(--muted);font-size:1.06rem}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.feature{padding:1.5rem;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(255,255,255,.025),transparent)}.feature h3{margin:0 0 .55rem;font-size:1.12rem}.feature p{margin:0;color:var(--muted)}.generator{display:grid;grid-template-columns:minmax(280px,.76fr) minmax(0,1.24fr);gap:1rem;align-items:start}.panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}.panel-head{padding:1.15rem 1.25rem;border-bottom:1px solid var(--line)}.panel-head h3{margin:0;font-size:1rem}.panel-head p{margin:.25rem 0 0;color:var(--muted);font-size:.88rem}.fields{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:1.25rem}.field{display:flex;flex-direction:column;gap:.35rem}.field-wide{grid-column:1/-1}.field label{font-size:.85rem;color:#c9d8e1;font-weight:700}.field input,.field select{width:100%;min-height:44px;padding:.65rem .75rem;color:var(--text);background:#07131d;border:1px solid #365061;border-radius:.6rem}.field input:focus,.field select:focus{outline:2px solid var(--accent);outline-offset:1px}.check{flex-direction:row;align-items:center;padding-top:1.55rem}.check input{width:1.1rem;min-height:1.1rem;accent-color:var(--accent)}.tabs{display:flex;flex-wrap:wrap;gap:.4rem;padding:1rem 1rem 0}.tab{padding:.55rem .72rem;border:1px solid var(--line);border-radius:.55rem;background:transparent;color:var(--muted);cursor:pointer}.tab[aria-selected="true"]{border-color:var(--accent);background:rgba(var(--accent-rgb),.11);color:var(--text)}.code-wrap{position:relative}.copy{position:absolute;right:1.8rem;top:1.8rem;z-index:1;padding:.42rem .65rem;border:1px solid #3b5261;border-radius:.5rem;background:#132633;color:var(--text);cursor:pointer}.code{min-height:455px;max-height:620px;margin:1rem;padding:1.2rem;overflow:auto;border-radius:.8rem;background:#030a10;color:#d9f3e8;white-space:pre;tab-size:2;font:14px/1.55 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}.helper{margin:0;padding:0 1.25rem 1.25rem;color:var(--muted);font-size:.86rem}.helper a{color:var(--accent)}.preview-grid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(260px,.82fr);gap:1rem}.preview{margin:0;padding:1.4rem;overflow:auto;border:1px solid var(--line);border-radius:var(--radius);background:#030a10;color:#d7e9f2;font:14px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}.note-card{padding:1.5rem;border:1px solid rgba(var(--accent-rgb),.35);border-radius:var(--radius);background:rgba(var(--accent-rgb),.07)}.note-card strong{display:block;margin-bottom:.65rem;color:var(--accent)}.note-card p{margin:0;color:#c2d3dd}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:var(--radius)}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:1rem 1.05rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#0b1721;color:#d9e6ed;font-size:.82rem;letter-spacing:.04em}td{color:#c2d3dd}tbody tr:last-child td{border-bottom:0}tbody tr:first-child td{background:rgba(var(--accent-rgb),.06)}td strong{color:var(--text)}.faq{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.faq details{padding:1.1rem 1.2rem;border:1px solid var(--line);border-radius:.8rem;background:var(--surface)}.faq summary{font-weight:750;cursor:pointer}.faq p{margin:.8rem 0 0;color:var(--muted)}.final{padding:4rem;border:1px solid rgba(var(--accent-rgb),.35);border-radius:calc(var(--radius) + 4px);background:linear-gradient(120deg,rgba(var(--accent-rgb),.14),rgba(13,25,36,.75))}.final h2{max-width:850px}.footer{padding:2.6rem 0;color:var(--muted);font-size:.9rem}.footer-row{display:flex;justify-content:space-between;gap:1.5rem;flex-wrap:wrap}.footer a{color:#dceaf2}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:900px){.hero-grid,.generator,.preview-grid{grid-template-columns:1fr}.hero-card{max-width:520px}.feature-grid{grid-template-columns:1fr}.proof{grid-template-columns:1fr 1fr}.faq{grid-template-columns:1fr}.hero{padding-top:4.5rem}.final{padding:2rem}}
+@media(max-width:620px){.nav-links a:not(.keep){display:none}.hero h1{font-size:2.75rem}.proof{grid-template-columns:1fr}.fields{grid-template-columns:1fr}.field-wide{grid-column:auto}.check{padding-top:0}.section{padding:4rem 0}.code{font-size:12px;margin:.7rem}.copy{right:1.3rem;top:1.3rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+</style>
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Pharma Drug Pipeline API",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Any",
+      "url": "https://rainy-fall-end.github.io/open-data-kits/tools/pharma-drug-pipeline-api/",
+      "description": "Build cross-linked drug and biotech pipeline dossiers from ClinicalTrials.gov, openFDA, ChEMBL, and Europe PMC for $10 per 1,000 records.",
+      "offers": {
+        "@type": "Offer",
+        "price": "10.00",
+        "priceCurrency": "USD",
+        "description": "1,000 dossiers or pipeline events"
+      },
+      "provider": {
+        "@type": "Organization",
+        "name": "Open Data Kits",
+        "url": "https://rainy-fall-end.github.io/open-data-kits/"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is included in a drug dossier?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A dossier can include active-trial totals, phase distribution, top sponsors, recent trials, FDA approval and recall totals, ChEMBL identity and properties, ATC codes, literature totals, and source status."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I query a disease instead of a drug?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The query accepts a drug, molecule, or indication. Broad or ambiguous terms should be reviewed against the included official-source links before decisions are made."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the output include investigator or patient contacts?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The Actor does not request investigator, responsible-party, or location-contact fields, and extracted text is scrubbed for contact strings."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this medical advice?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It is a research and intelligence assembly tool. Source matching can be ambiguous, and scientific, regulatory, investment, or clinical decisions require review of the official records."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+</head>
+<body data-page="pharma-drug-pipeline-api">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-head">
+    <nav class="wrap nav" aria-label="Primary navigation">
+      <a class="brand" href="https://rainy-fall-end.github.io/open-data-kits/">Open Data <span>Kits</span></a>
+      <div class="nav-links"><a href="#generator">Code generator</a><a href="#pricing">Cost</a><a class="keep" href="https://github.com/Rainy-fall-end/open-data-kits/tree/main/packages/open-gov-flagship-kits" target="_blank" rel="noopener noreferrer">Free integration kits</a></div>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow">PHARMA AND BIOTECH PIPELINE API</p>
+            <h1>Connect clinical, regulatory, molecular, and literature evidence in one dossier.</h1>
+            <p class="lede">Query a drug, molecule, or indication across ClinicalTrials.gov, openFDA, ChEMBL, and Europe PMC. Return rich dossiers or a normalized event feed with per-source status and provenance.</p>
+            <div class="actions"><a class="btn btn-primary" href="https://apify.com/perceptive_city_af7/pharma-biotech-pipeline-intelligence" target="_blank" rel="noopener noreferrer">Run the pharma pipeline Actor</a><a class="btn btn-secondary" href="https://rapidapi.com/fallRainy/api/clinicaltrials-gov-studies-trials" target="_blank" rel="noopener noreferrer">Clinical trials on RapidAPI</a><a class="btn btn-secondary" href="https://rapidapi.com/fallRainy/api/openfda-recalls-enforcement-approvals" target="_blank" rel="noopener noreferrer">openFDA on RapidAPI</a></div>
+          </div>
+          <aside class="hero-card" aria-label="Price and coverage">
+            <span class="price">$10 / 1,000 records</span>
+            <p>plus $0.00005 per run. The generator below applies a hard $0.25 spend cap.</p>
+            <div class="chips"><span class="chip">ClinicalTrials.gov</span><span class="chip">openFDA</span><span class="chip">ChEMBL</span><span class="chip">Europe PMC</span><span class="chip">Source status</span></div>
+          </aside>
+        </div>
+        <div class="proof" aria-label="Key facts"><div><strong>4</strong><span>official data sources</span></div><div><strong>2</strong><span>output modes</span></div><div><strong>$10</strong><span>per 1,000 records</span></div><div><strong>0</strong><span>contact fields requested</span></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <p class="section-label">WHY THIS DATASET</p>
+        <h2>A faster starting point for pipeline research and monitoring</h2>
+        <p class="section-intro">Clinical progress, regulatory events, molecular identity, and scientific evidence live in different APIs. This Actor joins those layers by query while keeping each source response and failure state visible.</p>
+        <div class="feature-grid"><article class="feature"><h3>Build cross-linked dossiers</h3><p>Summarize active trials, phase distribution, sponsors, FDA events, ChEMBL identity, ATC codes, and cited literature.</p></article><article class="feature"><h3>Switch to an event feed</h3><p>Normalize trials, approvals, recalls, molecule profiles, and papers into a date-sortable envelope for alerts and monitoring.</p></article><article class="feature"><h3>Degrade gracefully</h3><p>Independent source timeouts mean a slow literature response does not erase available trial, FDA, or molecule results.</p></article></div>
+      </div>
+    </section>
+
+    <section class="section" id="generator">
+      <div class="wrap">
+        <p class="section-label">PARAMETER AND CODE GENERATOR</p>
+        <h2>Shape the request. Copy production-ready starter code.</h2>
+        <p class="section-intro">Edit the parameters and the curl, Python, Google Sheets, and n8n examples update locally in your browser. This page sends nothing over the network.</p>
+        <div class="generator">
+          <form class="panel" id="parameter-form" onsubmit="return false">
+            <div class="panel-head"><h3>Actor input</h3><p>Only non-empty values are included in the generated JSON.</p></div>
+            <div class="fields"><div class="field"><label for="param-mode">Output mode</label><select id="param-mode" data-param="mode" data-type="select"><option value="drug_dossier" selected>Drug dossier</option><option value="pipeline_feed">Pipeline event feed</option></select></div><div class="field"><label for="param-query">Drug, molecule, or indication</label><input id="param-query" data-param="query" data-type="text" type="text" value="semaglutide"></div><div class="field"><label for="param-maxItems">Maximum records</label><input id="param-maxItems" data-param="maxItems" data-type="number" type="number" value="10" min="1" max="1000" step="1"></div><div class="field"><label for="param-sourceItemsPerQuery">Records per source</label><input id="param-sourceItemsPerQuery" data-param="sourceItemsPerQuery" data-type="number" type="number" value="5" min="1" max="25" step="1"></div><div class="field"><label for="param-sourceTimeoutSeconds">Per-source timeout (seconds)</label><input id="param-sourceTimeoutSeconds" data-param="sourceTimeoutSeconds" data-type="number" type="number" value="25" min="2" max="60" step="1"></div><div class="field"><label for="param-requestDelayMs">Same-source delay (ms)</label><input id="param-requestDelayMs" data-param="requestDelayMs" data-type="number" type="number" value="150" min="0" max="5000" step="1"></div></div>
+          </form>
+          <div class="panel">
+            <div class="tabs" role="tablist" aria-label="Generated code formats">
+              <button class="tab" type="button" role="tab" aria-selected="true" data-snippet="curl">curl</button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-snippet="python">Python</button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-snippet="sheets">Google Sheets</button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-snippet="n8n">n8n JSON</button>
+            </div>
+            <div class="code-wrap"><button class="copy" id="copy-code" type="button">Copy</button><pre class="code" id="code-output" aria-live="polite"></pre></div>
+            <p class="helper">The Sheets formula uses the <code>APIFY_ACTOR_JSON</code> custom function pattern. Add the connector from the <a href="https://github.com/Rainy-fall-end/open-data-kits/tree/main/packages/open-gov-flagship-kits" target="_blank" rel="noopener noreferrer">free integration kits</a>, then replace <code>{{APIFY_TOKEN}}</code> locally. Never publish a token in a sheet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="output">
+      <div class="wrap">
+        <p class="section-label">OUTPUT PREVIEW</p>
+        <h2>Predictable JSON for workflows, warehouses, and agents.</h2>
+        <p class="section-intro">The preview is intentionally compact. Production output may include additional documented fields.</p>
+        <div class="preview-grid">
+          <pre class="preview"><code>{
+  &quot;recordType&quot;: &quot;drug_dossier&quot;,
+  &quot;mode&quot;: &quot;drug_dossier&quot;,
+  &quot;query&quot;: &quot;semaglutide&quot;,
+  &quot;activeTrialsCount&quot;: 17,
+  &quot;phaseDistribution&quot;: {
+    &quot;PHASE3&quot;: 1
+  },
+  &quot;topSponsors&quot;: [
+    {
+      &quot;name&quot;: &quot;Example sponsor&quot;,
+      &quot;trialCount&quot;: 1
+    }
+  ],
+  &quot;fdaApprovalsCount&quot;: 4,
+  &quot;fdaRecallsCount&quot;: 2,
+  &quot;chemblId&quot;: &quot;CHEMBL2108724&quot;,
+  &quot;maxClinicalPhase&quot;: 4,
+  &quot;atcCodes&quot;: [
+    &quot;A10BJ06&quot;
+  ],
+  &quot;pubmedPapersCount&quot;: 2468,
+  &quot;sourceStatus&quot;: {
+    &quot;clinicalTrials&quot;: {
+      &quot;ok&quot;: true,
+      &quot;error&quot;: null
+    },
+    &quot;openFda&quot;: {
+      &quot;ok&quot;: true,
+      &quot;error&quot;: null
+    },
+    &quot;chembl&quot;: {
+      &quot;ok&quot;: true,
+      &quot;error&quot;: null
+    },
+    &quot;europePmc&quot;: {
+      &quot;ok&quot;: true,
+      &quot;error&quot;: null
+    }
+  }
+}</code></pre>
+          <aside class="note-card"><strong>Offline cross-source verification fixture</strong><p>These deterministic fixture values passed the Actor’s zero-network verification across all four adapters. Production totals change with the live official sources.</p></aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing">
+      <div class="wrap">
+        <p class="section-label">TRANSPARENT COST COMPARISON</p>
+        <h2>Know what the unit price includes.</h2>
+        <p class="section-intro">Official upstream services do not charge a data fee. The comparison separates that from the cost of joining, normalizing, operating, and monitoring four APIs.</p>
+        <div class="table-wrap"><table><caption class="sr-only">Cost and coverage comparison for 1,000 records</caption><thead><tr><th>Option</th><th>Cost per 1,000 records</th><th>Coverage</th><th>What to account for</th></tr></thead><tbody><tr><td><strong>4-source pipeline Actor</strong></td><td>$10.00005</td><td>Trials + FDA + molecule + literature</td><td>One dossier or normalized event schema</td></tr><tr><td>Official APIs, direct</td><td>$0 upstream data fee</td><td>Four separate APIs</td><td>Integration, entity matching, retries, and monitoring excluded</td></tr><tr><td>Single-source RapidAPI options</td><td>Plan-dependent</td><td>Clinical trials or openFDA</td><td>Useful when cross-source dossiers are not required</td></tr></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="wrap">
+        <p class="section-label">FREQUENTLY ASKED QUESTIONS</p>
+        <h2>What buyers ask before the first run.</h2>
+        <div class="faq" style="margin-top:2rem"><details><summary>What is included in a drug dossier?</summary><p>A dossier can include active-trial totals, phase distribution, top sponsors, recent trials, FDA approval and recall totals, ChEMBL identity and properties, ATC codes, literature totals, and source status.</p></details><details><summary>Can I query a disease instead of a drug?</summary><p>Yes. The query accepts a drug, molecule, or indication. Broad or ambiguous terms should be reviewed against the included official-source links before decisions are made.</p></details><details><summary>Does the output include investigator or patient contacts?</summary><p>No. The Actor does not request investigator, responsible-party, or location-contact fields, and extracted text is scrubbed for contact strings.</p></details><details><summary>Is this medical advice?</summary><p>No. It is a research and intelligence assembly tool. Source matching can be ambiguous, and scientific, regulatory, investment, or clinical decisions require review of the official records.</p></details></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap final">
+        <p class="section-label">START WITH A $0.25 CAP</p>
+        <h2>Turn a public-data question into a repeatable workflow today.</h2>
+        <p class="section-intro">Use the generator for a budget-capped first request, or open the Actor page to inspect the full schema and run it in the Apify console.</p>
+        <div class="actions"><a class="btn btn-primary" href="https://apify.com/perceptive_city_af7/pharma-biotech-pipeline-intelligence" target="_blank" rel="noopener noreferrer">Run the pharma pipeline Actor</a><a class="btn btn-secondary" href="https://github.com/Rainy-fall-end/open-data-kits/tree/main/packages/open-gov-flagship-kits" target="_blank" rel="noopener noreferrer">Browse free integration kits</a></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="wrap footer-row"><span>Open Data Kits · self-contained buyer tools</span><span><a href="https://rainy-fall-end.github.io/open-data-kits/">All tools</a> · <a href="https://github.com/Rainy-fall-end/open-data-kits/tree/main/packages/open-gov-flagship-kits" target="_blank" rel="noopener noreferrer">Source kits</a></span></div></footer>
+  <script id="generator-source">(function (root) {
+  'use strict';
+  const CONFIG = {"actorId":"re8aRvtqBonP5HMuY","actorSlug":"pharma-biotech-pipeline-intelligence","fields":[{"key":"mode","type":"select","value":"drug_dossier"},{"key":"query","type":"text","value":"semaglutide"},{"key":"maxItems","type":"number","value":10},{"key":"sourceItemsPerQuery","type":"number","value":5},{"key":"sourceTimeoutSeconds","type":"number","value":25},{"key":"requestDelayMs","type":"number","value":150}]};
+  const CAP = '0.25';
+  const TOKEN = '{{APIFY_TOKEN}}';
+  const API_URL = 'https://api.apify.com/v2/acts/' + CONFIG.actorId + '/run-sync-get-dataset-items?maxTotalChargeUsd=' + CAP;
+
+  function normalize(field, raw) {
+    if (field.type === 'checkbox') return Boolean(raw);
+    if (field.type === 'number') return Math.trunc(Number(raw));
+    if (field.type === 'csvArray') return String(raw).split(',').map(function (part) { return part.trim(); }).filter(Boolean);
+    return String(raw);
+  }
+
+  function createInput(overrides) {
+    const values = overrides || {};
+    const input = {};
+    CONFIG.fields.forEach(function (field) {
+      const raw = Object.prototype.hasOwnProperty.call(values, field.key) ? values[field.key] : field.value;
+      const value = normalize(field, raw);
+      if (value !== '' && !(Array.isArray(value) && value.length === 0)) input[field.key] = value;
+    });
+    return input;
+  }
+
+  function sheetEscape(value) {
+    return String(value).replaceAll('"', '""');
+  }
+
+  function buildSnippets(input) {
+    const body = JSON.stringify(input);
+    const pretty = JSON.stringify(input, null, 2);
+    const curl = [
+      '# Replace the placeholder locally; hard spend cap: $' + CAP,
+      'curl --request POST \\',
+      "  '" + API_URL + "' \\",
+      "  -H 'Authorization: Bearer " + TOKEN + "' \\",
+      "  -H 'Content-Type: application/json' \\",
+      "  --data '" + body.replaceAll("'", "'\\''") + "'"
+    ].join('\n');
+    const python = [
+      'import requests',
+      'import json',
+      '',
+      'url = "' + API_URL + '"',
+      'headers = {"Authorization": "Bearer ' + TOKEN + '"}',
+      "payload = json.loads(r'''" + body + "''')",
+      '',
+      'response = requests.post(url, headers=headers, json=payload, timeout=120)',
+      'response.raise_for_status()',
+      'items = response.json()',
+      'print(items[:3])'
+    ].join('\n');
+    const sheets = '=APIFY_ACTOR_JSON("' + CONFIG.actorId + '","' + sheetEscape(body) + '","' + TOKEN + '",' + CAP + ')';
+    const workflow = {
+      name: CONFIG.actorSlug + ' budget-capped import',
+      nodes: [
+        { parameters: {}, id: 'manual-trigger', name: 'Run workflow', type: 'n8n-nodes-base.manualTrigger', typeVersion: 1, position: [0, 0] },
+        {
+          parameters: {
+            method: 'POST',
+            url: API_URL,
+            sendHeaders: true,
+            headerParameters: { parameters: [{ name: 'Authorization', value: 'Bearer ' + TOKEN }] },
+            sendBody: true,
+            specifyBody: 'json',
+            jsonBody: body
+          },
+          id: 'run-actor',
+          name: 'Run budget-capped Actor',
+          type: 'n8n-nodes-base.httpRequest',
+          typeVersion: 4.2,
+          position: [240, 0],
+          retryOnFail: false
+        }
+      ],
+      connections: { 'Run workflow': { main: [[{ node: 'Run budget-capped Actor', type: 'main', index: 0 }]] } },
+      active: false,
+      settings: { executionOrder: 'v1' }
+    };
+    return { curl: curl, python: python, sheets: sheets, n8n: JSON.stringify(workflow, null, 2) };
+  }
+
+  function readForm() {
+    const values = {};
+    document.querySelectorAll('[data-param]').forEach(function (element) {
+      values[element.dataset.param] = element.type === 'checkbox' ? element.checked : element.value;
+    });
+    return values;
+  }
+
+  function init() {
+    const form = document.getElementById('parameter-form');
+    const output = document.getElementById('code-output');
+    const tabs = Array.from(document.querySelectorAll('[data-snippet]'));
+    const copy = document.getElementById('copy-code');
+    let active = 'curl';
+    let snippets = {};
+    function render() {
+      snippets = buildSnippets(createInput(readForm()));
+      output.textContent = snippets[active];
+    }
+    form.addEventListener('input', render);
+    form.addEventListener('change', render);
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        active = tab.dataset.snippet;
+        tabs.forEach(function (candidate) { candidate.setAttribute('aria-selected', String(candidate === tab)); });
+        render();
+      });
+    });
+    copy.addEventListener('click', function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(output.textContent);
+      copy.textContent = 'Copied';
+      setTimeout(function () { copy.textContent = 'Copy'; }, 1200);
+    });
+    render();
+  }
+
+  root.PageGenerator = { config: CONFIG, cap: CAP, token: TOKEN, apiUrl: API_URL, createInput: createInput, buildSnippets: buildSnippets };
+  if (typeof document !== 'undefined') document.addEventListener('DOMContentLoaded', init);
+})(typeof window !== 'undefined' ? window : globalThis);</script>
+</body>
+</html>

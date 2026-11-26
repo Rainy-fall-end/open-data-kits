@@ -9,10 +9,12 @@ Production-ready, **zero-dependency** developer kits, analyst connectors, and fr
 
 ## Live Production APIs & Scrapers
 
-### RapidAPI Hub (Pay-Per-Row REST APIs — Free Basic Tier Included)
+### RapidAPI Hub (Pay-Per-Row REST APIs — Free Basic Tier Included, 6 Live APIs)
 | API | Data Scope & License | Live Endpoint |
 |---|---|---|
-| **SEC EDGAR Corporate Filings** | US 10-K, 10-Q, 8-K, Form D & Form 4 (US Public Domain) | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings) |
+| **ATS Jobs & Hiring Signals (Greenhouse, Lever & Ashby)** | 22 AI/tech leaders + custom boards, salary ranges & hiring intent | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/ats-jobs-hiring-signals-greenhouse-lever-ashby) |
+| **SEC EDGAR Corporate Filings (3-in-1: Form D + XBRL + Filings)** | Live Form D startup funding XML, audited 10-K/10-Q XBRL & filings (US Public Domain) | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings) |
+| **Cyber KEV, EPSS & CVE Threat Intelligence** | Cross-linked CISA KEV + FIRST EPSS + Google OSV + NVD risk scoring | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/cyber-kev-epss-cve-threat-intelligence-cisa-first-osv) |
 | **ClinicalTrials.gov Studies & Trials** | Phase 1-4 pharma trials, sponsors & recruiting status (US Public Domain) | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/clinicaltrials-gov-studies-trials) |
 | **openFDA Recalls, Enforcement & Approvals** | FDA drug/device/food recalls & approvals (CC0 1.0) | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/openfda-recalls-enforcement-approvals) |
 | **Singapore BCA Green Mark Buildings** | ESG certified green buildings & ratings (Singapore Open Data Licence) | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings) |

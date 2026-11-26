@@ -1,0 +1,58 @@
+{
+  "name": "Export up to two SMZDM featured deals to CSV",
+  "nodes": [
+    {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {}
+    },
+    {
+      "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+      "name": "Run SMZDM deals scraper and download CSV",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/actors/81GXKlIURUAlYAKtO/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "format", "value": "csv"},
+            {"name": "attachment", "value": "true"},
+            {"name": "limit", "value": "2"},
+            {"name": "fields", "value": "deal_id,title,price_text,merchant,url,source_page,history_low_label"},
+            {"name": "maxTotalChargeUsd", "value": "0.01005"},
+            {"name": "timeout", "value": "30"}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"maxItems\":2,\"maxPages\":1}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 50000
+        }
+      },
+      "retryOnFail": false
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [[{"node": "Run SMZDM deals scraper and download CSV", "type": "main", "index": 0}]]
+    }
+  },
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "pinData": {}
+}

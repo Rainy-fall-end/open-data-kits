@@ -1,0 +1,35 @@
+meta {
+  name: SEC EDGAR Corporate Filings
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://sec-edgar-corporate-filings.p.rapidapi.com/v1/sec-edgar/filings
+  body: none
+  auth: none
+}
+
+params:query {
+  mode: search
+  query: artificial intelligence
+  forms: 10-K,10-Q,8-K
+  startDate: 2025-01-01
+  limit: 5
+}
+
+headers {
+  Accept: application/json
+  X-RapidAPI-Key: {{RAPIDAPI_KEY}}
+  X-RapidAPI-Host: sec-edgar-corporate-filings.p.rapidapi.com
+}
+
+tests {
+  test("HTTP status is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has an items array", function () {
+    expect(res.getBody().items).to.be.an("array");
+  });
+}
+

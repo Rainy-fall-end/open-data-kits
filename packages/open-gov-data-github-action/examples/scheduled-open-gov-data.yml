@@ -1,0 +1,30 @@
+name: Scheduled open government data snapshot
+
+on:
+  schedule:
+    - cron: "17 3 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - id: fetch
+        uses: your-org/open-government-data-ci@v1
+        with:
+          target: apify-sec-edgar
+          apify_token: ${{ secrets.APIFY_TOKEN }}
+          input_json: '{"maxItems":10}'
+          max_total_charge_usd: "0.25"
+          output_format: json
+          output_path: snapshots/sec-edgar.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: open-government-data
+          path: ${{ steps.fetch.outputs.output_path }}
+          if-no-files-found: error

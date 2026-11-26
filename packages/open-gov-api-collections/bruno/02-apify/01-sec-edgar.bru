@@ -1,0 +1,35 @@
+meta {
+  name: SEC EDGAR Filings Actor
+  type: http
+  seq: 1
+}
+
+post {
+  url: https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items
+  body: json
+  auth: none
+}
+
+params:query {
+  maxTotalChargeUsd: 0.25
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{APIFY_TOKEN}}
+  Content-Type: application/json
+}
+
+body:json {
+  {"mode":"search","query":"artificial intelligence","forms":"10-K,10-Q,8-K","startDate":"2025-01-01","maxItems":5}
+}
+
+tests {
+  test("Apify synchronous run completed", function () {
+    expect([200, 201]).to.include(res.getStatus());
+  });
+  test("Response is an item array", function () {
+    expect(res.getBody()).to.be.an("array");
+  });
+}
+

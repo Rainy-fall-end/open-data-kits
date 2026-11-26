@@ -1,0 +1,51 @@
+# Open Data Kits — SDKs, BI Connectors, n8n Templates & API Playground
+
+Production-ready, **zero-dependency** developer kits, analyst connectors, and free interactive browser tools for official commercial-clean public data APIs (**SEC EDGAR**, **ClinicalTrials.gov**, **openFDA**, **UK Government Tenders**, and **Singapore BCA Green Mark**) on **Apify Store** and **RapidAPI Hub**.
+
+> **Interactive Browser Tools (Free, Client-Side, No Login):**  
+> [Open Live Interactive Hub & API Playground ->](https://rainy-fall-end.github.io/open-data-kits/)
+
+---
+
+## Live Production APIs & Scrapers
+
+### RapidAPI Hub (Pay-Per-Row REST APIs — Free Basic Tier Included)
+| API | Data Scope & License | Live Endpoint |
+|---|---|---|
+| **SEC EDGAR Corporate Filings** | US 10-K, 10-Q, 8-K, Form D & Form 4 (US Public Domain) | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings) |
+| **ClinicalTrials.gov Studies & Trials** | Phase 1-4 pharma trials, sponsors & recruiting status (US Public Domain) | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/clinicaltrials-gov-studies-trials) |
+| **openFDA Recalls, Enforcement & Approvals** | FDA drug/device/food recalls & approvals (CC0 1.0) | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/openfda-recalls-enforcement-approvals) |
+| **Singapore BCA Green Mark Buildings** | ESG certified green buildings & ratings (Singapore Open Data Licence) | [Try on RapidAPI](https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings) |
+
+### Apify Store (Pay-Per-Event Serverless Datasets — No Proxies / No Browser)
+| Actor | Best For | Pricing | Live Store Page |
+|---|---|---|---|
+| **SEC EDGAR Scraper** | VC lead gen, equity research, AI RAG | `$4.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper) |
+| **ClinicalTrials.gov Scraper** | Biotech pipeline intelligence & CRO sourcing | `$3.50 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/clinical-trials-scraper) |
+| **UK Government Tenders (OCDS)** | B2G sales leads & procurement monitoring | `$5.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper) |
+| **Singapore Green Mark Buildings** | APAC ESG & PropTech compliance | `$2.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/sg-green-mark-buildings) |
+
+---
+
+## Free Zero-Dependency Developer & Analyst Kits (`packages/`)
+
+| Kit | Target Users | Highlights | Path |
+|---|---|---|---|
+| **Google Sheets & Excel Power Query BI Connectors** | Analysts, Ops, Biotech, Finance | Copy-paste `.gs` Apps Script + `.pq` M scripts, formula-injection safe | [`packages/open-gov-bi-connectors/`](packages/open-gov-bi-connectors/) |
+| **Postman v2.1, Insomnia v4 & Bruno Collections** | API Developers & QA | Ready-to-import collections with assertions & `$0.25` spend caps | [`packages/open-gov-api-collections/`](packages/open-gov-api-collections/) |
+| **AI Agent Function-Calling & RAG Toolpack (Python)** | OpenAI, Anthropic & Gemini Agents | JSON tool schemas + grounded provenance citations, zero deps | [`packages/open-gov-ai-tools-py/`](packages/open-gov-ai-tools-py/) |
+| **MCP Server (Stdio, Node 20+)** | Claude Desktop, Cursor, Windsurf | Exposes all live public APIs via Model Context Protocol | [`packages/mcp-server-open-gov-data/`](packages/mcp-server-open-gov-data/) |
+| **n8n Community Node & CSV Templates** | No-Code Automation Teams | Cost-capped (`maxTotalChargeUsd=0.25`) workflows + custom node | [`packages/n8n-nodes-open-gov-data/`](packages/n8n-nodes-open-gov-data/) & [`docs/channel/`](docs/channel/) |
+| **Python SDK (`open-gov-data-py`)** | Data Engineers & Quant Teams | Pure stdlib PEP 621 client for Apify + RapidAPI | [`packages/open-gov-data-py/`](packages/open-gov-data-py/) |
+| **TypeScript / JS SDK (`open-gov-data-js`)** | Full-Stack & Node.js Teams | Full `.d.ts` typings, zero runtime dependencies | [`packages/open-gov-data-js/`](packages/open-gov-data-js/) |
+| **GitHub Action CI/CD** | Automated Scheduled Data Sync | Secret masking (`::add-mask::`) + JSON/CSV export | [`packages/open-gov-data-github-action/`](packages/open-gov-data-github-action/) |
+
+---
+
+## Free Browser Tools (`docs/tools/`)
+- [Interactive Open-Gov API Playground & Cost Comparator](https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/) — Compare Apify vs RapidAPI cost and generate ready-to-run `curl`, Python, n8n & MCP snippets.
+- [Apify Pay-Per-Event Cost Calculator](https://rainy-fall-end.github.io/open-data-kits/tools/ppe-calculator/) — Estimate exact cloud run budgets before running at scale.
+- [Client-Side JSONL to CSV Converter](https://rainy-fall-end.github.io/open-data-kits/tools/jsonl-to-csv/) — Flatten nested API datasets directly in your browser with formula-injection protection.
+
+## License
+Code and templates in this repository are MIT licensed. Upstream official government datasets retain their respective open commercial licenses (US Public Domain 17 U.S.C. § 105, CC0 1.0, UK Open Government Licence v3.0, Singapore Open Data Licence).

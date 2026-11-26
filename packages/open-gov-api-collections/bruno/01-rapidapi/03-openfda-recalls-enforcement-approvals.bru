@@ -1,0 +1,33 @@
+meta {
+  name: openFDA Recalls, Enforcement and Approvals
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://openfda-recalls-enforcement-approvals.p.rapidapi.com/v1/openfda/records
+  body: none
+  auth: none
+}
+
+params:query {
+  dataset: drug_enforcement
+  classification: Class I
+  limit: 5
+}
+
+headers {
+  Accept: application/json
+  X-RapidAPI-Key: {{RAPIDAPI_KEY}}
+  X-RapidAPI-Host: openfda-recalls-enforcement-approvals.p.rapidapi.com
+}
+
+tests {
+  test("HTTP status is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has an items array", function () {
+    expect(res.getBody().items).to.be.an("array");
+  });
+}
+

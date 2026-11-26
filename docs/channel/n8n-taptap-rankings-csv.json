@@ -1,0 +1,58 @@
+{
+  "name": "Export up to two TapTap hot Android games to CSV",
+  "nodes": [
+    {
+      "id": "8f2b3a1e-4c5d-4e6f-8a9b-0c1d2e3f4a5b",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {}
+    },
+    {
+      "id": "d4a1e2f3-6b7c-4d8e-9f0a-1b2c3d4e5f6a",
+      "name": "Run TapTap hot rankings and download CSV",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [260, 0],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/actors/w2pM7TcmfbQ2bVyeW/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "format", "value": "csv"},
+            {"name": "attachment", "value": "true"},
+            {"name": "limit", "value": "2"},
+            {"name": "fields", "value": "kind,app_id,title,score,developer,tags,fans_count,hits_total,url,rank,ranking_type"},
+            {"name": "maxTotalChargeUsd", "value": "0.00505"},
+            {"name": "timeout", "value": "30"}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"mode\":\"rankings\",\"rankingType\":\"hot\",\"platform\":\"android\",\"maxItems\":2}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 50000
+        }
+      },
+      "retryOnFail": false
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [[{"node": "Run TapTap hot rankings and download CSV", "type": "main", "index": 0}]]
+    }
+  },
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "pinData": {}
+}

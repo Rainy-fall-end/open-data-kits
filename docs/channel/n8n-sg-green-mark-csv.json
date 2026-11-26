@@ -1,0 +1,131 @@
+{
+  "name": "Singapore BCA Green Mark Buildings -> CSV / Google Sheets (Cost-Capped $0.25)",
+  "nodes": [
+    {
+      "id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -320
+      ],
+      "parameters": {
+        "content": "## Cost-Capped Singapore BCA Green Mark Scraper\n- **Cost guard:** `maxTotalChargeUsd=0.25` + `maxItems: 25` ensures max spend $0.25 per run.\n- **Estimated cost per run:** ~$0.05005 (start $0.00005 + 25 × $0.002).\n- **Retry policy:** `retryOnFail: false` – no automatic retries to avoid unexpected charges.\n- **Auth setup:** Set environment variable `APIFY_TOKEN` in n8n. Never hardcode tokens!\n- **License:** Singapore Open Data Licence v1.0 (Building and Construction Authority via data.gov.sg). Commercial reuse with attribution; zero PII. Keep `attribution` column.\n- **Export CSV:** Convert to CSV node is already connected. Alternatively, connect Google Sheets node directly to HTTP Request node's JSON output.\n- **RapidAPI alternative:** https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings (GET /v1/sg-green-mark/certificates)\n- **Actor store:** https://apify.com/perceptive_city_af7/sg-green-mark-buildings",
+        "width": 820,
+        "height": 260,
+        "color": 4
+      }
+    },
+    {
+      "id": "ffffffff-ffff-4fff-8fff-ffffffffffff",
+      "name": "Fetch SG Green Mark Buildings (Apify)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": false,
+      "position": [
+        280,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/Z3ioK0wOAeczj6nCx/run-sync-get-dataset-items?maxTotalChargeUsd=0.25",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.APIFY_TOKEN}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "format",
+              "value": "json"
+            },
+            {
+              "name": "clean",
+              "value": "true"
+            },
+            {
+              "name": "timeout",
+              "value": "60"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"query\":\"Plaza\",\"rating\":\"Platinum\",\"maxItems\":25}",
+        "options": {
+          "timeout": 90000
+        }
+      }
+    },
+    {
+      "id": "12345678-1234-4123-8123-123456789012",
+      "name": "Convert to CSV (Google Sheets Ready)",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        0
+      ],
+      "parameters": {
+        "operation": "csv",
+        "binaryPropertyName": "data",
+        "options": {
+          "fileName": "sg-green-mark-buildings.csv",
+          "headerRow": true
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Fetch SG Green Mark Buildings (Apify)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch SG Green Mark Buildings (Apify)": {
+      "main": [
+        [
+          {
+            "node": "Convert to CSV (Google Sheets Ready)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

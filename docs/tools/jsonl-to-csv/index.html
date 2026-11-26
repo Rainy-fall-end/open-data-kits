@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Convert an Apify dataset export from JSON or JSONL to CSV in your browser. Flatten nested fields, preview rows and download an Excel-friendly UTF-8 CSV.">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; form-action 'none'; base-uri 'none'; img-src data:">
+<title>Apify Dataset JSONL to CSV Converter | Dataset Workbench</title>
+<link rel="canonical" href="https://rainy-fall-end.github.io/open-data-kits/tools/jsonl-to-csv/">
+<style>
+:root{color-scheme:light;--ink:#172c2e;--muted:#455c5c;--teal:#00614e;--page:#f2f6f1;--line:#baccc4;--paper:#fff;--mint:#dbefe2;font:16px/1.55 system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink)}[hidden]{display:none!important}a{color:var(--teal);text-underline-offset:.18em}button,input,textarea{font:inherit}button,input::file-selector-button,.download{cursor:pointer}button:disabled{opacity:.55;cursor:wait}
+:focus-visible{outline:3px solid #8e3800;outline-offset:3px}.shell{max-width:72rem;margin:auto;padding-inline:clamp(1rem,4vw,3.25rem)}header{background:#12332e;color:#fff}header .shell{min-height:3.75rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}header span{font-weight:750;letter-spacing:.025em}header nav{display:flex;gap:1rem}header a{color:#d6f7e5;font-size:.9rem}
+.hero{padding-block:clamp(2rem,6vw,4rem) 1.75rem}.hero h1{font-size:clamp(2.15rem,5vw,4.4rem);line-height:1.04;letter-spacing:-.06em;margin:0;max-width:18ch}.hero p{font-size:1.08rem;color:var(--muted);margin:1rem 0 0;max-width:55ch}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border:1px solid var(--line);border-radius:1.15rem;overflow:hidden;background:var(--paper);box-shadow:0 12px 25px #17312b0d}
+.pane{padding:clamp(1rem,3vw,1.75rem);min-width:0}.output{background:#e9f3ed;border-inline-start:1px solid var(--line)}h2{font-size:1.35rem;margin:0 0 1rem;letter-spacing:-.02em}.helper,.status,.detail{font-size:.9rem;color:var(--muted)}.helper{margin:.3rem 0 .75rem}.file{display:block;max-width:100%;width:100%;margin:0 0 .9rem;font-size:.87rem}.toolbar{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;margin-top:.9rem}
+button,input::file-selector-button,.download{display:inline-flex;min-height:2.75rem;align-items:center;border:1px solid #92aaa2;border-radius:.6rem;background:white;color:var(--ink);font-weight:650;padding:.5rem .8rem;text-decoration:none}.primary,.download{background:var(--teal);border-color:var(--teal);color:white}button:hover,.download:hover,input::file-selector-button:hover{filter:brightness(.93)}#sample{background:var(--mint)}
+label[for=source]{display:block;font-weight:650}textarea{display:block;width:100%;min-height:12rem;resize:vertical;padding:.8rem;border:1px solid #819c92;border-radius:.6rem;background:#fafcfb;color:var(--ink);font: .9rem/1.55 ui-monospace,Consolas,monospace;overflow-wrap:anywhere}
+.option{display:flex;gap:.55rem;align-items:center;margin-top:.75rem;font-size:.9rem}.option input{accent-color:var(--teal);width:1.08rem;height:1.08rem}.status{margin:.25rem 0 .75rem}.status.error{color:#8d221c;font-weight:650}.preview{overflow:auto;max-height:18rem;border:1px solid var(--line);border-radius:.6rem;background:white}.preview:empty{display:none}table{width:100%;border-collapse:collapse;text-align:left;font: .85rem/1.45 ui-monospace,monospace}td,th{padding:.5rem .7rem;border-bottom:1px solid var(--line);min-width:6rem;max-width:22rem;overflow-wrap:anywhere}td{white-space:pre-wrap}th{position:sticky;top:0;background:#dcf1e5}
+.info{padding-block:2.5rem 3rem;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:2rem}.info p{margin:.4rem 0 .9rem}details{border-top:1px solid var(--line);padding:.6rem 0}summary{font-weight:650;cursor:pointer;padding:.35rem 0}.products{border-radius:1rem;padding:1.25rem;background:var(--mint);align-self:start}.products article+article{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line)}.products h3{margin:0;font-size:1.05rem}.products p:last-child{margin-bottom:0}footer{border-top:1px solid var(--line);padding-block:1rem;color:var(--muted);font-size:.86rem}
+@media(max-width:740px){.workspace,.info{grid-template-columns:1fr}.output{border-inline-start:0;border-top:1px solid var(--line)}.info{gap:1.25rem}}
+</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"How do I export JSONL from Apify?","acceptedAnswer":{"@type":"Answer","text":"Open the run’s output or dataset in Apify Console, select Export, choose JSON or JSONL, and download the file. Apify offers a direct CSV export too."}},
+    {"@type":"Question","name":"What happens to nested objects and arrays?","acceptedAnswer":{"@type":"Answer","text":"Nested objects become dotted columns. Arrays stay together as JSON text in a single cell. Missing fields and null values produce blank cells."}},
+    {"@type":"Question","name":"How does the converter handle spreadsheet formulas?","acceptedAnswer":{"@type":"Answer","text":"It prefixes formula-like text and headers with an apostrophe and quotes CSV fields. Import columns as text if you need spreadsheet software to preserve data types such as leading-zero IDs."}},
+    {"@type":"Question","name":"Are my data and files uploaded?","acceptedAnswer":{"@type":"Answer","text":"Conversion and download happen in your browser. The converter sends no dataset or analytics requests."}}
+  ]
+}
+</script>
+</head>
+<body>
+<header><div class="shell"><span>Dataset Workbench</span><nav aria-label="Page"><a href="#faq">FAQ</a><a href="#actors">Apify Actors</a></nav></div></header>
+<main class="shell">
+<section class="hero" aria-labelledby="title">
+<h1 id="title">Apify dataset JSONL to CSV converter</h1>
+<p>Turn a downloaded JSON or JSONL export into a spreadsheet-ready CSV. Your data stays in this tab.</p>
+</section>
+<section class="workspace" aria-label="Dataset converter">
+<div class="pane">
+<h2>Dataset input</h2>
+<label for="file">Open a dataset file</label>
+<p class="helper" id="support">JSON, JSONL or NDJSON · Up to 5 MiB</p>
+<input class="file" type="file" id="file" accept=".json,.jsonl,.ndjson,application/json,application/x-ndjson" aria-describedby="support">
+<label for="source">Or paste the dataset</label>
+<textarea id="source" spellcheck="false" autocomplete="off" placeholder='[{"name":"Example","metrics":{"stars":420}}]'></textarea>
+<label class="option"><input type="checkbox" id="bom" checked>Include UTF-8 BOM for Excel</label>
+<div class="toolbar">
+<button class="primary" id="convert" type="button">Convert to CSV</button>
+<button id="sample" type="button">Try sample</button>
+<button id="clear" type="button">Clear</button>
+</div>
+<noscript><p>Enable JavaScript to convert your file in this browser.</p></noscript>
+</div>
+<div class="pane output">
+<h2 id="output-heading">CSV preview</h2>
+<p class="status" id="status" role="status" aria-live="polite" aria-atomic="true">Converted rows will appear here.</p>
+<div class="preview" id="preview" role="region" aria-labelledby="output-heading" hidden></div>
+<div class="toolbar"><a class="download" id="download" download="dataset.csv" hidden>Download CSV</a></div>
+</div>
+</section>
+<div class="info">
+<section id="faq">
+<h2>Frequently asked questions</h2>
+<details open><summary>How do I export JSONL from Apify?</summary><p>Open the run’s output or dataset in Apify Console, select <strong>Export</strong>, choose JSON or JSONL, and download the file. Apify offers a direct CSV export too. <a href="https://docs.apify.com/storage/dataset">Apify export guide</a></p></details>
+<details><summary>What happens to nested objects and arrays?</summary><p>Nested objects become dotted columns. Arrays stay together as JSON text in a single cell. Missing fields and null values produce blank cells. Dots and backslashes in literal keys are escaped so similar column names remain distinct.</p></details>
+<details><summary>How does the converter handle spreadsheet formulas?</summary><p>It prefixes formula-like text and headers with an apostrophe and quotes CSV fields. Import columns as text if you need spreadsheet software to preserve data types such as leading-zero IDs.</p></details>
+<details><summary>Are my data and files uploaded?</summary><p>Conversion and download happen in your browser. The converter sends no dataset or analytics requests.</p></details>
+</section>
+<section id="actors" class="products">
+<h2>Need a dataset to start?</h2>
+<article><h3>ModelScope models and datasets</h3><p>Find model and dataset listings, then export your Apify run and convert it here. The converter sample uses this Actor’s field style.</p><p class="detail">Paid Actor · Apify Free-tier rate of $0.002 per saved record plus a $0.00005 start event at default memory.</p><p><a data-actor="modelscope" href="https://apify.com/perceptive_city_af7/modelscope-scraper?utm_source=dataset_workbench&amp;utm_medium=referral&amp;utm_campaign=apify_jsonl_to_csv">View ModelScope Actor</a> · <a href="https://apify.com/perceptive_city_af7/modelscope-scraper/pricing">Pricing</a></p></article>
+<article><h3>UK Government Tenders (OCDS API)</h3><p>Collect official UK public procurement tenders and contract awards for a spreadsheet you can filter by deadline, CPV code, or buyer agency.</p><p class="detail">Paid Actor · Apify Free-tier rate of $0.005 per saved notice plus a $0.00005 start event at default memory.</p><p><a data-actor="uk_tenders" href="https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper?utm_source=dataset_workbench&amp;utm_medium=referral&amp;utm_campaign=apify_jsonl_to_csv">View UK Tenders Actor</a> · <a href="https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/pricing">Pricing</a></p></article>
+</section>
+</div>
+</main>
+<footer><div class="shell">Dataset Workbench · Independent tool for Apify dataset exports</div></footer>
+<script>
+"use strict";
+(() => {
+const MAX_BYTES = 5 * 1024 * 1024;
+const MAX_CELLS = 500_000;
+const MAX_CSV_BYTES = 32 * 1024 * 1024;
+const encoder = new TextEncoder();
+const CRLF = '\r\n';
+
+function isRecord(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function checkNumber(key, value) {
+  if (typeof value === "number" &&
+      (!Number.isFinite(value) || (Number.isInteger(value) && !Number.isSafeInteger(value)))) {
+    throw new RangeError("Use quoted text for numbers outside JavaScript’s safe integer range.");
+  }
+  return value;
+}
+
+function readRecords(input) {
+  if (encoder.encode(input).length > MAX_BYTES) throw new Error("Use a dataset up to 5 MiB.");
+  const source = input.replace(/^\uFEFF/u, "").trim();
+  if (!source) throw new Error("Open a dataset file or paste JSON or JSONL first.");
+  let records;
+  try {
+    const document = JSON.parse(source, checkNumber);
+    records = Array.isArray(document) ? document : [document];
+  } catch (error) {
+    if (!(error instanceof SyntaxError)) throw error;
+    if (source.startsWith("[")) throw new Error("The JSON array is malformed. Check its brackets, commas and quotes.");
+    records = source.split(/\r\n|\n|\r/u).flatMap((line, index) => {
+      if (!line.trim()) return [];
+      try {
+        return [JSON.parse(line, checkNumber)];
+      } catch (lineError) {
+        if (!(lineError instanceof SyntaxError)) throw lineError;
+        throw new Error(`Invalid JSONL on line ${index + 1}. Use one JSON object per line.`);
+      }
+    });
+  }
+  if (!records.length) throw new Error("The dataset has no records.");
+  if (!records.every(isRecord)) throw new Error("Use JSON objects for all records.");
+  return records;
+}
+
+const escapeKey = (key) => key.replace(/\\/gu, "\\\\").replace(/\./gu, "\\.");
+
+function flatten(record) {
+  const columns = new Map();
+  const stack = Object.entries(record).reverse().map(([key, value]) => [escapeKey(key), value]);
+  while (stack.length) {
+    const [path, value] = stack.pop();
+    const entries = isRecord(value) ? Object.entries(value) : [];
+    if (!entries.length) {
+      columns.set(path, value);
+      continue;
+    }
+    for (const [key, child] of entries.reverse()) stack.push([`${path}.${escapeKey(key)}`, child]);
+  }
+  return columns;
+}
+
+// Check leading control characters and formula operators after whitespace and format controls.
+const formulaLike = /^[\p{White_Space}\p{Cf}\x00-\x1f]*[=+@\-＝＋＠－]|^[\t\r\n]/u;
+
+function spreadsheetValue(value) {
+  if (value == null) return "";
+  if (typeof value === "string") return formulaLike.test(value) ? `'${value}` : value;
+  return typeof value === "object" ? JSON.stringify(value) : String(value);
+}
+
+function quote(value) {
+  return `"${value.replace(/"/gu, '""')}"`;
+}
+
+function convertDataset(input, { bom = true } = {}) {
+  const rows = readRecords(input).map(flatten);
+  const columns = [...new Set(rows.flatMap((row) => [...row.keys()]))];
+  if (!columns.length) throw new Error("The dataset has no fields to export.");
+  if (columns.length * rows.length > MAX_CELLS) throw new Error("The table exceeds 500,000 cells. Split the input into smaller files.");
+  const headers = columns.map(spreadsheetValue);
+  const lines = [headers.map(quote).join(",")];
+  const preview = [];
+  let byteCount = encoder.encode(lines[0]).length + CRLF.length + (bom ? 3 : 0);
+  for (const row of rows) {
+    const values = columns.map((column) => spreadsheetValue(row.get(column)));
+    const line = values.map(quote).join(",");
+    byteCount += encoder.encode(line).length + CRLF.length;
+    if (byteCount > MAX_CSV_BYTES) throw new Error("The CSV exceeds 32 MiB. Split the input into smaller files.");
+    lines.push(line);
+    if (preview.length < 8) preview.push(values.slice(0, 12));
+  }
+  return {
+    csv: (bom ? "\uFEFF" : "") + lines.join(CRLF) + CRLF,
+    headers: headers.slice(0, 12),
+    preview,
+    rowCount: rows.length,
+    columnCount: columns.length,
+  };
+}
+
+const byId = (id) => document.getElementById(id);
+const source = byId("source");
+const status = byId("status");
+const preview = byId("preview");
+const download = byId("download");
+const file = byId("file");
+const bom = byId("bom");
+const convert = byId("convert");
+const sample = byId("sample");
+let downloadUrl;
+let readVersion = 0;
+
+function track(name, details = {}) {
+  window.dispatchEvent(new CustomEvent("dataset-workbench", { detail: { name, ...details } }));
+}
+
+function report(message, error = false) {
+  status.textContent = message;
+  status.classList.toggle("error", error);
+}
+
+function resetOutput() {
+  if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+  downloadUrl = undefined;
+  download.removeAttribute("href");
+  download.hidden = true;
+  preview.hidden = true;
+  preview.removeAttribute("tabindex");
+  preview.replaceChildren();
+}
+
+function appendRow(group, values, heading = false) {
+  const row = group.insertRow();
+  for (const value of values) {
+    const cell = document.createElement(heading ? "th" : "td");
+    if (heading) cell.scope = "col";
+    const characters = Array.from(value.slice(0, 481));
+    cell.textContent = characters.length > 480 || value.length > 481
+      ? characters.slice(0, 480).join("") + "…"
+      : value;
+    row.append(cell);
+  }
+}
+
+function render() {
+  resetOutput();
+  let result;
+  try {
+    result = convertDataset(source.value, { bom: bom.checked });
+  } catch (error) {
+    report(error instanceof RangeError && error.message.includes("call stack")
+      ? "The data is nested too deeply. Remove deeply nested fields and try again."
+      : error.message, true);
+    return;
+  }
+  const table = document.createElement("table");
+  appendRow(table.createTHead(), result.headers, true);
+  const body = table.createTBody();
+  for (const row of result.preview) appendRow(body, row);
+  preview.append(table);
+  preview.hidden = false;
+  preview.tabIndex = 0;
+  downloadUrl = URL.createObjectURL(new Blob([result.csv], { type: "text/csv;charset=utf-8" }));
+  download.href = downloadUrl;
+  download.hidden = false;
+  const counts = `${result.rowCount.toLocaleString()} rows × ${result.columnCount.toLocaleString()} columns.`;
+  report(`${counts} Showing up to 8 rows and 12 columns. Long cells are shortened in the preview.`);
+  track("conversion_success");
+}
+
+function cancelRead() {
+  readVersion++;
+  file.value = "";
+  convert.disabled = false;
+}
+
+source.addEventListener("input", () => {
+  cancelRead();
+  resetOutput();
+  report("Ready to convert.");
+});
+bom.addEventListener("change", () => {
+  if (downloadUrl) render();
+});
+convert.addEventListener("click", render);
+sample.addEventListener("click", () => {
+  cancelRead();
+  source.value = [
+    { name: "Qwen 2.5", provider: "通义千问", metrics: { stars: 420 }, tags: ["text", "multilingual"] },
+    { name: "Example dataset", provider: "Research lab", metrics: { stars: 18 }, tags: ["dataset"] },
+  ].map((record) => JSON.stringify(record)).join("\n");
+  track("sample_loaded");
+  render();
+});
+byId("clear").addEventListener("click", () => {
+  cancelRead();
+  source.value = "";
+  resetOutput();
+  report("Converted rows will appear here.");
+  source.focus();
+});
+file.addEventListener("change", async () => {
+  const selected = file.files[0];
+  if (!selected) return;
+  const version = ++readVersion;
+  resetOutput();
+  source.value = "";
+  convert.disabled = true;
+  report("Opening the dataset in your browser…");
+  try {
+    if (selected.size > MAX_BYTES) throw new Error("Use a dataset up to 5 MiB.");
+    const bytes = await selected.arrayBuffer();
+    const contents = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    if (version !== readVersion) return;
+    source.value = contents;
+    render();
+  } catch (error) {
+    if (version !== readVersion) return;
+    report(error instanceof TypeError ? "The file must contain valid UTF-8 text." : error.message, true);
+  } finally {
+    if (version === readVersion) {
+      convert.disabled = false;
+      file.value = "";
+    }
+  }
+});
+download.addEventListener("click", () => track("csv_download"));
+for (const link of document.querySelectorAll("[data-actor]")) {
+  link.addEventListener("click", () => track("actor_click", { actor: link.dataset.actor }));
+}
+
+})();
+</script>
+</body>
+</html>

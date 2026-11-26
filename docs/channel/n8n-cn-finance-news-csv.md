@@ -1,0 +1,11 @@
+# Export CLS.cn financial news to CSV in n8n
+
+1. Download the workflow JSON and import the file from a new workflow's menu in n8n. The workflow uses the built-in Manual Trigger and HTTP Request nodes. [Download workflow](./n8n-cn-finance-news-csv.json) · [Free JSON sample](./cn-finance-sample.json) · [n8n import instructions](https://docs.n8n.io/workflows/export-import/)
+2. Open **Run CLS.cn financial news and download CSV**. Create or select a **Header Auth** credential. Set **Name** to `Authorization` and **Value** to `Bearer` followed by a space and your Apify API token. Save it in the n8n credential editor. [Apify account settings](https://console.apify.com/settings/integrations)
+3. Select **Execute workflow** once. In the HTTP Request output, open **Binary** and download the `data` file. The UTF-8 CSV includes columns `source,id,title,content,published_at,ctime,level,subjects,stock_codes,share_url`.
+
+The workflow uses `source: "cls_telegraph"` to fetch the latest 24/7 CLS.cn (财联社) financial wire flashes. Some telegraph flashes have an empty `title` and carry the headline inside `content`. The [CN Finance News Actor](https://apify.com/perceptive_city_af7/cn-finance-news-scraper) also supports `cls_search` (keyword search) and `cninfo_announcements` (CNINFO 巨潮资讯 A-share filings) by editing the JSON body. Calls use the [Apify API](https://docs.apify.com/api/v2/actor-run-sync-get-dataset-items-post).
+
+Each execution sends one POST with `maxItems: 2` and `limit=2`, capped by `maxTotalChargeUsd=0.00605`. On the Free tier, current pricing is $0.00005 per Actor start plus $0.003 per saved item ($3.00 / 1,000 items), so two items cost $0.00605. Paid Apify plans offer lower per-item rates: Starter $2.85/1K, Scale $2.55/1K, Business $2.25/1K. See [Actor pricing](https://apify.com/perceptive_city_af7/cn-finance-news-scraper/pricing). The workflow has no schedule and automatic retry is disabled (`retryOnFail: false`). If a request times out, check your runs in the Apify Console before executing again.
+
+Honesty note: The workflow JSON structure was validated locally and paired with an anonymous 2-item sample fetched from CLS.cn. This guide does not claim the workflow was run inside a live n8n instance; running the workflow bills your own Apify account.

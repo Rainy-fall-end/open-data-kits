@@ -1,0 +1,474 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-11-26T04:24:28.000Z",
+  "__export_source": "open-gov-api-client-collections@1.0.0",
+  "resources": [
+    {
+      "_id": "wrk_open_gov_paid_apis",
+      "parentId": null,
+      "modified": 1795656000000,
+      "created": 1795656000000,
+      "name": "Open Government Paid APIs",
+      "description": "Eight read-only paid API examples for public US, UK, and Singapore government data. Requests are not sent by the offline verifier. Configure credentials locally and review provider pricing before manually sending a request.",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_open_gov_local_secrets",
+      "parentId": "wrk_open_gov_paid_apis",
+      "modified": 1795656000000,
+      "created": 1795656000000,
+      "name": "Base Environment",
+      "data": {
+        "APIFY_TOKEN": "",
+        "RAPIDAPI_KEY": ""
+      },
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": true,
+      "metaSortKey": 1,
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_rapidapi_paid",
+      "parentId": "wrk_open_gov_paid_apis",
+      "modified": 1795656000000,
+      "created": 1795656000000,
+      "name": "RapidAPI Paid REST APIs",
+      "description": "Four read-only paid RapidAPI requests.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -2000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_apify_paid",
+      "parentId": "wrk_open_gov_paid_apis",
+      "modified": 1795656000000,
+      "created": 1795656000000,
+      "name": "Apify Paid Actors",
+      "description": "Four paid Actor requests with a USD 0.25 hard cap.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_rapidapi_sec_edgar",
+      "parentId": "fld_rapidapi_paid",
+      "modified": 1795656000000,
+      "created": 1795656000000,
+      "url": "https://sec-edgar-corporate-filings.p.rapidapi.com/v1/sec-edgar/filings",
+      "name": "SEC EDGAR Corporate Filings",
+      "description": "Paid RapidAPI request for sec-edgar-corporate-filings.",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "id": "pair_rapidapi_sec_edgar_mode",
+          "name": "mode",
+          "value": "search",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_sec_edgar_query",
+          "name": "query",
+          "value": "artificial intelligence",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_sec_edgar_forms",
+          "name": "forms",
+          "value": "10-K,10-Q,8-K",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_sec_edgar_startDate",
+          "name": "startDate",
+          "value": "2025-01-01",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_sec_edgar_limit",
+          "name": "limit",
+          "value": "5",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "X-RapidAPI-Key",
+          "value": "{{RAPIDAPI_KEY}}"
+        },
+        {
+          "name": "X-RapidAPI-Host",
+          "value": "sec-edgar-corporate-filings.p.rapidapi.com"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_rapidapi_clinical_trials",
+      "parentId": "fld_rapidapi_paid",
+      "modified": 1795656000001,
+      "created": 1795656000001,
+      "url": "https://clinicaltrials-gov-studies-trials.p.rapidapi.com/v1/clinical-trials/studies",
+      "name": "ClinicalTrials.gov Studies and Trials",
+      "description": "Paid RapidAPI request for clinicaltrials-gov-studies-trials.",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "id": "pair_rapidapi_clinical_trials_condition",
+          "name": "condition",
+          "value": "diabetes",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_clinical_trials_intervention",
+          "name": "intervention",
+          "value": "metformin",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_clinical_trials_status",
+          "name": "status",
+          "value": "RECRUITING",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_clinical_trials_limit",
+          "name": "limit",
+          "value": "5",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "X-RapidAPI-Key",
+          "value": "{{RAPIDAPI_KEY}}"
+        },
+        {
+          "name": "X-RapidAPI-Host",
+          "value": "clinicaltrials-gov-studies-trials.p.rapidapi.com"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -999,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_rapidapi_openfda",
+      "parentId": "fld_rapidapi_paid",
+      "modified": 1795656000002,
+      "created": 1795656000002,
+      "url": "https://openfda-recalls-enforcement-approvals.p.rapidapi.com/v1/openfda/records",
+      "name": "openFDA Recalls, Enforcement and Approvals",
+      "description": "Paid RapidAPI request for openfda-recalls-enforcement-approvals.",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "id": "pair_rapidapi_openfda_dataset",
+          "name": "dataset",
+          "value": "drug_enforcement",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_openfda_classification",
+          "name": "classification",
+          "value": "Class I",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_openfda_limit",
+          "name": "limit",
+          "value": "5",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "X-RapidAPI-Key",
+          "value": "{{RAPIDAPI_KEY}}"
+        },
+        {
+          "name": "X-RapidAPI-Host",
+          "value": "openfda-recalls-enforcement-approvals.p.rapidapi.com"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -998,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_rapidapi_singapore_green_mark",
+      "parentId": "fld_rapidapi_paid",
+      "modified": 1795656000003,
+      "created": 1795656000003,
+      "url": "https://singapore-bca-green-mark-buildings.p.rapidapi.com/v1/sg-green-mark/certificates",
+      "name": "Singapore BCA Green Mark Buildings",
+      "description": "Paid RapidAPI request for singapore-bca-green-mark-buildings.",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "id": "pair_rapidapi_singapore_green_mark_limit",
+          "name": "limit",
+          "value": "5",
+          "disabled": false
+        },
+        {
+          "id": "pair_rapidapi_singapore_green_mark_rating",
+          "name": "rating",
+          "value": "Platinum",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "X-RapidAPI-Key",
+          "value": "{{RAPIDAPI_KEY}}"
+        },
+        {
+          "name": "X-RapidAPI-Host",
+          "value": "singapore-bca-green-mark-buildings.p.rapidapi.com"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -997,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_apify_sec_edgar",
+      "parentId": "fld_apify_paid",
+      "modified": 1795656000004,
+      "created": 1795656000004,
+      "url": "https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items",
+      "name": "SEC EDGAR Filings Actor",
+      "description": "Paid Apify Actor 8LFIbRbidiHPknMz5; maxTotalChargeUsd is fixed at 0.25.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"mode\": \"search\",\n  \"query\": \"artificial intelligence\",\n  \"forms\": \"10-K,10-Q,8-K\",\n  \"startDate\": \"2025-01-01\",\n  \"maxItems\": 5\n}"
+      },
+      "parameters": [
+        {
+          "id": "pair_apify_sec_edgar_maxTotalChargeUsd",
+          "name": "maxTotalChargeUsd",
+          "value": "0.25",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{APIFY_TOKEN}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -996,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_apify_clinical_trials",
+      "parentId": "fld_apify_paid",
+      "modified": 1795656000005,
+      "created": 1795656000005,
+      "url": "https://api.apify.com/v2/acts/KchE3qKKrwU0rCe9f/run-sync-get-dataset-items",
+      "name": "ClinicalTrials.gov Studies Actor",
+      "description": "Paid Apify Actor KchE3qKKrwU0rCe9f; maxTotalChargeUsd is fixed at 0.25.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"condition\": \"diabetes\",\n  \"intervention\": \"metformin\",\n  \"status\": \"RECRUITING\",\n  \"sponsor\": \"\",\n  \"queryTerm\": \"\",\n  \"maxItems\": 5\n}"
+      },
+      "parameters": [
+        {
+          "id": "pair_apify_clinical_trials_maxTotalChargeUsd",
+          "name": "maxTotalChargeUsd",
+          "value": "0.25",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{APIFY_TOKEN}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -995,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_apify_uk_gov_tenders",
+      "parentId": "fld_apify_paid",
+      "modified": 1795656000006,
+      "created": 1795656000006,
+      "url": "https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/run-sync-get-dataset-items",
+      "name": "UK Government Tenders Actor",
+      "description": "Paid Apify Actor txnvyTckeQx4hVBc6; maxTotalChargeUsd is fixed at 0.25.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"keyword\": \"technology\",\n  \"stages\": \"tender\",\n  \"minValue\": 10000,\n  \"publishedFrom\": \"2026-01-01\",\n  \"maxItems\": 5\n}"
+      },
+      "parameters": [
+        {
+          "id": "pair_apify_uk_gov_tenders_maxTotalChargeUsd",
+          "name": "maxTotalChargeUsd",
+          "value": "0.25",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{APIFY_TOKEN}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -994,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_apify_singapore_green_mark",
+      "parentId": "fld_apify_paid",
+      "modified": 1795656000007,
+      "created": 1795656000007,
+      "url": "https://api.apify.com/v2/acts/Z3ioK0wOAeczj6nCx/run-sync-get-dataset-items",
+      "name": "Singapore BCA Green Mark Buildings Actor",
+      "description": "Paid Apify Actor Z3ioK0wOAeczj6nCx; maxTotalChargeUsd is fixed at 0.25.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"query\": \"\",\n  \"rating\": \"Platinum\",\n  \"expiresWithinDays\": 3650,\n  \"maxItems\": 5\n}"
+      },
+      "parameters": [
+        {
+          "id": "pair_apify_singapore_green_mark_maxTotalChargeUsd",
+          "name": "maxTotalChargeUsd",
+          "value": "0.25",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{APIFY_TOKEN}}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -993,
+      "isPrivate": false,
+      "settingStoreCookies": false,
+      "settingSendCookies": false,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    }
+  ]
+}

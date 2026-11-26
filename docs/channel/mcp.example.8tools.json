@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "apify-global-apac-public-data": {
+      "url": "https://mcp.apify.com/?tools=perceptive_city_af7%2Fsec-edgar-filings-scraper%2Cperceptive_city_af7%2Fclinical-trials-scraper%2Cperceptive_city_af7%2Fuk-gov-tenders-scraper%2Cperceptive_city_af7%2Fsg-green-mark-buildings%2Cperceptive_city_af7%2Fcn-finance-news-scraper%2Cperceptive_city_af7%2Fmodelscope-scraper%2Cperceptive_city_af7%2Ftaptap-scraper%2Cperceptive_city_af7%2Fsmzdm-deals-scraper"
+    }
+  }
+}

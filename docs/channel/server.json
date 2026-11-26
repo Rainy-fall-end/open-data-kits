@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Rainy-fall-end/china-public-data-tools",
+  "title": "Global & APAC Public Data Tools (8 Apify Actors)",
+  "description": "8 Apify tools: SEC EDGAR, ClinicalTrials, UK Tenders, SG Green Mark, CN Finance, ModelScope, TapTap.",
+  "version": "1.0.2",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.apify.com/?tools=perceptive_city_af7%2Fsec-edgar-filings-scraper%2Cperceptive_city_af7%2Fclinical-trials-scraper%2Cperceptive_city_af7%2Fuk-gov-tenders-scraper%2Cperceptive_city_af7%2Fsg-green-mark-buildings%2Cperceptive_city_af7%2Fcn-finance-news-scraper%2Cperceptive_city_af7%2Fmodelscope-scraper%2Cperceptive_city_af7%2Ftaptap-scraper%2Cperceptive_city_af7%2Fsmzdm-deals-scraper",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "For clients using tokens, enter Bearer followed by your own Apify API token. OAuth clients can sign in to Apify instead.",
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apify PPE Cost &amp; Creator Profit Calculator | maxTotalChargeUsd, Tier Discounts &amp; 80/20 Payout</title>
+  <meta name="description" content="Estimate Apify Pay-Per-Event (PPE) actor costs, tier discounts (-5%/-15%/-25%), maxTotalChargeUsd caps, start fees, and creator net profit after the 80/20 payout split.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; form-action 'none'; base-uri 'none'; img-src data:">
+  <meta name="referrer" content="no-referrer">
+  <link rel="canonical" href="https://rainy-fall-end.github.io/open-data-kits/tools/ppe-calculator/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Apify PPE Cost & Creator Profit Calculator",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "url": "https://rainy-fall-end.github.io/open-data-kits/tools/ppe-calculator/",
+    "description": "Estimate Apify Pay-Per-Event actor costs, maxTotalChargeUsd caps, plan tier discounts, start fees, and creator net profit with the 80/20 payout split.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Estimates Apify Pay-Per-Event costs with tier discounts",
+      "Calculates maxTotalChargeUsd caps",
+      "Estimates creator net profit with 80/20 split",
+      "Compares Free, Starter, Scale, and Business plans"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do Apify Pay-Per-Event start fees work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Apify PPE actors may charge a start fee per run. The calculator adds your start fee multiplied by the number of runs to the per-event charge."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What discounts do paid Apify plans apply to PPE events?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Starter plans take 5% off the per-event rate, Scale takes 15%, and Business takes 25%. Free plans have no discount."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is maxTotalChargeUsd and how do I use it?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "maxTotalChargeUsd is an optional actor input that caps the total charge for a run. The calculator shows the required cap for each plan so unexpected event volume cannot exceed your budget."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the creator 80/20 net payout split?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Apify pays creators 80% of net revenue after platform fees and compute costs are deducted. The calculator estimates gross revenue, Apify's 20% fee, compute cost, net payout, and margin."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      --ink: #172c2e;
+      --muted: #455c5c;
+      --teal: #00614e;
+      --page: #f2f6f1;
+      --line: #baccc4;
+      --paper: #fff;
+      --mint: #dbefe2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+      background: var(--page);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--teal);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header.hero {
+      background: linear-gradient(135deg, #00614e, #0b3b2e);
+      color: #fff;
+      padding: 40px 0 32px;
+    }
+
+    .hero .wrap {
+      display: grid;
+      gap: 10px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 800px;
+      color: #d9f2ea;
+      font-size: 1.05rem;
+    }
+
+    main {
+      padding: 28px 0 40px;
+    }
+
+    h2,
+    h3 {
+      letter-spacing: -0.01em;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      margin: 0 0 14px;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      margin: 20px 0 8px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+    }
+
+    .preset-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .preset-list button {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--ink);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .preset-list button:hover {
+      border-color: var(--teal);
+      background: var(--mint);
+    }
+
+    .preset-list button[aria-pressed="true"] {
+      background: var(--teal);
+      color: #fff;
+      border-color: var(--teal);
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field.full {
+      grid-column: span 2;
+    }
+
+    .field label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 1rem;
+    }
+
+    .status {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--mint);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 0.95rem;
+      min-height: 3.2em;
+      margin: 0 0 16px;
+    }
+
+    .status.error {
+      background: #fdeaea;
+      border-color: #f0b9b9;
+      color: #8f1d1d;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .metric-card {
+      background: var(--mint);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .metric-card span {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .metric-card output {
+      display: block;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--teal);
+      margin-top: 4px;
+    }
+
+    .table-wrap {
+      max-height: 320px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--paper);
+      margin-top: 8px;
+    }
+
+    .plan-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 520px;
+    }
+
+    .plan-table th {
+      position: sticky;
+      top: 0;
+      background: var(--mint);
+      color: var(--ink);
+      text-align: left;
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      z-index: 1;
+    }
+
+    .plan-table td {
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      font-size: 0.9rem;
+    }
+
+    .plan-table tbody tr.active-plan {
+      background: var(--mint);
+      outline: 2px solid var(--teal);
+      outline-offset: -2px;
+    }
+
+    .budget-result {
+      display: inline-block;
+      font-weight: 700;
+      color: var(--teal);
+      background: var(--mint);
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    .snippet {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .snippet-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .snippet code {
+      display: block;
+      background: var(--mint);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 0.85rem;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      background: var(--teal);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--teal);
+      background: var(--teal);
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--teal);
+    }
+
+    .button:hover {
+      opacity: 0.92;
+    }
+
+    .actor-cta {
+      margin-left: 10px;
+    }
+
+    #creator-profit {
+      margin-top: 32px;
+    }
+
+    .creator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .creator-results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .creator-results div {
+      background: var(--mint);
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .creator-results dt {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .creator-results dd {
+      margin: 4px 0 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    #actors {
+      margin-top: 32px;
+    }
+
+    .actor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .actor-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .actor-card h3 {
+      margin: 0 0 4px;
+      font-size: 1.1rem;
+    }
+
+    .actor-card p {
+      margin: 0 0 8px;
+      color: var(--muted);
+    }
+
+    .actor-card .rate {
+      color: var(--teal);
+      font-weight: 700;
+      margin-top: auto;
+    }
+
+    .actor-links {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .actor-links a {
+      font-size: 0.9rem;
+      color: var(--teal);
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--teal);
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+
+    .actor-links a:hover {
+      background: var(--mint);
+    }
+
+    #faq {
+      margin-top: 32px;
+    }
+
+    .faq-list details {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+    }
+
+    .faq-list summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--teal);
+    }
+
+    .faq-list p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 40px;
+      padding: 24px 0;
+      background: var(--ink);
+      color: #cfe6dd;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 780px) {
+      .workspace {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .input-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .field.full {
+        grid-column: span 1;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .creator-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actor-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header.hero {
+        padding: 28px 0;
+      }
+    }
+
+    @media (max-width: 375px) {
+      .wrap {
+        padding: 0 14px;
+      }
+
+      .panel {
+        padding: 14px;
+      }
+
+      .creator-results {
+        grid-template-columns: 1fr;
+      }
+
+      .snippet-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <h1>Apify Pay-Per-Event Cost &amp; Creator Profit Calculator</h1>
+      <p>Estimate PPE actor costs, plan discounts, maxTotalChargeUsd caps, start fees, and creator net payouts after the 80/20 split.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="calculator" aria-label="PPE cost calculator">
+      <div class="workspace">
+        <div class="panel">
+          <h2>Buyer Inputs</h2>
+          <div id="preset-list" class="preset-list" aria-label="Preset scrapers">
+            <button type="button" data-preset-id="uk-gov-tenders-scraper" aria-pressed="true">UK Gov Tenders</button>
+            <button type="button" data-preset-id="smzdm-deals-scraper" aria-pressed="false">SMZDM Deals</button>
+            <button type="button" data-preset-id="cn-finance-news-scraper" aria-pressed="false">CN Finance News</button>
+            <button type="button" data-preset-id="taptap-scraper" aria-pressed="false">TapTap Games</button>
+            <button type="button" data-preset-id="modelscope-scraper" aria-pressed="false">ModelScope AI</button>
+            <button type="button" data-preset-id="custom" aria-pressed="false">Custom</button>
+          </div>
+
+          <div class="input-grid">
+            <div class="field">
+              <label for="items-per-run">Items per run</label>
+              <input id="items-per-run" type="number" min="0" step="1" value="100" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label for="runs-count">Number of runs</label>
+              <input id="runs-count" type="number" min="0" step="1" value="1" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label for="rate-per-1k">Rate per 1,000 events ($)</label>
+              <input id="rate-per-1k" type="number" min="0" step="0.01" value="5.00" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label for="start-fee">Start fee per run ($)</label>
+              <input id="start-fee" type="number" min="0" step="0.00001" value="0.00005" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label for="plan-select">Apify plan</label>
+              <select id="plan-select">
+                <option value="free">Free</option>
+                <option value="starter">Starter</option>
+                <option value="scale">Scale</option>
+                <option value="business">Business</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="buffer-pct">Buffer (%)</label>
+              <input id="buffer-pct" type="number" min="0" max="100" step="1" value="0" inputmode="numeric">
+            </div>
+            <div class="field full">
+              <label for="budget-usd">Budget cap ($)</label>
+              <input id="budget-usd" type="number" min="0" step="0.01" value="5.00" inputmode="decimal">
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" id="output-pane" aria-label="Cost output">
+          <p id="status" role="status" aria-live="polite" aria-atomic="true" class="status">Adjust the controls to see your Apify PPE estimate.</p>
+
+          <div class="metric-grid">
+            <div class="metric-card" id="card-per-run">
+              <span>Per run cost</span>
+              <output id="summary-per-run">$0.53</output>
+            </div>
+            <div class="metric-card" id="card-total">
+              <span>Total estimated cost</span>
+              <output id="summary-total">$0.53</output>
+            </div>
+            <div class="metric-card" id="card-cap">
+              <span>Required maxTotalChargeUsd</span>
+              <output id="summary-cap">$0.53</output>
+            </div>
+          </div>
+
+          <h3>Plan comparison</h3>
+          <div class="table-wrap">
+            <table class="plan-table">
+              <thead>
+                <tr>
+                  <th scope="col">Plan</th>
+                  <th scope="col">Discount</th>
+                  <th scope="col">Per run</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Cap</th>
+                </tr>
+              </thead>
+              <tbody id="plan-table-body"></tbody>
+            </table>
+          </div>
+
+          <div>
+            Budget fit: <output id="budget-result" class="budget-result">Within budget</output>
+          </div>
+
+          <div class="snippet">
+            <div class="snippet-header">
+              <code id="snippet-code">{"maxTotalChargeUsd":5,"plan":"starter"}</code>
+              <span id="snippet-cap-badge" class="badge">Starter -5%</span>
+            </div>
+            <div>
+              <button type="button" id="copy-snippet" class="button">Copy JSON + cap</button>
+              <button type="button" id="copy-input" class="button secondary">Copy input JSON</button>
+              <a id="actor-cta" class="button secondary actor-cta" href="https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper">Run Actor on Apify</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="creator-profit" aria-labelledby="creator-profit-title">
+      <h2 id="creator-profit-title">Creator Profit Estimator</h2>
+      <p>Estimate your net payout after Apify's 80/20 split and compute costs.</p>
+      <div class="creator-grid">
+        <div class="panel">
+          <h3>Actor run profile</h3>
+          <div class="input-grid" style="grid-template-columns:1fr;">
+            <div class="field">
+              <label for="memory-mb">Actor memory</label>
+              <select id="memory-mb">
+                <option value="256">256 MB</option>
+                <option value="512" selected>512 MB</option>
+                <option value="1024">1024 MB</option>
+                <option value="2048">2048 MB</option>
+                <option value="4096">4096 MB</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="duration-sec">Average run duration (seconds)</label>
+              <input id="duration-sec" type="number" min="0" step="1" value="15" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label for="cu-price">CU price ($ per CU)</label>
+              <input id="cu-price" type="number" min="0" step="0.01" value="0.30" inputmode="decimal">
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Estimated payout</h3>
+          <dl class="creator-results">
+            <div>
+              <dt>Gross revenue</dt>
+              <dd><output id="creator-gross">$0.45</output></dd>
+            </div>
+            <div>
+              <dt>Apify fee (20%)</dt>
+              <dd><output id="creator-fee">$0.09</output></dd>
+            </div>
+            <div>
+              <dt>Compute cost</dt>
+              <dd><output id="creator-compute">$0.02</output></dd>
+            </div>
+            <div>
+              <dt>Net payout</dt>
+              <dd><output id="creator-net">$0.34</output></dd>
+            </div>
+            <div>
+              <dt>Margin</dt>
+              <dd><output id="creator-margin">76%</output></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section id="actors" aria-labelledby="actors-title">
+      <h2 id="actors-title">Live Public Apify Actors</h2>
+      <p>Use these preconfigured Pay-Per-Event actors, or open the actor and its pricing page directly.</p>
+      <div class="actor-grid">
+        <article class="actor-card" data-actor="uk-gov-tenders-scraper">
+          <h3>UK Government Tenders</h3>
+          <p>Official UK Find a Tender (FTS) OCDS procurement notices &amp; contract awards.</p>
+          <p class="rate">$5.00 / 1K events</p>
+          <div class="actor-links">
+            <a href="https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper" data-actor-link>View Actor</a>
+            <a href="https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/pricing" data-pricing-link>Pricing</a>
+          </div>
+        </article>
+        <article class="actor-card" data-actor="smzdm-deals-scraper">
+          <h3>SMZDM Deals Scraper</h3>
+          <p>Deals, prices, and promotions from SMZDM.</p>
+          <p class="rate">$5.00 / 1K events</p>
+          <div class="actor-links">
+            <a href="https://apify.com/perceptive_city_af7/smzdm-deals-scraper" data-actor-link>View Actor</a>
+            <a href="https://apify.com/perceptive_city_af7/smzdm-deals-scraper/pricing" data-pricing-link>Pricing</a>
+          </div>
+        </article>
+        <article class="actor-card" data-actor="cn-finance-news-scraper">
+          <h3>CN Finance News Scraper</h3>
+          <p>Chinese financial news articles and headlines.</p>
+          <p class="rate">$3.00 / 1K events</p>
+          <div class="actor-links">
+            <a href="https://apify.com/perceptive_city_af7/cn-finance-news-scraper" data-actor-link>View Actor</a>
+            <a href="https://apify.com/perceptive_city_af7/cn-finance-news-scraper/pricing" data-pricing-link>Pricing</a>
+          </div>
+        </article>
+        <article class="actor-card" data-actor="taptap-scraper">
+          <h3>TapTap Scraper</h3>
+          <p>Game rankings, reviews, and metadata from TapTap.</p>
+          <p class="rate">$2.50 / 1K events</p>
+          <div class="actor-links">
+            <a href="https://apify.com/perceptive_city_af7/taptap-scraper" data-actor-link>View Actor</a>
+            <a href="https://apify.com/perceptive_city_af7/taptap-scraper/pricing" data-pricing-link>Pricing</a>
+          </div>
+        </article>
+        <article class="actor-card" data-actor="modelscope-scraper">
+          <h3>ModelScope Scraper</h3>
+          <p>Model metadata, datasets, and community content from ModelScope.</p>
+          <p class="rate">$2.00 / 1K events</p>
+          <div class="actor-links">
+            <a href="https://apify.com/perceptive_city_af7/modelscope-scraper" data-actor-link>View Actor</a>
+            <a href="https://apify.com/perceptive_city_af7/modelscope-scraper/pricing" data-pricing-link>Pricing</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <details>
+          <summary>How do Apify Pay-Per-Event start fees work?</summary>
+          <p>Apify PPE actors may charge a start fee per run. The calculator adds your start fee multiplied by the number of runs to the per-event charge.</p>
+        </details>
+        <details>
+          <summary>What discounts do paid Apify plans apply to PPE events?</summary>
+          <p>Starter plans take 5% off the per-event rate, Scale takes 15%, and Business takes 25%. Free plans have no discount.</p>
+        </details>
+        <details>
+          <summary>What is maxTotalChargeUsd and how do I use it?</summary>
+          <p>maxTotalChargeUsd is an optional actor input that caps the total charge for a run. The calculator shows the required cap for each plan so unexpected event volume cannot exceed your budget.</p>
+        </details>
+        <details>
+          <summary>What is the creator 80/20 net payout split?</summary>
+          <p>Apify pays creators 80% of net revenue after platform fees and compute costs are deducted. The calculator estimates gross revenue, Apify's 20% fee, compute cost, net payout, and margin.</p>
+        </details>
+      </div>
+      <noscript>
+        <p class="status error">JavaScript is required to update calculations dynamically. The static estimates above are shown for the default inputs.</p>
+      </noscript>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>Estimate Apify PPE costs and creator profit with tier discounts, maxTotalChargeUsd, and the 80/20 payout split. <a href="#calculator">Back to calculator</a></p>
+    </div>
+  </footer>
+
+  <script>
+"use strict";
+(() => {
+const DEFAULT_START_FEE_USD = 0.00005;
+const APIFY_FEE_RATE = 0.20;
+const DEFAULT_CU_PRICE_USD = 0.30;
+const FREE_COMPUTE_WINDOW_SECONDS = 5;
+
+const APIFY_PLANS = Object.freeze([
+  Object.freeze({ id: 'free', name: 'Free', discountPct: 0, multiplier: 1 }),
+  Object.freeze({ id: 'starter', name: 'Starter', discountPct: 5, multiplier: 0.95 }),
+  Object.freeze({ id: 'scale', name: 'Scale', discountPct: 15, multiplier: 0.85 }),
+  Object.freeze({ id: 'business', name: 'Business', discountPct: 25, multiplier: 0.75 }),
+]);
+
+const ACTOR_PRESETS = Object.freeze([
+  Object.freeze({
+    id: 'uk-gov-tenders-scraper',
+    name: 'UK Government Tenders',
+    shortName: 'UK Gov Tenders',
+    actorPath: 'perceptive_city_af7/uk-gov-tenders-scraper',
+    storeUrl: 'https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper',
+    pricingUrl: 'https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/pricing',
+    ratePer1K: 5.0,
+    startFeeUsd: DEFAULT_START_FEE_USD,
+    defaultMemoryMb: 512,
+    defaultInput: { maxItems: 100, keyword: '' },
+    summary: 'Official UK Find a Tender (FTS) OCDS procurement notices & contract awards.'
+  }),
+  Object.freeze({
+    id: 'smzdm-deals-scraper',
+    name: 'SMZDM Deals',
+    shortName: 'SMZDM Deals',
+    actorPath: 'perceptive_city_af7/smzdm-deals-scraper',
+    storeUrl: 'https://apify.com/perceptive_city_af7/smzdm-deals-scraper',
+    pricingUrl: 'https://apify.com/perceptive_city_af7/smzdm-deals-scraper/pricing',
+    ratePer1K: 5.0,
+    startFeeUsd: DEFAULT_START_FEE_USD,
+    defaultMemoryMb: 512,
+    defaultInput: { maxItems: 100, maxPages: 5 },
+    summary: 'Real-time featured discounts, final prices, and historical-low badges.'
+  }),
+  Object.freeze({
+    id: 'cn-finance-news-scraper',
+    name: 'China Finance News & A-Share Filings',
+    shortName: 'CN Finance News',
+    actorPath: 'perceptive_city_af7/cn-finance-news-scraper',
+    storeUrl: 'https://apify.com/perceptive_city_af7/cn-finance-news-scraper',
+    pricingUrl: 'https://apify.com/perceptive_city_af7/cn-finance-news-scraper/pricing',
+    ratePer1K: 3.0,
+    startFeeUsd: DEFAULT_START_FEE_USD,
+    defaultMemoryMb: 512,
+    defaultInput: { source: 'cls_telegraph', clsCategory: '', maxItems: 100 },
+    summary: 'CLS.cn 24/7 financial telegraph wire and CNINFO A-share filings.'
+  }),
+  Object.freeze({
+    id: 'taptap-scraper',
+    name: 'TapTap Game Rankings & Reviews',
+    shortName: 'TapTap Games',
+    actorPath: 'perceptive_city_af7/taptap-scraper',
+    storeUrl: 'https://apify.com/perceptive_city_af7/taptap-scraper',
+    pricingUrl: 'https://apify.com/perceptive_city_af7/taptap-scraper/pricing',
+    ratePer1K: 2.5,
+    startFeeUsd: DEFAULT_START_FEE_USD,
+    defaultMemoryMb: 512,
+    defaultInput: { mode: 'rankings', rankingType: 'hot', platform: 'android', maxItems: 100 },
+    summary: 'Mobile game charts, game metadata, and player reviews from TapTap.'
+  }),
+  Object.freeze({
+    id: 'modelscope-scraper',
+    name: 'ModelScope AI Models & Datasets',
+    shortName: 'ModelScope AI',
+    actorPath: 'perceptive_city_af7/modelscope-scraper',
+    storeUrl: 'https://apify.com/perceptive_city_af7/modelscope-scraper',
+    pricingUrl: 'https://apify.com/perceptive_city_af7/modelscope-scraper/pricing',
+    ratePer1K: 2.0,
+    startFeeUsd: DEFAULT_START_FEE_USD,
+    defaultMemoryMb: 512,
+    defaultInput: { mode: 'models', sortBy: 'downloads', includeDetails: false, maxItems: 100 },
+    summary: 'Open-source AI model & dataset listings, downloads, likes, and tags.'
+  }),
+]);
+
+function assertNonNegative(value, name, { integer = false, max = Infinity } = {}) {
+  if (
+    typeof value !== "number" ||
+    Number.isNaN(value) ||
+    !Number.isFinite(value) ||
+    value < 0 ||
+    (integer && !Number.isInteger(value)) ||
+    value > max
+  ) {
+    throw new RangeError(`${name} must be a non-negative${integer ? " integer" : ""} number${max !== Infinity ? ` <= ${max}` : ""}`);
+  }
+}
+
+function roundUsd(value, decimals = 8) {
+  const factor = 10 ** decimals;
+  return Math.round((value + Number.EPSILON) * factor) / factor;
+}
+
+function getPresetById(id) {
+  return ACTOR_PRESETS.find((preset) => preset.id === id) ?? null;
+}
+
+function getPlanById(id) {
+  const plan = APIFY_PLANS.find((plan) => plan.id === id);
+  if (!plan) {
+    throw new RangeError(`Unknown plan: ${id}`);
+  }
+  return plan;
+}
+
+function calculatePlanCosts({ itemsPerRun = 100, runs = 1, ratePer1K = 5.0, startFeeUsd = DEFAULT_START_FEE_USD, bufferPct = 0 } = {}) {
+  assertNonNegative(itemsPerRun, 'itemsPerRun', { integer: true });
+  assertNonNegative(runs, 'runs', { integer: true });
+  assertNonNegative(ratePer1K, 'ratePer1K');
+  assertNonNegative(startFeeUsd, 'startFeeUsd');
+  assertNonNegative(bufferPct, 'bufferPct', { max: 100 });
+
+  const freePlan = APIFY_PLANS.find(plan => plan.id === 'free');
+  if (!freePlan) {
+    throw new Error('Free plan not found');
+  }
+  const freeEffectiveRatePerItem = roundUsd((ratePer1K / 1000) * freePlan.multiplier, 8);
+  const freePerRunCost = roundUsd(startFeeUsd + itemsPerRun * freeEffectiveRatePerItem, 8);
+  const freeTotal = roundUsd(freePerRunCost * runs, 8);
+
+  const plans = APIFY_PLANS.map(plan => {
+    const effectiveRatePer1K = roundUsd(ratePer1K * plan.multiplier, 8);
+    const effectiveRatePerItem = roundUsd((ratePer1K / 1000) * plan.multiplier, 8);
+    const startFeePerRun = roundUsd(startFeeUsd, 8);
+    const itemCostPerRun = roundUsd(itemsPerRun * effectiveRatePerItem, 8);
+    const perRunCost = roundUsd(startFeePerRun + itemCostPerRun, 8);
+    const maxTotalChargeUsd = roundUsd(perRunCost * (1 + bufferPct / 100), 6);
+    const totalCost = roundUsd(perRunCost * runs, 8);
+    const savingsVsFreeTotal = roundUsd(freeTotal - totalCost, 8);
+    return {
+      ...plan,
+      effectiveRatePer1K,
+      effectiveRatePerItem,
+      startFeePerRun,
+      itemCostPerRun,
+      perRunCost,
+      maxTotalChargeUsd,
+      totalCost,
+      savingsVsFreeTotal,
+    };
+  });
+
+  return {
+    itemsPerRun,
+    runs,
+    totalItems: itemsPerRun * runs,
+    ratePer1K,
+    startFeeUsd,
+    bufferPct,
+    plans,
+  };
+}
+
+function calculateMaxItemsForBudget({ budgetUsd, ratePer1K, startFeeUsd = DEFAULT_START_FEE_USD, planId = "free" } = {}) {
+  assertNonNegative(budgetUsd, 'budgetUsd');
+  assertNonNegative(ratePer1K, 'ratePer1K');
+  assertNonNegative(startFeeUsd, 'startFeeUsd');
+  const plan = getPlanById(planId);
+
+  if (budgetUsd < startFeeUsd) {
+    return {
+      planId,
+      budgetUsd,
+      maxItems: 0,
+      estimatedCost: 0,
+      remainingUsd: roundUsd(budgetUsd, 8),
+    };
+  }
+
+  if (ratePer1K === 0) {
+    return {
+      planId,
+      budgetUsd,
+      maxItems: Infinity,
+      estimatedCost: startFeeUsd,
+      remainingUsd: roundUsd(budgetUsd - startFeeUsd, 8),
+    };
+  }
+
+  const effectiveRatePerItem = roundUsd((ratePer1K / 1000) * plan.multiplier, 8);
+  const maxItems = Math.floor((budgetUsd - startFeeUsd + 1e-12) / effectiveRatePerItem);
+  const estimatedCost = roundUsd(startFeeUsd + maxItems * effectiveRatePerItem, 8);
+  const remainingUsd = roundUsd(Math.max(0, budgetUsd - estimatedCost), 8);
+
+  return {
+    planId,
+    budgetUsd,
+    maxItems,
+    estimatedCost,
+    remainingUsd,
+  };
+}
+
+function estimateComputeCost({
+  memoryMb = 512,
+  durationSeconds = 15,
+  cuPriceUsd = DEFAULT_CU_PRICE_USD,
+  freeWindowSeconds = FREE_COMPUTE_WINDOW_SECONDS
+} = {}) {
+  assertNonNegative(memoryMb, 'memoryMb');
+  assertNonNegative(durationSeconds, 'durationSeconds');
+  assertNonNegative(cuPriceUsd, 'cuPriceUsd');
+  assertNonNegative(freeWindowSeconds, 'freeWindowSeconds');
+
+  const billableSeconds = Math.max(0, durationSeconds - freeWindowSeconds);
+  const cuHours = (memoryMb / 1024) * (billableSeconds / 3600);
+  const computeCostUsd = roundUsd(cuHours * cuPriceUsd, 8);
+
+  return { memoryMb, durationSeconds, billableSeconds, cuHours, computeCostUsd };
+}
+
+function calculateCreatorProfit({
+  itemsPerRun = 100,
+  runs = 1,
+  ratePer1K = 5.0,
+  startFeeUsd = DEFAULT_START_FEE_USD,
+  planId = "free",
+  computeCostPerRunUsd = 0,
+  apifyFeeRate = APIFY_FEE_RATE
+} = {}) {
+  assertNonNegative(computeCostPerRunUsd, 'computeCostPerRunUsd');
+  assertNonNegative(apifyFeeRate, 'apifyFeeRate', { max: 1 });
+  getPlanById(planId);
+
+  const result = calculatePlanCosts({ itemsPerRun, runs, ratePer1K, startFeeUsd });
+  const selected = result.plans.find((p) => p.id === planId);
+  const grossRevenueUsd = selected.totalCost;
+  const apifyFeeUsd = roundUsd(grossRevenueUsd * apifyFeeRate, 8);
+  const creatorShareBeforeComputeUsd = roundUsd(grossRevenueUsd * (1 - apifyFeeRate), 8);
+  const totalComputeCostUsd = roundUsd(computeCostPerRunUsd * runs, 8);
+  const netPayoutUsd = roundUsd(creatorShareBeforeComputeUsd - totalComputeCostUsd, 8);
+  const netPerRunUsd = runs > 0 ? roundUsd(netPayoutUsd / runs, 8) : 0;
+  const netMarginPct = grossRevenueUsd > 0 ? roundUsd((netPayoutUsd / grossRevenueUsd) * 100, 2) : 0;
+  const isProfitable = netPayoutUsd >= 0;
+
+  return {
+    planId,
+    grossRevenueUsd,
+    apifyFeeUsd,
+    creatorShareBeforeComputeUsd,
+    totalComputeCostUsd,
+    netPayoutUsd,
+    netPerRunUsd,
+    netMarginPct,
+    isProfitable
+  };
+}
+
+function buildBudgetSnippet({
+  presetId = null,
+  actorPath = "your-username/your-actor",
+  itemsPerRun = 100,
+  planId = "free",
+  ratePer1K = 5.0,
+  startFeeUsd = DEFAULT_START_FEE_USD,
+  bufferPct = 0
+} = {}) {
+  getPlanById(planId);
+
+  let finalActorPath = actorPath;
+  let finalRatePer1K = ratePer1K;
+  let finalStartFeeUsd = startFeeUsd;
+  let storeUrl = null;
+  let inputObject;
+
+  if (presetId) {
+    const preset = getPresetById(presetId);
+    if (!preset) {
+      throw new RangeError(`Preset not found: ${presetId}`);
+    }
+    finalActorPath = preset.actorPath;
+    finalRatePer1K = preset.ratePer1K;
+    finalStartFeeUsd = preset.startFeeUsd;
+    storeUrl = preset.storeUrl
+      ? `${preset.storeUrl}?utm_source=ppe_calculator&utm_medium=referral&utm_campaign=apify_ppe_cost_calculator`
+      : null;
+    inputObject = { ...(preset.defaultInput ?? {}), maxItems: itemsPerRun };
+  } else {
+    inputObject = { maxItems: itemsPerRun };
+  }
+
+  const result = calculatePlanCosts({
+    itemsPerRun,
+    runs: 1,
+    ratePer1K: finalRatePer1K,
+    startFeeUsd: finalStartFeeUsd,
+    bufferPct
+  });
+  const selected = result.plans.find((p) => p.id === planId);
+  const maxTotalChargeUsd = selected.maxTotalChargeUsd;
+  const maxTotalChargeStr = maxTotalChargeUsd === 0
+    ? "0.00"
+    : maxTotalChargeUsd.toFixed(6).replace(/\.?0+$/, "");
+
+  return {
+    actorPath: finalActorPath,
+    storeUrl,
+    maxTotalChargeUsd,
+    maxTotalChargeStr,
+    inputObject,
+    inputJson: JSON.stringify(inputObject, null, 2),
+    apiQueryParam: "maxTotalChargeUsd=" + maxTotalChargeStr,
+    apiEndpoint:
+      "https://api.apify.com/v2/acts/" +
+      finalActorPath.replace("/", "~") +
+      "/run-sync-get-dataset-items?maxTotalChargeUsd=" +
+      maxTotalChargeStr,
+    snippetText: JSON.stringify(
+      {
+        actor: finalActorPath,
+        runOptions: { maxTotalChargeUsd },
+        input: inputObject
+      },
+      null,
+      2
+    )
+  };
+}
+
+function formatUsd(amount, { minDecimals = 2, maxDecimals = 5 } = {}) {
+  if (!Number.isFinite(amount)) {
+    throw new RangeError('amount must be a finite number');
+  }
+
+  const negative = amount < 0;
+  const abs = Math.abs(amount);
+  const [intPart, decPart = ''] = abs.toFixed(maxDecimals).split('.');
+  let trimmed = decPart.replace(/0+$/, '');
+
+  if (trimmed.length < minDecimals) {
+    trimmed = trimmed.padEnd(minDecimals, '0');
+  }
+
+  const formatted = '$' + intPart + (trimmed ? '.' + trimmed : '');
+  return negative ? '-' + formatted : formatted;
+}
+
+const byId = (id) => document.getElementById(id);
+let activePresetId = "uk-gov-tenders-scraper";
+let latestSnippetText = "";
+let latestInputJson = "";
+
+function track(name, details = {}) {
+  window.dispatchEvent(new CustomEvent("ppe-calculator", { detail: { name, ...details } }));
+}
+
+function report(message, error = false) {
+  const el = byId("status");
+  if (!el) return;
+  el.textContent = message;
+  el.classList.toggle("error", error);
+}
+
+function numVal(id, fallback = 0) {
+  const el = byId(id);
+  if (!el) return fallback;
+  const raw = el.value.trim();
+  if (raw === "") return NaN;
+  const n = Number(raw);
+  return Number.isNaN(n) ? NaN : n;
+}
+
+function renderPlanTable(plans, selectedPlanId) {
+  const tbody = byId("plan-table-body");
+  if (!tbody) return;
+  tbody.replaceChildren();
+
+  for (const plan of plans) {
+    const tr = document.createElement("tr");
+    tr.className = plan.id === selectedPlanId ? "active-plan" : "";
+
+    const cells = [
+      plan.name,
+      plan.discountPct === 0 ? "0%" : "-" + plan.discountPct + "%",
+      formatUsd(plan.perRunCost, { minDecimals: 2, maxDecimals: 5 }),
+      formatUsd(plan.totalCost, { minDecimals: 2, maxDecimals: 5 }),
+      formatUsd(plan.maxTotalChargeUsd, { minDecimals: 2, maxDecimals: 6 })
+    ];
+
+    for (const text of cells) {
+      const td = document.createElement("td");
+      td.textContent = text;
+      tr.appendChild(td);
+    }
+
+    tbody.appendChild(tr);
+  }
+}
+
+function recalculate() {
+  const itemsPerRun = numVal("items-per-run");
+  const runs = numVal("runs-count");
+  const ratePer1K = numVal("rate-per-1k");
+  const startFeeUsd = numVal("start-fee");
+  const planSelect = byId("plan-select");
+  const planId = planSelect ? planSelect.value : "free";
+  const bufferPct = numVal("buffer-pct");
+  const budgetUsd = numVal("budget-usd");
+  const memoryMb = numVal("memory-mb");
+  const durationSeconds = numVal("duration-sec");
+  const cuPriceUsd = numVal("cu-price");
+
+  try {
+    const costs = calculatePlanCosts({
+      itemsPerRun,
+      runs,
+      ratePer1K,
+      startFeeUsd,
+      bufferPct
+    });
+    const selected = costs.plans.find((p) => p.id === planId) || costs.plans[0];
+
+    byId("summary-per-run").textContent = formatUsd(selected.perRunCost, { minDecimals: 2, maxDecimals: 5 });
+    byId("summary-total").textContent = formatUsd(selected.totalCost, { minDecimals: 2, maxDecimals: 5 });
+    byId("summary-cap").textContent = formatUsd(selected.maxTotalChargeUsd, { minDecimals: 2, maxDecimals: 6 });
+
+    renderPlanTable(costs.plans, selected.id);
+
+    const budget = calculateMaxItemsForBudget({
+      budgetUsd,
+      planId: selected.id,
+      ratePer1K,
+      startFeeUsd
+    });
+    byId("budget-result").textContent = "Up to " + (budget.maxItems === Infinity ? "∞" : budget.maxItems.toLocaleString()) + " items/run";
+
+    const compute = estimateComputeCost({ memoryMb, durationSeconds, cuPriceUsd });
+    const profit = calculateCreatorProfit({
+      itemsPerRun,
+      runs,
+      ratePer1K,
+      startFeeUsd,
+      planId: selected.id,
+      computeCostPerRunUsd: compute.computeCostUsd
+    });
+
+    byId("creator-gross").textContent = formatUsd(profit.grossRevenueUsd, { minDecimals: 2, maxDecimals: 5 });
+    byId("creator-fee").textContent = formatUsd(profit.apifyFeeUsd, { minDecimals: 2, maxDecimals: 5 });
+    byId("creator-compute").textContent = formatUsd(profit.totalComputeCostUsd, { minDecimals: 2, maxDecimals: 5 });
+    byId("creator-net").textContent = formatUsd(profit.netPayoutUsd, { minDecimals: 2, maxDecimals: 5 });
+    byId("creator-margin").textContent = profit.netMarginPct.toFixed(1) + "%";
+
+    const snippet = buildBudgetSnippet({
+      presetId: activePresetId === "custom" ? null : activePresetId,
+      itemsPerRun,
+      planId: selected.id,
+      ratePer1K,
+      startFeeUsd,
+      bufferPct
+    });
+
+    latestSnippetText = snippet.snippetText;
+    latestInputJson = snippet.inputJson;
+
+    byId("snippet-code").textContent = latestSnippetText;
+    byId("snippet-cap-badge").textContent = selected.name + " · " + snippet.apiQueryParam;
+
+    const cta = byId("actor-cta");
+    if (cta) {
+      cta.hidden = !snippet.storeUrl;
+      cta.href = snippet.storeUrl || "#";
+    }
+
+    report("Estimate updated for " + itemsPerRun.toLocaleString() + " items × " + runs.toLocaleString() + " run(s).");
+    track("calculation_updated", { presetId: activePresetId, planId: selected.id });
+  } catch (err) {
+    report(err.message, true);
+  }
+}
+
+function applyPreset(presetId) {
+  activePresetId = presetId;
+  document.querySelectorAll('#preset-list button[data-preset-id]').forEach(btn => {
+    btn.setAttribute('aria-pressed', btn.dataset.presetId === presetId ? 'true' : 'false');
+  });
+  if (presetId !== 'custom') {
+    const preset = getPresetById(presetId);
+    if (preset) {
+      byId('rate-per-1k').value = preset.ratePer1K.toFixed(2);
+      byId('start-fee').value = String(preset.startFeeUsd);
+      byId('memory-mb').value = String(preset.defaultMemoryMb);
+    }
+  }
+  recalculate();
+  track('preset_selected', { presetId });
+}
+
+async function copyText(text, label) {
+  try {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      textarea.style.top = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      const successful = document.execCommand('copy');
+      textarea.remove();
+      if (!successful) throw new Error('execCommand copy failed');
+    }
+    report('Copied ' + label + ' to clipboard.');
+    track('snippet_copied', { label, presetId: activePresetId });
+  } catch (err) {
+    report('Copy failed. Select the snippet text manually.', true);
+  }
+}
+
+document.getElementById('preset-list').addEventListener('click', (e) => {
+  const button = e.target.closest('button[data-preset-id]');
+  if (button) {
+    applyPreset(button.dataset.presetId);
+  }
+});
+
+['items-per-run', 'runs-count', 'plan-select', 'buffer-pct', 'budget-usd', 'memory-mb', 'duration-sec', 'cu-price'].forEach(id => {
+  const el = byId(id);
+  if (el) {
+    el.addEventListener('input', recalculate);
+    el.addEventListener('change', recalculate);
+  }
+});
+
+['rate-per-1k', 'start-fee'].forEach(id => {
+  const el = byId(id);
+  if (el) {
+    el.addEventListener('input', () => {
+      activePresetId = 'custom';
+      document.querySelectorAll('#preset-list button[data-preset-id]').forEach(btn => {
+        btn.setAttribute('aria-pressed', btn.dataset.presetId === 'custom' ? 'true' : 'false');
+      });
+      recalculate();
+    });
+  }
+});
+
+const copySnippetBtn = byId('copy-snippet');
+if (copySnippetBtn) {
+  copySnippetBtn.addEventListener('click', () => {
+    copyText(latestSnippetText, 'JSON + maxTotalChargeUsd snippet');
+  });
+}
+
+const copyInputBtn = byId('copy-input');
+if (copyInputBtn) {
+  copyInputBtn.addEventListener('click', () => {
+    copyText(latestInputJson, 'Actor input JSON');
+  });
+}
+
+document.querySelectorAll('[data-actor-link], [data-pricing-link]').forEach(link => {
+  link.addEventListener('click', () => {
+    const actor = link.closest('[data-actor]')?.dataset.actor || 'cta';
+    track('actor_click', { actor });
+  });
+});
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => applyPreset('uk-gov-tenders-scraper'));
+} else {
+  applyPreset('uk-gov-tenders-scraper');
+}
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+meta {
+  name: Singapore BCA Green Mark Buildings
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://singapore-bca-green-mark-buildings.p.rapidapi.com/v1/sg-green-mark/certificates
+  body: none
+  auth: none
+}
+
+params:query {
+  limit: 5
+  rating: Platinum
+}
+
+headers {
+  Accept: application/json
+  X-RapidAPI-Key: {{RAPIDAPI_KEY}}
+  X-RapidAPI-Host: singapore-bca-green-mark-buildings.p.rapidapi.com
+}
+
+tests {
+  test("HTTP status is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("Response has an items array", function () {
+    expect(res.getBody().items).to.be.an("array");
+  });
+}
+

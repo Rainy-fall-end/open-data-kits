@@ -1,0 +1,14 @@
+{
+  "name": "open-gov-api-client-collections",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deterministically generated Postman, Insomnia, and Bruno collections for eight paid open-government data endpoints.",
+  "type": "module",
+  "scripts": {
+    "generate": "node generate.mjs",
+    "verify": "node verify.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

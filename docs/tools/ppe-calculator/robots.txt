@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rainy-fall-end.github.io/open-data-kits/tools/ppe-calculator/sitemap.xml

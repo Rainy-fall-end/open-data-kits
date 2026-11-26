@@ -1,0 +1,35 @@
+meta {
+  name: UK Government Tenders Actor
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/run-sync-get-dataset-items
+  body: json
+  auth: none
+}
+
+params:query {
+  maxTotalChargeUsd: 0.25
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{APIFY_TOKEN}}
+  Content-Type: application/json
+}
+
+body:json {
+  {"keyword":"technology","stages":"tender","minValue":10000,"publishedFrom":"2026-01-01","maxItems":5}
+}
+
+tests {
+  test("Apify synchronous run completed", function () {
+    expect([200, 201]).to.include(res.getStatus());
+  });
+  test("Response is an item array", function () {
+    expect(res.getBody()).to.be.an("array");
+  });
+}
+

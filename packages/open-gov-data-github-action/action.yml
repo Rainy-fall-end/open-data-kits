@@ -1,0 +1,72 @@
+name: Open Government Data CI
+description: Fetch eight allowlisted public government-data APIs with bounded spend and safe JSON/CSV artifacts.
+author: apify-works
+
+branding:
+  icon: database
+  color: blue
+
+inputs:
+  target:
+    description: One of the eight documented Apify or RapidAPI target slugs.
+    required: true
+  apify_token:
+    description: Apify API token. Required only for an apify-* target.
+    required: false
+  rapidapi_key:
+    description: RapidAPI key. Required only for a rapidapi-* target.
+    required: false
+  input_json:
+    description: JSON object sent as Actor input or encoded as RapidAPI query parameters.
+    required: false
+    default: "{}"
+  rapidapi_path:
+    description: Same-origin RapidAPI endpoint path; schemes, hosts, query strings, fragments, and traversal are rejected.
+    required: false
+    default: "/"
+  max_total_charge_usd:
+    description: Per-run budget ceiling. Defaults to 0.25 USD and can never exceed 5.00 USD.
+    required: false
+    default: "0.25"
+  max_items:
+    description: Maximum number of records written (1-1000).
+    required: false
+    default: "10"
+  output_format:
+    description: Output serialization; json or csv.
+    required: false
+    default: json
+  output_path:
+    description: Workspace-relative output file. Blank selects open-gov-data.json or open-gov-data.csv.
+    required: false
+    default: ""
+  timeout_seconds:
+    description: Network deadline in seconds (1-300).
+    required: false
+    default: "120"
+  max_response_bytes:
+    description: Maximum decompressed response body size in bytes (1024-10485760).
+    required: false
+    default: "5242880"
+  fail_on_empty:
+    description: Fail when the normalized response contains no records.
+    required: false
+    default: "false"
+
+outputs:
+  output_path:
+    description: Absolute path of the JSON or CSV artifact.
+  item_count:
+    description: Number of records written.
+  format:
+    description: json or csv.
+  target:
+    description: Selected allowlisted target.
+  provider:
+    description: apify or rapidapi.
+  max_total_charge_usd:
+    description: Validated run budget ceiling.
+
+runs:
+  using: node20
+  main: dist/index.mjs

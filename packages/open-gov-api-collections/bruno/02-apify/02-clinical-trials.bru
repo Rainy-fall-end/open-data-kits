@@ -1,0 +1,35 @@
+meta {
+  name: ClinicalTrials.gov Studies Actor
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://api.apify.com/v2/acts/KchE3qKKrwU0rCe9f/run-sync-get-dataset-items
+  body: json
+  auth: none
+}
+
+params:query {
+  maxTotalChargeUsd: 0.25
+}
+
+headers {
+  Accept: application/json
+  Authorization: Bearer {{APIFY_TOKEN}}
+  Content-Type: application/json
+}
+
+body:json {
+  {"condition":"diabetes","intervention":"metformin","status":"RECRUITING","sponsor":"","queryTerm":"","maxItems":5}
+}
+
+tests {
+  test("Apify synchronous run completed", function () {
+    expect([200, 201]).to.include(res.getStatus());
+  });
+  test("Response is an item array", function () {
+    expect(res.getBody()).to.be.an("array");
+  });
+}
+

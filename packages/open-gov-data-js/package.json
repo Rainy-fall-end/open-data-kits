@@ -1,0 +1,55 @@
+{
+  "name": "open-gov-data-sdk",
+  "version": "0.1.0",
+  "description": "Zero-dependency ESM SDK and CLI for allowlisted paid public-government-data APIs on Apify and RapidAPI.",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "open-gov-data": "./bin/open-gov-data.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "verify": "node verify.mjs"
+  },
+  "keywords": [
+    "apify",
+    "rapidapi",
+    "government-data",
+    "open-data",
+    "sec-edgar",
+    "clinicaltrials",
+    "openfda",
+    "uk-tenders",
+    "singapore-bca"
+  ],
+  "license": "MIT",
+  "author": "apify-works contributors",
+  "homepage": "https://github.com/fall-rainy/apify-works",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fall-rainy/apify-works.git",
+    "directory": "codex-work/ts-sdk-open-gov-data"
+  },
+  "bugs": {
+    "url": "https://github.com/fall-rainy/apify-works/issues"
+  },
+  "sideEffects": false
+}

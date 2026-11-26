@@ -1,0 +1,14 @@
+{
+  "name": "open-government-data-ci-action",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dependency-free Node 20 GitHub Action for eight public government-data APIs",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "verify": "node verify.mjs"
+  }
+}

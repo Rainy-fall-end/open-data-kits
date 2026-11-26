@@ -1,0 +1,46 @@
+[build-system]
+requires = []
+build-backend = "build_backend"
+backend-path = ["."]
+
+[project]
+name = "open-gov-ai-tools"
+version = "0.1.0"
+description = "Zero-dependency multi-model Function Calling tools for paid open-government APIs"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "apify-works maintainers" },
+]
+keywords = [
+  "function-calling",
+  "openai",
+  "anthropic",
+  "gemini",
+  "apify",
+  "rapidapi",
+  "government-data",
+  "rag",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.scripts]
+open-gov-ai-tools = "open_gov_ai_tools.cli:main"
+
+[project.urls]
+Repository = "https://github.com/fallRainy/apify-works"
+Issues = "https://github.com/fallRainy/apify-works/issues"

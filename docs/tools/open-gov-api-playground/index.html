@@ -1,3353 +1,914 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Open Government &amp; Regulatory Data API Playground | SEC EDGAR, ClinicalTrials, openFDA, UK Tenders &amp; SG Green Mark</title>
-<meta name="description" content="Free browser-only API snippet and cost generator for SEC EDGAR filings, ClinicalTrials.gov studies, openFDA recalls, UK Gov Tenders (OCDS), and Singapore BCA Green Mark. Compare Apify Pay-Per-Event vs RapidAPI Basic/Pro/Ultra pricing and copy curl, Python httpx, n8n workflow JSON, and Official MCP Registry v1.0.2 configs.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; form-action 'none'; base-uri 'none'; img-src data:">
-<meta name="referrer" content="no-referrer">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Open Government &amp; Regulatory Data API Playground | SEC EDGAR, ClinicalTrials, openFDA, UK Tenders &amp; SG Green Mark">
-<meta property="og:description" content="Free browser-only API snippet and cost generator for SEC EDGAR filings, ClinicalTrials.gov studies, openFDA recalls, UK Gov Tenders (OCDS), and Singapore BCA Green Mark. Compare Apify Pay-Per-Event vs RapidAPI Basic/Pro/Ultra pricing and copy curl, Python httpx, n8n workflow JSON, and Official MCP Registry v1.0.2 configs.">
-<meta property="og:url" content="https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/">
-<link rel="canonical" href="https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "Open Government & Regulatory Data API Playground",
-  "url": "https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "Web",
-  "description": "Browser-only API snippet and cost generator for open government and regulatory datasets: SEC EDGAR filings, ClinicalTrials.gov studies, openFDA recalls, UK Gov Tenders (OCDS), and Singapore BCA Green Mark buildings.",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "featureList": [
-    "SEC EDGAR filings search and document extraction (Apify Actor 8LFIbRbidiHPknMz5, $4.00 per 1,000 results)",
-    "ClinicalTrials.gov studies search (Apify Actor KchE3qKKrwU0rCe9f, $3.50 per 1,000 results)",
-    "openFDA recalls and enforcement records via RapidAPI (Basic $0, Pro $19, Ultra $49)",
-    "UK Gov Tenders OCDS notices (Apify Actor txnvyTckeQx4hVBc6, $5.00 per 1,000 results)",
-    "Singapore BCA Green Mark buildings (Apify Actor Z3ioK0wOAeczj6nCx, $2.00 per 1,000 results)",
-    "Apify Pay-Per-Event pricing with maxTotalChargeUsd hard spend caps and plan discounts (Free 0%, Starter -5%, Scale -15%, Business -25%) plus $0.00005 per-run start fee",
-    "RapidAPI Basic, Pro, and Ultra subscription tier comparison including row metering via X-RapidAPI-Billing header",
-    "Copy-ready curl, Python httpx, n8n workflow JSON, and Official MCP Registry v1.0.2 server configurations"
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How do I call the SEC EDGAR filings API from Python or curl with maxTotalChargeUsd?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "POST https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items?maxTotalChargeUsd=0.25 with Authorization: Bearer $APIFY_TOKEN and JSON input {\"mode\":\"search\",\"query\":\"artificial intelligence\",\"forms\":\"10-K,10-Q,8-K\",\"startDate\":\"2025-01-01\",\"maxItems\":25}. Passing maxTotalChargeUsd as a query parameter enforces a hard server-side spend cap."
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A browser-only playground for eight live public Apify Actors and four RapidAPI open-government data products. Compare exact PPE and subscription costs, inspect verified samples, and generate six integration formats.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none'">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Open Government API Playground v2.0">
+  <meta property="og:description" content="Explore 12 live public-data products, calculate exact monthly costs, and generate safe integration snippets without sending a network request.">
+  <meta property="og:url" content="https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/">
+  <link rel="canonical" href="https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/">
+  <title>Open Government API Playground v2.0 | Open Data Kits</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/#app",
+        "name": "Open Government API Playground v2.0",
+        "url": "https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/",
+        "applicationCategory": "DeveloperApplication",
+        "applicationSubCategory": "API development tool",
+        "operatingSystem": "Any modern web browser",
+        "softwareVersion": "2.0",
+        "description": "Browser-only cost calculator and snippet generator for eight public Apify Actors and four public RapidAPI endpoints covering jobs, company filings, procurement, life sciences, federal spending, clinical trials, and sustainable buildings.",
+        "isAccessibleForFree": true,
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+        "featureList": [
+          "Twelve public paid data products",
+          "Exact Apify Pay-Per-Event and RapidAPI tier comparison",
+          "Six copy-ready integration formats",
+          "Verified representative JSON response excerpts",
+          "No automatic network requests"
+        ]
+      },
+      {
+        "@type": "ItemList",
+        "name": "Live public-data product catalog",
+        "numberOfItems": 12,
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "ATS Jobs & Hiring Signals"},
+          {"@type": "ListItem", "position": 2, "name": "SEC EDGAR Intelligence v2.0"},
+          {"@type": "ListItem", "position": 3, "name": "Global Public Tenders & Grants Aggregator"},
+          {"@type": "ListItem", "position": 4, "name": "Pharma & Biotech Pipeline Intelligence"},
+          {"@type": "ListItem", "position": 5, "name": "USAspending Federal Contracts"},
+          {"@type": "ListItem", "position": 6, "name": "ClinicalTrials.gov Scraper"},
+          {"@type": "ListItem", "position": 7, "name": "UK Government Tenders"},
+          {"@type": "ListItem", "position": 8, "name": "Singapore Green Mark Buildings"},
+          {"@type": "ListItem", "position": 9, "name": "SEC EDGAR Corporate Filings API"},
+          {"@type": "ListItem", "position": 10, "name": "ClinicalTrials.gov Studies & Trials API"},
+          {"@type": "ListItem", "position": 11, "name": "openFDA Recalls, Enforcement & Approvals API"},
+          {"@type": "ListItem", "position": 12, "name": "Singapore BCA Green Mark Buildings API"}
+        ]
       }
-    },
-    {
-      "@type": "Question",
-      "name": "How can I build a ClinicalTrials.gov n8n workflow without runaway billing?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Import the Public KVS n8n JSON workflow (n8n-clinical-trials-csv.json) for Actor KchE3qKKrwU0rCe9f, store APIFY_TOKEN as an n8n environment variable, keep retryOnFail set to false, and keep maxTotalChargeUsd=0.25 in the sync URL. 25 studies at $3.50/1K plus $0.00005 start fee costs ~$0.08755."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "When does Apify Pay-Per-Event beat RapidAPI Basic, Pro, or Ultra subscriptions?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "RapidAPI Basic ($0/mo) includes 100 rows/month for free testing. Above 100 rows/month, Apify PPE (0% Free, -5% Starter, -15% Scale, -25% Business discounts plus flat $0.00005 start fee) beats RapidAPI Pro ($19/mo, 5,000 rows) for lower or bursty volume, while RapidAPI Pro ($19) or Ultra ($49, 25,000 rows) saves money near monthly quota. Above 25,000 rows/month, Apify PPE scales linearly with maxTotalChargeUsd caps."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How is openFDA Recalls REST API row metering calculated on RapidAPI?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "GET /v1/openfda/records returns {\"items\":[...]} with limit 1..20 per request and X-RapidAPI-Billing: Rows=N where N equals returned records. Error responses and /health return Rows=0."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What is included in Official MCP Registry v1.0.2 (io.github.Rainy-fall-end/china-public-data-tools)?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Version 1.0.2 exposes 8 live paid Global and APAC Apify Actors over Streamable HTTP (SEC EDGAR, ClinicalTrials.gov, UK Gov Tenders, Singapore BCA Green Mark, CN Finance News, ModelScope, TapTap, SMZDM). Authenticate with Apify OAuth or Authorization: Bearer $APIFY_TOKEN."
-      }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      --ink: #10253f;
+      --muted: #5a6b7f;
+      --paper: #f5f7f5;
+      --surface: #ffffff;
+      --line: #d9e1df;
+      --teal: #087b74;
+      --teal-dark: #075e59;
+      --teal-soft: #ddf4ef;
+      --amber: #f0a629;
+      --amber-soft: #fff3d7;
+      --navy: #102b46;
+      --blue-soft: #e7f0fb;
+      --shadow: 0 18px 50px rgba(21, 46, 66, .10);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: light;
     }
-  ]
-}
-</script>
-<style>
-:root {
-  --bg: #070d19;
-  --surface: #0f172a;
-  --surface-2: #162033;
-  --border: #243249;
-  --border-strong: #334766;
-  --ink: #e2e8f0;
-  --ink-strong: #f8fafc;
-  --muted: #94a3b8;
-  --accent: #10b981;
-  --accent-soft: rgba(16, 185, 129, 0.14);
-  --cyan: #38bdf8;
-  --cyan-soft: rgba(56, 189, 248, 0.14);
-  --amber: #f59e0b;
-  --amber-soft: rgba(245, 158, 11, 0.14);
-  --danger: #f87171;
-  --danger-soft: rgba(248, 113, 113, 0.14);
-  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --radius: 14px;
-  --radius-sm: 9px;
-  --shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.85);
-  color-scheme: dark;
-}
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  background-color: var(--bg);
-  background-image:
-    radial-gradient(900px 500px at 12% -8%, rgba(16, 185, 129, 0.09), transparent 60%),
-    radial-gradient(800px 480px at 88% 0%, rgba(56, 189, 248, 0.08), transparent 62%);
-  background-repeat: no-repeat;
-  color: var(--ink);
-  font-family: var(--sans);
-  font-size: 16px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-img,
-svg,
-video {
-  max-width: 100%;
-  height: auto;
-}
-
-a {
-  color: var(--cyan);
-  text-decoration: none;
-  transition: color 0.16s ease, opacity 0.16s ease;
-}
-
-a:hover {
-  color: var(--ink-strong);
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: var(--ink-strong);
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-  margin: 0 0 0.5em;
-  font-weight: 650;
-}
-
-h1 {
-  font-size: clamp(1.9rem, 4vw, 2.85rem);
-  letter-spacing: -0.03em;
-}
-
-h2 {
-  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
-}
-
-h3 {
-  font-size: 1.1rem;
-}
-
-p {
-  margin: 0 0 1em;
-}
-
-ul,
-ol {
-  padding-left: 1.15rem;
-}
-
-code,
-kbd,
-samp,
-pre {
-  font-family: var(--mono);
-  font-size: 0.875em;
-}
-
-:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-::selection {
-  background: var(--accent-soft);
-  color: var(--ink-strong);
-}
-
-.wrap {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  width: 100%;
-}
-
-.visually-hidden {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-
-/* ------------------------------------------------------------------ */
-/* Hero                                                               */
-/* ------------------------------------------------------------------ */
-
-header.hero {
-  position: relative;
-  overflow: hidden;
-  padding: 64px 0 44px;
-  margin-bottom: 32px;
-  border-bottom: 1px solid var(--border);
-  background:
-    radial-gradient(720px 340px at 18% 0%, rgba(16, 185, 129, 0.16), transparent 66%),
-    radial-gradient(680px 320px at 82% 8%, rgba(56, 189, 248, 0.14), transparent 68%),
-    linear-gradient(180deg, rgba(15, 23, 42, 0.6), rgba(7, 13, 25, 0));
-}
-
-header.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, rgba(148, 163, 184, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(148, 163, 184, 0.045) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse at 50% 0%, #000 0%, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 0%, transparent 72%);
-  pointer-events: none;
-}
-
-header.hero > .wrap {
-  position: relative;
-  z-index: 1;
-}
-
-.hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 18px;
-  padding: 6px 12px;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  background: rgba(22, 32, 51, 0.72);
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  backdrop-filter: blur(6px);
-}
-
-.hero-eyebrow::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
-}
-
-header.hero h1 {
-  max-width: 22ch;
-  margin-bottom: 14px;
-}
-
-header.hero h1 em,
-header.hero h1 strong {
-  font-style: normal;
-  background: linear-gradient(96deg, var(--accent), var(--cyan));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-}
-
-header.hero p,
-header.hero .subtitle {
-  max-width: 62ch;
-  color: var(--muted);
-  font-size: 1.02rem;
-}
-
-.hero-badges {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin: 22px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.hero-badges li,
-.hero-badges .badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 11px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.7);
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-
-.hero-badges li::before {
-  content: "✓";
-  color: var(--accent);
-  font-weight: 700;
-}
-
-/* ------------------------------------------------------------------ */
-/* Layout                                                             */
-/* ------------------------------------------------------------------ */
-
-main {
-  display: block;
-  padding-bottom: 40px;
-}
-
-section {
-  margin-bottom: 44px;
-}
-
-.section-label {
-  display: block;
-  margin: 0 0 10px;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.playground-grid {
-  display: grid;
-  grid-template-columns: minmax(320px, 0.92fr) minmax(0, 1.18fr);
-  gap: 20px;
-  align-items: start;
-}
-
-.panel {
-  position: relative;
-  padding: 22px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-}
-
-.panel::-webkit-details-marker {
-  display: none;
-}
-
-.panel-title {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin: 0 0 16px;
-  color: var(--ink-strong);
-  font-family: var(--mono);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.panel-title::before {
-  content: "";
-  width: 3px;
-  height: 15px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, var(--accent), var(--cyan));
-}
-
-/* ------------------------------------------------------------------ */
-/* Pills                                                              */
-/* ------------------------------------------------------------------ */
-
-.pill-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 18px;
-  padding: 0;
-  list-style: none;
-}
-
-.pill-group button,
-.pill-group .pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface-2);
-  color: var(--muted);
-  font-family: var(--sans);
-  font-size: 0.83rem;
-  font-weight: 550;
-  line-height: 1.3;
-  cursor: pointer;
-  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
-}
-
-.pill-group button:hover,
-.pill-group .pill:hover {
-  border-color: var(--border-strong);
-  color: var(--ink);
-  background: #1a2740;
-}
-
-.pill-group button[aria-pressed="true"],
-.pill-group .pill.active {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--ink-strong);
-  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.32), 0 0 18px -6px rgba(16, 185, 129, 0.55);
-}
-
-.pill-sub {
-  display: inline-block;
-  padding: 1px 6px;
-  border-radius: 5px;
-  background: rgba(148, 163, 184, 0.14);
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-[aria-pressed="true"] .pill-sub {
-  background: rgba(16, 185, 129, 0.22);
-  color: var(--accent);
-}
-
-/* ------------------------------------------------------------------ */
-/* Fields & inputs                                                    */
-/* ------------------------------------------------------------------ */
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  margin-bottom: 16px;
-}
-
-.field > label,
-.field label,
-.field-label {
-  color: var(--ink);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.field small,
-.field .hint {
-  color: var(--muted);
-  font-size: 0.75rem;
-  line-height: 1.45;
-}
-
-.field-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="search"],
-input[type="url"],
-input[type="email"],
-select {
-  width: 100%;
-  min-height: 40px;
-  padding: 9px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  color: var(--ink-strong);
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  line-height: 1.4;
-  transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
-  appearance: none;
-}
-
-select {
-  padding-right: 34px;
-  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
-    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
-  background-position: calc(100% - 18px) 17px, calc(100% - 13px) 17px;
-  background-size: 5px 5px, 5px 5px;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
-
-input::placeholder {
-  color: #64748b;
-}
-
-input[type="text"]:hover,
-input[type="number"]:hover,
-input[type="search"]:hover,
-select:hover {
-  border-color: var(--border-strong);
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="search"]:focus,
-select:focus {
-  border-color: var(--accent);
-  background: #182641;
-  outline: none;
-  box-shadow: 0 0 0 3px var(--accent-soft);
-}
-
-input[type="range"] {
-  width: 100%;
-  height: 26px;
-  margin: 2px 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  accent-color: var(--accent);
-  cursor: pointer;
-  appearance: auto;
-}
-
-input[type="range"]::-webkit-slider-runnable-track {
-  height: 5px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--cyan));
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 15px;
-  height: 15px;
-  margin-top: -5px;
-  border: 2px solid #04121c;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-}
-
-input[type="range"]::-moz-range-track {
-  height: 5px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--cyan));
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border: 2px solid #04121c;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin: 4px 0 16px;
-}
-
-.chip-row button,
-.chip-row .chip {
-  padding: 4px 10px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.74rem;
-  line-height: 1.5;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-
-.chip-row button:hover,
-.chip-row .chip:hover {
-  border-color: var(--cyan);
-  background: var(--cyan-soft);
-  color: var(--ink-strong);
-}
-
-.chip-row button[aria-pressed="true"] {
-  border-color: var(--cyan);
-  background: var(--cyan-soft);
-  color: var(--ink-strong);
-}
-
-.input-inline {
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-}
-
-.input-inline input {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.input-inline button,
-#auto-cap-btn {
-  flex: 0 0 auto;
-  padding: 0 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  color: var(--ink);
-  font-family: var(--mono);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
-}
-
-.input-inline button:hover,
-#auto-cap-btn:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--ink-strong);
-}
-
-/* ------------------------------------------------------------------ */
-/* Banners                                                            */
-/* ------------------------------------------------------------------ */
-
-.status-banner,
-.notice-banner {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin: 0 0 16px;
-  padding: 11px 14px;
-  border: 1px solid var(--border);
-  border-left-width: 3px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  color: var(--ink);
-  font-size: 0.83rem;
-  line-height: 1.5;
-}
-
-.status-banner {
-  border-left-color: var(--accent);
-  background: linear-gradient(90deg, var(--accent-soft), var(--surface-2) 70%);
-}
-
-.status-banner.error {
-  border-color: rgba(248, 113, 113, 0.4);
-  border-left-color: var(--danger);
-  background: linear-gradient(90deg, var(--danger-soft), var(--surface-2) 70%);
-  color: #fecaca;
-}
-
-.status-banner:empty,
-.notice-banner:empty {
-  display: none;
-}
-
-.notice-banner,
-#channel-note {
-  border-color: rgba(245, 158, 11, 0.28);
-  border-left-color: var(--amber);
-  background: linear-gradient(90deg, var(--amber-soft), var(--surface-2) 70%);
-  color: #fde68a;
-}
-
-.notice-banner strong,
-#channel-note strong {
-  color: var(--amber);
-}
-
-/* ------------------------------------------------------------------ */
-/* Meta strip                                                         */
-/* ------------------------------------------------------------------ */
-
-.meta-strip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 18px;
-  padding: 10px 12px;
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: rgba(22, 32, 51, 0.55);
-  color: var(--muted);
-  font-size: 0.76rem;
-}
-
-.meta-strip .field-tag,
-.field-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border: 1px solid rgba(56, 189, 248, 0.28);
-  border-radius: 6px;
-  background: var(--cyan-soft);
-  color: #bae6fd;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-
-.field-tag.accent {
-  border-color: rgba(16, 185, 129, 0.32);
-  background: var(--accent-soft);
-  color: #a7f3d0;
-}
-
-/* ------------------------------------------------------------------ */
-/* KPI grid                                                           */
-/* ------------------------------------------------------------------ */
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0 0 22px;
-}
-
-.kpi-card {
-  position: relative;
-  padding: 14px 14px 12px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface-2);
-  min-width: 0;
-}
-
-.kpi-card.verdict {
-  border-color: transparent;
-  background:
-    linear-gradient(var(--surface-2), var(--surface-2)) padding-box,
-    linear-gradient(135deg, var(--accent), var(--cyan)) border-box;
-  border: 1px solid transparent;
-  box-shadow: 0 0 24px -12px rgba(16, 185, 129, 0.7);
-}
-
-.kpi-label {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-output.kpi-value,
-.kpi-value {
-  display: block;
-  color: var(--ink-strong);
-  font-family: var(--mono);
-  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  overflow-wrap: anywhere;
-}
-
-.kpi-card.verdict output.kpi-value,
-.kpi-card.verdict .kpi-value {
-  color: var(--accent);
-}
-
-.kpi-sub {
-  display: block;
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 0.72rem;
-  line-height: 1.4;
-}
-
-/* ------------------------------------------------------------------ */
-/* Tables                                                             */
-/* ------------------------------------------------------------------ */
-
-.tables-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin: 0 0 22px;
-}
-
-.table-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface-2);
-  overflow: hidden;
-}
-
-.table-card h3,
-.table-card .table-title {
-  margin: 0;
-  padding: 11px 14px;
-  border-bottom: 1px solid var(--border);
-  color: var(--ink-strong);
-  font-family: var(--mono);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.table-wrap {
-  max-height: 320px;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.cost-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  white-space: nowrap;
-}
-
-.cost-table thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  padding: 9px 12px;
-  background: #111c30;
-  border-bottom: 1px solid var(--border-strong);
-  color: var(--muted);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-align: right;
-  text-transform: uppercase;
-}
-
-.cost-table thead th:first-child {
-  text-align: left;
-}
-
-.cost-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid rgba(36, 50, 73, 0.65);
-  color: var(--ink);
-  text-align: right;
-}
-
-.cost-table td:first-child {
-  color: var(--ink-strong);
-  text-align: left;
-  font-weight: 600;
-}
-
-.cost-table tbody tr:last-child td {
-  border-bottom: 0;
-}
-
-.cost-table tbody tr:hover td {
-  background: rgba(148, 163, 184, 0.05);
-}
-
-.cost-table tr.active-row td {
-  background: var(--accent-soft);
-  box-shadow: inset 0 1px 0 rgba(16, 185, 129, 0.28), inset 0 -1px 0 rgba(16, 185, 129, 0.28);
-  color: var(--ink-strong);
-}
-
-.cost-table tr.active-row td:first-child {
-  color: var(--accent);
-  box-shadow: inset 3px 0 0 var(--accent), inset 0 1px 0 rgba(16, 185, 129, 0.28),
-    inset 0 -1px 0 rgba(16, 185, 129, 0.28);
-}
-
-.cost-table tr.cap-warn td {
-  background: var(--amber-soft);
-  color: #fde68a;
-  box-shadow: inset 0 1px 0 rgba(245, 158, 11, 0.22), inset 0 -1px 0 rgba(245, 158, 11, 0.22);
-}
-
-.cost-table tr.cap-warn td:first-child {
-  color: var(--amber);
-  box-shadow: inset 3px 0 0 var(--amber), inset 0 1px 0 rgba(245, 158, 11, 0.22),
-    inset 0 -1px 0 rgba(245, 158, 11, 0.22);
-}
-
-.badge-fit,
-.badge-warn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 1px 7px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  font-family: var(--mono);
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.badge-fit {
-  border-color: rgba(16, 185, 129, 0.38);
-  background: var(--accent-soft);
-  color: #6ee7b7;
-}
-
-.badge-warn {
-  border-color: rgba(245, 158, 11, 0.38);
-  background: var(--amber-soft);
-  color: #fcd34d;
-}
-
-/* ------------------------------------------------------------------ */
-/* Code panel                                                         */
-/* ------------------------------------------------------------------ */
-
-.code-panel {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
-.code-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  background: #0d1626;
-}
-
-#code-tabs,
-.code-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-#code-tabs button,
-.code-tabs button {
-  padding: 5px 11px;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  background: transparent;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-#code-tabs button:hover,
-.code-tabs button:hover {
-  background: var(--surface-2);
-  color: var(--ink);
-}
-
-#code-tabs button[aria-selected="true"],
-.code-tabs button[aria-selected="true"] {
-  border-color: rgba(16, 185, 129, 0.42);
-  background: var(--accent-soft);
-  color: var(--ink-strong);
-}
-
-.code-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
-}
-
-#code-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border: 1px solid var(--border-strong);
-  border-radius: 6px;
-  background: var(--surface-2);
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-#copy-code-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 11px;
-  border: 1px solid var(--border-strong);
-  border-radius: 7px;
-  background: var(--surface-2);
-  color: var(--ink);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-
-#copy-code-btn:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--ink-strong);
-}
-
-#copy-code-btn.copied,
-#copy-code-btn[data-copied="true"] {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-pre.code-block {
-  margin: 0;
-  padding: 16px 18px;
-  background: #050a14;
-  color: #cbd5e1;
-  font-family: var(--mono);
-  font-size: 0.84rem;
-  line-height: 1.65;
-  tab-size: 2;
-  max-height: 440px;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  white-space: pre;
-  word-wrap: normal;
-  border-top: 1px solid rgba(36, 50, 73, 0.7);
-}
-
-pre.code-block code {
-  font: inherit;
-  color: inherit;
-  background: none;
-  padding: 0;
-}
-
-pre.code-block::-webkit-scrollbar,
-.table-wrap::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-pre.code-block::-webkit-scrollbar-track,
-.table-wrap::-webkit-scrollbar-track {
-  background: #081020;
-}
-
-pre.code-block::-webkit-scrollbar-thumb,
-.table-wrap::-webkit-scrollbar-thumb {
-  border: 2px solid #081020;
-  border-radius: 999px;
-  background: var(--border-strong);
-}
-
-pre.code-block::-webkit-scrollbar-thumb:hover,
-.table-wrap::-webkit-scrollbar-thumb:hover {
-  background: #465d82;
-}
-
-/* ------------------------------------------------------------------ */
-/* CTA bar                                                            */
-/* ------------------------------------------------------------------ */
-
-.cta-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-top: 18px;
-  padding: 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: linear-gradient(140deg, rgba(16, 185, 129, 0.06), rgba(56, 189, 248, 0.06));
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 9px 16px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  font-family: var(--sans);
-  font-size: 0.85rem;
-  font-weight: 600;
-  line-height: 1.3;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.14s ease, background 0.16s ease, border-color 0.16s ease, color 0.16s ease,
-    box-shadow 0.16s ease;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-.btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #04120c;
-  box-shadow: 0 8px 22px -12px rgba(16, 185, 129, 0.9);
-}
-
-.btn.primary:hover {
-  background: #0ea472;
-  border-color: #0ea472;
-  color: #04120c;
-}
-
-.btn.cyan {
-  background: var(--cyan);
-  border-color: var(--cyan);
-  color: #04121c;
-  box-shadow: 0 8px 22px -12px rgba(56, 189, 248, 0.9);
-}
-
-.btn.cyan:hover {
-  background: #22a9e6;
-  border-color: #22a9e6;
-  color: #04121c;
-}
-
-.btn.secondary {
-  background: transparent;
-  border-color: var(--border-strong);
-  color: var(--ink);
-}
-
-.btn.secondary:hover {
-  border-color: var(--ink);
-  background: rgba(148, 163, 184, 0.08);
-  color: var(--ink-strong);
-}
-
-.btn[hidden] {
-  display: none !important;
-}
-
-/* ------------------------------------------------------------------ */
-/* Catalog                                                            */
-/* ------------------------------------------------------------------ */
-
-#catalog {
-  padding-top: 8px;
-}
-
-.catalog-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-}
-
-.catalog-card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
-  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
-}
-
-.catalog-card:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-2px);
-  box-shadow: 0 18px 34px -26px rgba(56, 189, 248, 0.7);
-}
-
-.catalog-card h3 {
-  margin: 0;
-  font-size: 1rem;
-  letter-spacing: -0.01em;
-}
-
-.catalog-card p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.84rem;
-  line-height: 1.55;
-}
-
-.catalog-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface-2);
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.tag.apify {
-  border-color: rgba(16, 185, 129, 0.36);
-  background: var(--accent-soft);
-  color: #6ee7b7;
-}
-
-.tag.rapidapi {
-  border-color: rgba(56, 189, 248, 0.36);
-  background: var(--cyan-soft);
-  color: #7dd3fc;
-}
-
-.tag.mcp {
-  border-color: rgba(245, 158, 11, 0.36);
-  background: var(--amber-soft);
-  color: #fcd34d;
-}
-
-.catalog-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 4px;
-  font-family: var(--mono);
-  font-size: 0.76rem;
-}
-
-.catalog-links a {
-  color: var(--cyan);
-}
-
-.catalog-links a:hover {
-  color: var(--ink-strong);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* ------------------------------------------------------------------ */
-/* FAQ                                                                */
-/* ------------------------------------------------------------------ */
-
-#faq {
-  margin-top: 8px;
-}
-
-.faq-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.faq-list details {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
-  overflow: hidden;
-  transition: border-color 0.18s ease, background 0.18s ease;
-}
-
-.faq-list details[open] {
-  border-color: var(--border-strong);
-  background: #111b2e;
-}
-
-.faq-list details:hover {
-  border-color: var(--border-strong);
-}
-
-.faq-list summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 16px;
-  color: var(--ink-strong);
-  font-size: 0.92rem;
-  font-weight: 600;
-  line-height: 1.4;
-  cursor: pointer;
-  list-style: none;
-}
-
-.faq-list summary::-webkit-details-marker {
-  display: none;
-}
-
-.faq-list summary::after {
-  content: "+";
-  flex: 0 0 auto;
-  width: 20px;
-  height: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border-strong);
-  border-radius: 6px;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.9rem;
-  line-height: 1;
-  transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-.faq-list details[open] summary::after {
-  content: "−";
-  border-color: var(--accent);
-  color: var(--accent);
-  transform: rotate(180deg);
-}
-
-.faq-list details > p,
-.faq-list details > div {
-  margin: 0;
-  padding: 0 16px 16px;
-  color: var(--muted);
-  font-size: 0.86rem;
-  line-height: 1.65;
-}
-
-.faq-list details > div p:last-child {
-  margin-bottom: 0;
-}
-
-/* ------------------------------------------------------------------ */
-/* Footer                                                             */
-/* ------------------------------------------------------------------ */
-
-footer.site-footer {
-  margin-top: 48px;
-  padding: 30px 0 40px;
-  border-top: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.45), rgba(7, 13, 25, 0));
-  color: var(--muted);
-  font-size: 0.82rem;
-}
-
-footer.site-footer .wrap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-footer.site-footer nav,
-footer.site-footer .footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-}
-
-footer.site-footer a {
-  color: var(--muted);
-  transition: color 0.16s ease;
-}
-
-footer.site-footer a:hover {
-  color: var(--accent);
-}
-
-footer.site-footer p {
-  margin: 0;
-  line-height: 1.6;
-}
-
-footer.site-footer small {
-  display: block;
-  margin-top: 6px;
-  color: #64748b;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-}
-
-/* ------------------------------------------------------------------ */
-/* Misc utilities                                                     */
-/* ------------------------------------------------------------------ */
-
-strong {
-  color: var(--ink-strong);
-}
-
-hr {
-  border: 0;
-  border-top: 1px solid var(--border);
-  margin: 24px 0;
-}
-
-/* ------------------------------------------------------------------ */
-/* Responsive                                                         */
-/* ------------------------------------------------------------------ */
-
-@media (max-width: 960px) {
-  header.hero {
-    padding: 48px 0 34px;
-    margin-bottom: 26px;
-  }
-
-  header.hero h1 {
-    max-width: none;
-  }
-
-  .playground-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-  }
-
-  .kpi-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .tables-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .panel {
-    padding: 18px;
-  }
-
-  pre.code-block {
-    max-height: 380px;
-  }
-
-  footer.site-footer .wrap {
-    flex-direction: column;
-    gap: 16px;
-  }
-}
-
-@media (max-width: 640px) {
-  body {
-    font-size: 15px;
-  }
-
-  .wrap {
-    padding: 0 14px;
-  }
-
-  header.hero {
-    padding: 36px 0 28px;
-    margin-bottom: 22px;
-  }
-
-  header.hero h1 {
-    font-size: clamp(1.6rem, 8vw, 2.1rem);
-  }
-
-  header.hero p,
-  header.hero .subtitle {
-    font-size: 0.92rem;
-  }
-
-  .hero-badges {
-    gap: 7px;
-  }
-
-  .hero-badges li,
-  .hero-badges .badge {
-    font-size: 0.68rem;
-    padding: 4px 9px;
-  }
-
-  .panel {
-    padding: 15px;
-    border-radius: 12px;
-  }
-
-  .field-row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
-  }
-
-  .kpi-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 9px;
-  }
-
-  .kpi-card {
-    padding: 12px;
-  }
-
-  .kpi-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.07em;
-  }
-
-  output.kpi-value,
-  .kpi-value {
-    font-size: 1.05rem;
-  }
-
-  .kpi-sub {
-    font-size: 0.68rem;
-  }
-
-  .pill-group button,
-  .pill-group .pill {
-    font-size: 0.78rem;
-    padding: 6px 10px;
-  }
-
-  .input-inline {
-    flex-wrap: wrap;
-  }
-
-  .input-inline button,
-  #auto-cap-btn {
-    width: 100%;
-    padding: 9px 12px;
-  }
-
-  .code-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .code-actions {
-    margin-left: 0;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  pre.code-block {
-    font-size: 0.78rem;
-    padding: 14px;
-    max-height: 320px;
-  }
-
-  .cost-table {
-    font-size: 0.72rem;
-  }
-
-  .cost-table thead th,
-  .cost-table td {
-    padding: 7px 9px;
-  }
-
-  .cta-bar {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 12px;
-  }
-
-  .cta-bar .btn {
-    width: 100%;
-  }
-
-  .catalog-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .faq-list summary {
-    padding: 12px 13px;
-    font-size: 0.86rem;
-  }
-
-  .faq-list details > p,
-  .faq-list details > div {
-    padding: 0 13px 13px;
-    font-size: 0.82rem;
-  }
-
-  footer.site-footer {
-    padding: 24px 0 32px;
-    font-size: 0.78rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-</style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.55 var(--sans);
+    }
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: var(--teal-dark); text-underline-offset: 3px; }
+    a:hover { color: var(--navy); }
+    code, pre { font-family: var(--mono); }
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 1rem;
+      z-index: 20;
+      padding: .65rem 1rem;
+      border-radius: .5rem;
+      background: var(--navy);
+      color: white;
+    }
+    .skip-link:focus { top: 1rem; }
+    .wrap { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      background: rgba(16, 43, 70, .96);
+      color: white;
+      backdrop-filter: blur(14px);
+    }
+    .nav {
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .7rem;
+      color: white;
+      font-weight: 800;
+      text-decoration: none;
+      letter-spacing: -.02em;
+    }
+    .brand-mark {
+      width: 2rem;
+      height: 2rem;
+      display: grid;
+      place-items: center;
+      border-radius: .6rem;
+      background: var(--amber);
+      color: var(--navy);
+      font: 900 .8rem/1 var(--mono);
+    }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 1.1rem; }
+    .nav-links a { color: #dce9f2; font-size: .9rem; font-weight: 650; text-decoration: none; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(4rem, 8vw, 7.5rem) 0 4rem;
+      background: var(--navy);
+      color: white;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 82% 22%, rgba(240,166,41,.24), transparent 23rem),
+        linear-gradient(115deg, transparent 49%, rgba(255,255,255,.045) 49%, rgba(255,255,255,.045) 50%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap: 3rem;
+      align-items: end;
+    }
+    .eyebrow {
+      margin: 0 0 1rem;
+      color: #8ce0d3;
+      font: 800 .82rem/1.2 var(--mono);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { margin: 0; line-height: 1.08; letter-spacing: -.035em; }
+    h1 { max-width: 820px; font-size: clamp(2.6rem, 6.5vw, 5.4rem); }
+    h1 span { color: var(--amber); }
+    .hero-copy { max-width: 760px; margin: 1.5rem 0 0; color: #ccdae5; font-size: clamp(1rem, 2vw, 1.2rem); }
+    .hero-actions, .cta-row { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.6rem; }
+    .button {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: .72rem 1rem;
+      border: 1px solid transparent;
+      border-radius: .65rem;
+      cursor: pointer;
+      font-weight: 750;
+      text-decoration: none;
+      transition: transform .16s ease, background .16s ease, border-color .16s ease;
+    }
+    .button:hover { transform: translateY(-1px); }
+    .button-primary { background: var(--amber); color: var(--navy); }
+    .button-primary:hover { background: #ffc457; color: var(--navy); }
+    .button-secondary { border-color: #67809a; background: transparent; color: white; }
+    .button-secondary:hover { border-color: white; color: white; }
+    .button-quiet { border-color: var(--line); background: var(--surface); color: var(--navy); }
+    .button-quiet:hover { border-color: var(--teal); color: var(--teal-dark); }
+    .hero-stats { display: grid; gap: .8rem; }
+    .hero-stat {
+      padding: 1rem 1.1rem;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: .8rem;
+      background: rgba(255,255,255,.055);
+    }
+    .hero-stat strong { display: block; color: white; font-size: 1.35rem; }
+    .hero-stat span { color: #abc0d1; font-size: .9rem; }
+    main { padding: 3rem 0 5rem; }
+    .section { margin-top: 4.5rem; }
+    .section:first-child { margin-top: 0; }
+    .section-head { display: flex; justify-content: space-between; gap: 2rem; align-items: end; margin-bottom: 1.5rem; }
+    .section-head h2 { font-size: clamp(2rem, 4vw, 3.25rem); }
+    .section-head p { max-width: 590px; margin: .65rem 0 0; color: var(--muted); }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      width: fit-content;
+      padding: .28rem .55rem;
+      border: 1px solid #a7d9d1;
+      border-radius: 999px;
+      background: var(--teal-soft);
+      color: var(--teal-dark);
+      font: 750 .75rem/1.2 var(--mono);
+      white-space: nowrap;
+    }
+    .badge-rapid { border-color: #b9cbe4; background: var(--blue-soft); color: #264f7a; }
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(280px, .82fr) minmax(0, 1.55fr);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .controls { padding: 1.35rem; border-right: 1px solid var(--line); background: #fbfcfb; }
+    .control + .control { margin-top: 1.1rem; }
+    .control label { display: block; margin-bottom: .45rem; color: var(--navy); font-weight: 750; }
+    .control small { display: block; margin-top: .4rem; color: var(--muted); }
+    select, input[type="number"] {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid #becbc8;
+      border-radius: .58rem;
+      background: white;
+      color: var(--ink);
+      padding: .65rem .75rem;
+    }
+    select {
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, var(--navy) 50%), linear-gradient(135deg, var(--navy) 50%, transparent 50%);
+      background-position: calc(100% - 18px) 20px, calc(100% - 13px) 20px;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      padding-right: 2.4rem;
+    }
+    select:focus, input:focus, button:focus-visible, a:focus-visible { outline: 3px solid rgba(8,123,116,.22); outline-offset: 2px; }
+    .range-line { display: grid; grid-template-columns: minmax(0, 1fr) 110px; gap: .8rem; align-items: center; }
+    input[type="range"] { width: 100%; accent-color: var(--teal); }
+    .meta-card {
+      margin-top: 1.25rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: .7rem;
+      background: white;
+    }
+    .meta-title { display: flex; gap: .65rem; align-items: center; flex-wrap: wrap; }
+    .meta-title h3 { font-size: 1.13rem; }
+    .meta-card p { margin: .65rem 0 0; color: var(--muted); font-size: .92rem; }
+    .facts { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin: .9rem 0 0; }
+    .fact { padding-top: .7rem; border-top: 1px solid var(--line); }
+    .fact span { display: block; color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
+    .fact strong { display: block; margin-top: .15rem; font: 750 .85rem/1.35 var(--mono); overflow-wrap: anywhere; }
+    .payload-title { margin-top: 1.2rem; color: var(--muted); font: 750 .75rem/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+    .mini-code { max-height: 250px; margin: .55rem 0 0; padding: .8rem; overflow: auto; border-radius: .55rem; background: #102b46; color: #d8f2ed; font-size: .76rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .code-panel { min-width: 0; background: #0b1e31; color: #e7f0f6; }
+    .code-top {
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .9rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .code-top strong { color: white; }
+    .code-top span { color: #93aabd; font-size: .85rem; }
+    .copy-button { border-color: #47647e; background: #15344f; color: white; }
+    .copy-button:hover { border-color: #8ce0d3; color: white; }
+    .tabs { display: flex; gap: .35rem; padding: .75rem 1rem 0; overflow-x: auto; }
+    .tab {
+      flex: 0 0 auto;
+      padding: .55rem .7rem;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: #9db1c1;
+      cursor: pointer;
+      font-size: .82rem;
+      font-weight: 750;
+    }
+    .tab[aria-selected="true"] { border-bottom-color: var(--amber); color: white; }
+    .code-output {
+      min-height: 490px;
+      max-height: 670px;
+      margin: 0;
+      padding: 1.25rem;
+      overflow: auto;
+      color: #d5e7f2;
+      font-size: .8rem;
+      line-height: 1.6;
+      white-space: pre;
+      tab-size: 2;
+    }
+    .privacy-note {
+      display: flex;
+      gap: .65rem;
+      align-items: flex-start;
+      margin: 1rem 0 0;
+      padding: .85rem 1rem;
+      border: 1px solid #add8d0;
+      border-radius: .7rem;
+      background: var(--teal-soft);
+      color: var(--teal-dark);
+      font-size: .9rem;
+    }
+    .cost-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .cost-card { min-height: 170px; padding: 1.25rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface); }
+    .cost-card.recommended { border-color: #6fbdb3; box-shadow: inset 0 4px 0 var(--teal); }
+    .cost-label { color: var(--muted); font: 800 .76rem/1.2 var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+    .cost-value { display: block; margin-top: .65rem; color: var(--navy); font-size: clamp(1.6rem, 3vw, 2.5rem); line-height: 1; letter-spacing: -.04em; }
+    .cost-card p { margin: .7rem 0 0; color: var(--muted); font-size: .9rem; }
+    .cost-card.recommended p { color: var(--ink); }
+    .cost-footnote { margin: 1rem 0 0; color: var(--muted); font-size: .85rem; }
+    .sample-grid { display: grid; grid-template-columns: .62fr 1.38fr; border: 1px solid var(--line); border-radius: .9rem; overflow: hidden; background: white; }
+    .sample-copy { padding: 1.4rem; }
+    .sample-copy h3 { font-size: 1.35rem; }
+    .sample-copy p { color: var(--muted); }
+    .sample-list { margin: 1rem 0 0; padding-left: 1.15rem; color: var(--muted); }
+    .sample-code { min-width: 0; background: #102b46; color: #daf2ed; }
+    .sample-code pre { min-height: 360px; max-height: 560px; margin: 0; padding: 1.25rem; overflow: auto; font-size: .8rem; line-height: 1.6; }
+    .catalog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 235px;
+      padding: 1.15rem;
+      border: 1px solid var(--line);
+      border-radius: .85rem;
+      background: var(--surface);
+    }
+    .product-card h3 { margin-top: .8rem; font-size: 1.16rem; }
+    .product-card p { margin: .65rem 0; color: var(--muted); font-size: .9rem; }
+    .product-price { margin-top: auto; color: var(--navy); font-weight: 800; }
+    .product-card button { margin-top: .85rem; }
+    .guide-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .guide-card { padding: 1.1rem; border: 1px solid var(--line); border-radius: .8rem; background: white; text-decoration: none; }
+    .guide-card strong { display: block; color: var(--navy); }
+    .guide-card span { display: block; margin-top: .45rem; color: var(--muted); font-size: .88rem; }
+    .final-cta { padding: 2rem; border-radius: 1rem; background: var(--navy); color: white; }
+    .final-cta h2 { font-size: clamp(1.8rem, 4vw, 3rem); }
+    .final-cta p { max-width: 700px; color: #c5d5e1; }
+    footer { padding: 2rem 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+    .footer-line { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    [hidden] { display: none !important; }
+    .noscript { margin: 1rem auto; padding: 1rem; border: 1px solid #e0b65d; background: var(--amber-soft); }
+
+    @media (max-width: 930px) {
+      .hero-grid, .workspace, .sample-grid { grid-template-columns: 1fr; }
+      .hero-stats { grid-template-columns: repeat(3, 1fr); }
+      .controls { border-right: 0; border-bottom: 1px solid var(--line); }
+      .cost-grid, .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+      .guide-grid { grid-template-columns: repeat(2, 1fr); }
+      .code-output { min-height: 420px; }
+    }
+    @media (max-width: 620px) {
+      .nav-links { display: none; }
+      .hero { padding-top: 3.5rem; }
+      .hero-stats, .cost-grid, .catalog-grid, .guide-grid { grid-template-columns: 1fr; }
+      .section-head { align-items: flex-start; flex-direction: column; }
+      .range-line { grid-template-columns: 1fr; }
+      .facts { grid-template-columns: 1fr; }
+      .code-top { align-items: flex-start; flex-direction: column; }
+      .copy-button { width: 100%; }
+    }
+  </style>
 </head>
 <body>
+  <a class="skip-link" href="#playground">Skip to playground</a>
+  <header class="topbar">
+    <nav class="nav wrap" aria-label="Primary navigation">
+      <a class="brand" href="https://rainy-fall-end.github.io/open-data-kits/">
+        <span class="brand-mark" aria-hidden="true">ODK</span>
+        <span>Open Data Kits</span>
+      </a>
+      <div class="nav-links">
+        <a href="#playground">Playground</a>
+        <a href="#costs">Cost comparison</a>
+        <a href="#catalog">Products</a>
+        <a href="#guides">Guides</a>
+      </div>
+    </nav>
+  </header>
 
-<header class="hero">
-  <div class="wrap">
-    <p class="hero-eyebrow">Browser-only playground · No keys required to explore</p>
-    <h1>Open Government &amp; Regulatory Data <em>API Playground</em></h1>
-    <p class="subtitle">Generate production-ready curl, Python httpx, n8n workflow JSON, and Official MCP Registry v1.0.2 configs for five public-interest datasets — then compare Apify Pay-Per-Event against RapidAPI Basic, Pro, and Ultra side by side. Every cost is computed locally in your browser; nothing is uploaded.</p>
-    <ul class="hero-badges">
-      <li>SEC EDGAR filings</li>
-      <li>ClinicalTrials.gov</li>
-      <li>openFDA recalls</li>
-      <li>UK Tenders + SG Green Mark</li>
-    </ul>
-  </div>
-</header>
-
-<main class="wrap">
-
-  <section id="playground" aria-label="Interactive API snippet and cost generator">
-    <div class="playground-grid">
-
-      <div class="panel">
-        <h2 class="panel-title">1 · Pick a dataset and channel</h2>
-
-        <div id="dataset-pills" class="pill-group" role="group" aria-label="Dataset selection">
-          <button type="button" class="pill" data-dataset-id="sec-edgar" aria-pressed="true">
-            SEC EDGAR
-            <span class="pill-sub">8LFIbRbidiHPknMz5 · $4.00/1K</span>
-          </button>
-          <button type="button" class="pill" data-dataset-id="clinical-trials" aria-pressed="false">
-            ClinicalTrials.gov
-            <span class="pill-sub">KchE3qKKrwU0rCe9f · $3.50/1K</span>
-          </button>
-          <button type="button" class="pill" data-dataset-id="openfda" aria-pressed="false">
-            openFDA Recalls
-            <span class="pill-sub">RapidAPI · Basic/Pro/Ultra</span>
-          </button>
-          <button type="button" class="pill" data-dataset-id="uk-gov-tenders" aria-pressed="false">
-            UK Gov Tenders
-            <span class="pill-sub">txnvyTckeQx4hVBc6 · $5.00/1K</span>
-          </button>
-          <button type="button" class="pill" data-dataset-id="sg-green-mark" aria-pressed="false">
-            SG Green Mark
-            <span class="pill-sub">Z3ioK0wOAeczj6nCx · $2.00/1K</span>
-          </button>
+  <section class="hero">
+    <div class="hero-grid wrap">
+      <div>
+        <p class="eyebrow">Open Government API Playground · v2.0</p>
+        <h1>From public records to <span>working code.</span></h1>
+        <p class="hero-copy">Explore twelve live paid products in one private, browser-only workspace. Select a source, compare exact monthly costs, inspect schema-verified output, and copy an integration without sending a request.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#playground">Build an integration</a>
+          <a class="button button-secondary" href="#catalog">Browse all 12 products</a>
         </div>
+      </div>
+      <div class="hero-stats" aria-label="Playground facts">
+        <div class="hero-stat"><strong>8 + 4</strong><span>Apify Actors and RapidAPI endpoints</span></div>
+        <div class="hero-stat"><strong>$0.25</strong><span>Hard cap on every generated Apify run</span></div>
+        <div class="hero-stat"><strong>0 calls</strong><span>Automatic network requests from this page</span></div>
+      </div>
+    </div>
+  </section>
 
-        <div id="channel-pills" class="pill-group" role="group" aria-label="Integration channel selection">
-          <button type="button" class="pill" data-channel-id="apify-sync" aria-pressed="true">Apify sync</button>
-          <button type="button" class="pill" data-channel-id="rapidapi-rest" aria-pressed="false">RapidAPI REST</button>
-          <button type="button" class="pill" data-channel-id="n8n-workflow" aria-pressed="false">n8n workflow</button>
-          <button type="button" class="pill" data-channel-id="mcp-agent" aria-pressed="false">MCP agent</button>
+  <noscript><div class="wrap noscript">JavaScript is required for the local snippet generator. This page never sends an automatic network request.</div></noscript>
+
+  <main class="wrap">
+    <section class="section" id="playground" aria-labelledby="playground-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Local integration builder</p>
+          <h2 id="playground-title">Choose a product. Leave with code.</h2>
+          <p>Payloads follow the repository input schemas. Generated requests use fixed public product destinations and placeholder credentials only.</p>
         </div>
+        <span class="badge">No request is executed</span>
+      </div>
 
-        <div class="field">
-          <label id="query-label" for="query-input">Search query</label>
-          <input type="text" id="query-input" value="artificial intelligence" autocomplete="off" spellcheck="false">
-        </div>
-
-        <div class="field">
-          <label for="max-items-range">Max items per run</label>
-          <input type="range" id="max-items-range" min="1" max="5000" value="25" step="1">
-          <input type="number" id="max-items-input" min="1" max="5000" value="25" step="1">
-        </div>
-
-        <div id="item-presets" class="pill-group" role="group" aria-label="Item count presets">
-          <button type="button" class="pill" data-items="25">25</button>
-          <button type="button" class="pill" data-items="100">100</button>
-          <button type="button" class="pill" data-items="500">500</button>
-          <button type="button" class="pill" data-items="1000">1000</button>
-          <button type="button" class="pill" data-items="5000">5000</button>
-        </div>
-
-        <div class="field-row">
-          <div class="field">
-            <label for="max-charge-input">maxTotalChargeUsd (hard cap)</label>
-            <div class="input-inline">
-              <input type="number" id="max-charge-input" min="0" max="100" step="0.01" value="0.25">
-              <button type="button" id="auto-cap-btn">Auto +10%</button>
-            </div>
+      <div class="workspace">
+        <aside class="controls" aria-label="Playground controls">
+          <div class="control">
+            <label for="product-select">Product</label>
+            <select id="product-select"></select>
           </div>
-          <div class="field">
-            <label for="apify-plan-select">Apify plan</label>
-            <select id="apify-plan-select">
-              <option value="free" selected>Free (0%)</option>
-              <option value="starter">Starter (-5%)</option>
-              <option value="scale">Scale (-15%)</option>
-              <option value="business">Business (-25%)</option>
+          <div class="control" id="mode-control" hidden>
+            <label for="mode-select">SEC EDGAR mode</label>
+            <select id="mode-select">
+              <option value="form_d_funding">Form D startup funding</option>
+              <option value="xbrl_financials">XBRL financials</option>
+              <option value="filings">Corporate filings</option>
             </select>
           </div>
-        </div>
-
-        <div class="field">
-          <label for="runs-per-month-input">Runs per month</label>
-          <input type="number" id="runs-per-month-input" min="1" max="1000" value="1" step="1">
-        </div>
-
-        <div class="meta-strip">
-          <p><strong>License / access:</strong> <span id="dataset-meta-license">Public domain (U.S. Government work)</span></p>
-          <p><strong>Core fields:</strong> <span id="dataset-meta-fields">cik, companyName, formType, filingDate, accessionNumber, documentUrl</span></p>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2 class="panel-title">2 · Snippet and cost projection</h2>
-
-        <div id="status-banner" class="status-banner" role="status" aria-live="polite" aria-atomic="true">Ready — adjust inputs to regenerate snippets and costs.</div>
-        <p id="channel-note" class="notice-banner" hidden></p>
-
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <span class="kpi-label">Apify PPE / run</span>
-            <span class="kpi-value" id="kpi-apify-cost">$0.00</span>
-            <span class="kpi-sub" id="kpi-apify-sub">25 results × $4.00/1K + $0.00005 start fee</span>
+          <div class="control">
+            <label for="volume-range">Monthly rows</label>
+            <div class="range-line">
+              <input id="volume-range" type="range" min="1" max="50000" step="1" value="1000">
+              <input id="volume-number" type="number" min="1" max="50000" step="1" value="1000" inputmode="numeric" aria-label="Exact monthly row volume">
+            </div>
+            <small>One to 50,000 rows. Cost math includes the Apify start event for every capped run.</small>
           </div>
-          <div class="kpi-card">
-            <span class="kpi-label">Spend cap status</span>
-            <span class="kpi-value" id="kpi-cap-status">Within cap</span>
-            <span class="kpi-sub" id="kpi-cap-sub">Cap $0.25 enforces a server-side stop</span>
+
+          <div class="meta-card">
+            <div class="meta-title">
+              <span class="badge" id="provider-badge">Apify</span>
+              <h3 id="selected-name">Product</h3>
+            </div>
+            <p id="selected-summary"></p>
+            <div class="facts">
+              <div class="fact"><span>Product key</span><strong id="selected-key"></strong></div>
+              <div class="fact"><span>List price</span><strong id="selected-price"></strong></div>
+            </div>
+            <div class="payload-title">Validated request payload</div>
+            <pre class="mini-code" id="payload-output"></pre>
+            <div class="cta-row">
+              <a class="button button-quiet" id="product-cta" href="#" target="_blank" rel="noopener noreferrer">Open product</a>
+            </div>
           </div>
-          <div class="kpi-card">
-            <span class="kpi-label">RapidAPI / month</span>
-            <span class="kpi-value" id="kpi-rapidapi-cost">$0.00</span>
-            <span class="kpi-sub" id="kpi-rapidapi-sub">Basic $0 · Pro $19 · Ultra $49</span>
-          </div>
-          <div class="kpi-card verdict">
-            <span class="kpi-label">Verdict</span>
-            <span class="kpi-value" id="kpi-verdict-title">Apify PPE wins</span>
-            <span class="kpi-sub" id="kpi-verdict-detail">Low or bursty volume favors pay-per-event</span>
-          </div>
-        </div>
+        </aside>
 
         <div class="code-panel">
-          <div class="code-toolbar">
-            <div id="code-tabs" class="code-tabs" role="tablist" aria-label="Code snippet language">
-              <button type="button" role="tab" data-code-tab="curl" aria-selected="true">curl</button>
-              <button type="button" role="tab" data-code-tab="python" aria-selected="false">Python (httpx)</button>
-              <button type="button" role="tab" data-code-tab="n8n" aria-selected="false">n8n Workflow JSON</button>
-              <button type="button" role="tab" data-code-tab="mcp" aria-selected="false">MCP JSON (v1.0.2)</button>
-            </div>
-            <div class="code-actions">
-              <span id="code-badge" class="badge">curl · SEC EDGAR</span>
-              <button type="button" id="copy-code-btn" class="btn primary">Copy Snippet</button>
-            </div>
+          <div class="code-top">
+            <div><strong id="snippet-title">curl</strong><br><span>Copy-ready · placeholders are intentionally unresolved</span></div>
+            <button class="button copy-button" id="copy-button" type="button">Copy snippet</button>
           </div>
-          <pre class="code-block"><code id="code-output"></code></pre>
-        </div>
-
-        <div class="cta-bar">
-          <a id="cta-apify-store" class="btn primary" href="https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper" rel="noopener noreferrer" target="_blank">Open on Apify Store</a>
-          <a id="cta-apify-pricing" class="btn secondary" href="https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper/pricing" rel="noopener noreferrer" target="_blank">Apify PPE Pricing</a>
-          <a id="cta-rapidapi-hub" class="btn cyan" href="https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings" rel="noopener noreferrer" target="_blank">Subscribe on RapidAPI Hub</a>
-          <a id="cta-kvs-n8n" class="btn secondary" href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sec-edgar-filings-csv.json" rel="noopener noreferrer" target="_blank">Download KVS n8n JSON</a>
-          <a id="cta-mcp-registry" class="btn secondary" href="https://registry.modelcontextprotocol.io/v0.1/servers/io.github.Rainy-fall-end%2Fchina-public-data-tools/versions/1.0.2" rel="noopener noreferrer" target="_blank">MCP Registry v1.0.2</a>
-        </div>
-
-        <div class="tables-grid">
-          <div class="table-card">
-            <h3>Apify Pay-Per-Event Tiers</h3>
-            <div class="table-wrap">
-              <table class="cost-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Plan</th>
-                    <th scope="col">Discount</th>
-                    <th scope="col">Per Run</th>
-                    <th scope="col">Monthly</th>
-                    <th scope="col">Cap Fit</th>
-                  </tr>
-                </thead>
-                <tbody id="apify-tier-body"></tbody>
-              </table>
-            </div>
-            <p id="apify-unavailable-note" class="notice-banner" hidden></p>
+          <div class="tabs" role="tablist" aria-label="Snippet format">
+            <button class="tab" type="button" role="tab" data-format="curl" aria-selected="true">curl</button>
+            <button class="tab" type="button" role="tab" data-format="python" aria-selected="false">Python</button>
+            <button class="tab" type="button" role="tab" data-format="javascript" aria-selected="false">JS / TS</button>
+            <button class="tab" type="button" role="tab" data-format="sheets" aria-selected="false">Google Sheets</button>
+            <button class="tab" type="button" role="tab" data-format="n8n" aria-selected="false">n8n JSON</button>
+            <button class="tab" type="button" role="tab" data-format="mcp" aria-selected="false">MCP config</button>
           </div>
-
-          <div class="table-card">
-            <h3>RapidAPI Monthly Subscriptions</h3>
-            <div class="table-wrap">
-              <table class="cost-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Tier</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Rows/Mo</th>
-                    <th scope="col">Usage</th>
-                    <th scope="col">Status</th>
-                  </tr>
-                </thead>
-                <tbody id="rapidapi-tier-body"></tbody>
-              </table>
-            </div>
-            <p id="rapidapi-unavailable-note" class="notice-banner" hidden></p>
-          </div>
+          <pre class="code-output" id="code-output" tabindex="0"></pre>
         </div>
       </div>
+      <p class="privacy-note"><strong>Privacy boundary:</strong> this page only calculates and formats text in your browser. Its Content Security Policy blocks outbound connections, frames, workers, fonts, media, and external scripts.</p>
+    </section>
 
+    <section class="section" id="costs" aria-labelledby="cost-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Exact list-price comparison</p>
+          <h2 id="cost-title">Pay for rows, or reserve a tier.</h2>
+          <p>Matched products compare Apify PPE against the smallest eligible RapidAPI tier. Unmatched products show the channel that is actually sold.</p>
+        </div>
+        <span class="badge" id="cost-volume-badge">1,000 rows / month</span>
+      </div>
+      <div class="cost-grid">
+        <article class="cost-card" id="apify-cost-card">
+          <span class="cost-label">Apify PPE</span>
+          <strong class="cost-value" id="apify-cost">—</strong>
+          <p id="apify-cost-detail">Select an Apify-backed product.</p>
+        </article>
+        <article class="cost-card" id="rapid-cost-card">
+          <span class="cost-label">RapidAPI tier</span>
+          <strong class="cost-value" id="rapid-cost">—</strong>
+          <p id="rapid-cost-detail">Select a product with a RapidAPI route.</p>
+        </article>
+        <article class="cost-card recommended" id="recommendation-card">
+          <span class="cost-label">Recommendation</span>
+          <strong class="cost-value" id="recommendation">—</strong>
+          <p id="recommendation-detail"></p>
+        </article>
+      </div>
+      <p class="cost-footnote">Apify math: rows × item price + $0.00005 per run, with rows split into runs that stay at or below the generated $0.25 cap. RapidAPI math: Basic $0 for 100 rows, Pro $19 for 5,000 rows, Ultra $49 for 25,000 rows. Taxes and account-specific promotions are excluded.</p>
+    </section>
+
+    <section class="section" aria-labelledby="sample-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Repository-verified shape</p>
+          <h2 id="sample-title">See the record before you wire it up.</h2>
+          <p>Each representative excerpt is checked against the matching Actor dataset schema or RapidAPI OpenAPI response component.</p>
+        </div>
+      </div>
+      <div class="sample-grid">
+        <div class="sample-copy">
+          <h3 id="sample-name">Sample response</h3>
+          <p id="sample-note"></p>
+          <ul class="sample-list">
+            <li>Field names and JSON types checked offline.</li>
+            <li>Public records only; private Actors are excluded.</li>
+            <li>Source attribution stays with exported records.</li>
+          </ul>
+        </div>
+        <div class="sample-code"><pre id="sample-output" tabindex="0"></pre></div>
+      </div>
+    </section>
+
+    <section class="section" id="catalog" aria-labelledby="catalog-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Complete public catalog</p>
+          <h2 id="catalog-title">Twelve products, one surface.</h2>
+          <p>Eight global Apify flagships and four row-metered RapidAPI endpoints. Every card opens directly in the playground.</p>
+        </div>
+      </div>
+      <div class="catalog-grid" id="catalog-grid"></div>
+    </section>
+
+    <section class="section" id="guides" aria-labelledby="guides-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Focused implementation guides</p>
+          <h2 id="guides-title">Go deeper on a workflow.</h2>
+          <p>Use the dedicated guides for field-level examples, buyer workflows, and vertical-specific integration patterns.</p>
+        </div>
+      </div>
+      <div class="guide-grid">
+        <a class="guide-card" href="https://rainy-fall-end.github.io/open-data-kits/tools/ats-jobs-hiring-signals/"><strong>ATS hiring signals</strong><span>Track public job boards and normalized hiring intent.</span></a>
+        <a class="guide-card" href="https://rainy-fall-end.github.io/open-data-kits/tools/sec-form-d-funding-tracker/"><strong>SEC Form D funding</strong><span>Build startup funding and financial-event monitors.</span></a>
+        <a class="guide-card" href="https://rainy-fall-end.github.io/open-data-kits/tools/global-tenders-procurement-api/"><strong>Global procurement</strong><span>Unify tenders, grants, and award intelligence.</span></a>
+        <a class="guide-card" href="https://rainy-fall-end.github.io/open-data-kits/tools/pharma-drug-pipeline-api/"><strong>Pharma pipelines</strong><span>Cross-link trials, FDA events, molecules, and literature.</span></a>
+      </div>
+    </section>
+
+    <section class="section final-cta" aria-labelledby="final-title">
+      <h2 id="final-title">Keep the integration layer open.</h2>
+      <p>Browse the Open Data Kits repository for SDKs, connectors, workflow presets, and source-verified examples that pair with this playground.</p>
+      <div class="cta-row">
+        <a class="button button-primary" href="https://github.com/Rainy-fall-end/open-data-kits" target="_blank" rel="noopener noreferrer">Open the repository</a>
+        <a class="button button-secondary" href="https://rainy-fall-end.github.io/open-data-kits/">Browse all tools</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-line">
+      <span>Open Government API Playground v2.0 · Open Data Kits</span>
+      <span>Self-contained HTML · Strict CSP · No automatic network calls</span>
     </div>
-  </section>
-
-  <section id="catalog" aria-labelledby="catalog-heading">
-    <h2 id="catalog-heading">Dataset catalog &amp; verified endpoints</h2>
-    <div class="catalog-grid">
-
-    <article class="catalog-card">
-      <h3>SEC EDGAR Filings</h3>
-      <p class="catalog-meta">Actor <code>8LFIbRbidiHPknMz5</code> · <strong>$4.00 / 1,000 results</strong> · free public domain source</p>
-      <p>Search and extract U.S. corporate filings — 10-K, 10-Q, 8-K, S-1 and more — with company identity, filing dates, accession numbers, and direct document URLs.</p>
-      <ul class="catalog-links">
-        <li><a href="https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper" rel="noopener noreferrer nofollow" target="_blank">Apify Actor — sec-edgar-filings-scraper</a></li>
-        <li><a href="https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings" rel="noopener noreferrer nofollow" target="_blank">RapidAPI — sec-edgar-corporate-filings</a></li>
-        <li><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sec-edgar-filings-csv.json" rel="noopener noreferrer nofollow" target="_blank">n8n workflow JSON — n8n-sec-edgar-filings-csv.json</a></li>
-      </ul>
-    </article>
-
-    <article class="catalog-card">
-      <h3>ClinicalTrials.gov Studies</h3>
-      <p class="catalog-meta">Actor <code>KchE3qKKrwU0rCe9f</code> · <strong>$3.50 / 1,000 results</strong> · U.S. NLM public data</p>
-      <p>Query interventional and observational studies, recruitment status, phases, sponsors, conditions, and locations for regulatory and research intelligence.</p>
-      <ul class="catalog-links">
-        <li><a href="https://apify.com/perceptive_city_af7/clinical-trials-scraper" rel="noopener noreferrer nofollow" target="_blank">Apify Actor — clinical-trials-scraper</a></li>
-        <li><a href="https://rapidapi.com/fallRainy/api/clinicaltrials-gov-studies-trials" rel="noopener noreferrer nofollow" target="_blank">RapidAPI — clinicaltrials-gov-studies-trials</a></li>
-        <li><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-clinical-trials-csv.json" rel="noopener noreferrer nofollow" target="_blank">n8n workflow JSON — n8n-clinical-trials-csv.json</a></li>
-      </ul>
-    </article>
-
-    <article class="catalog-card">
-      <h3>openFDA Recalls &amp; Enforcement</h3>
-      <p class="catalog-meta">RapidAPI <code>openfda-recalls-enforcement-approvals</code> · Basic <strong>$0</strong> / Pro <strong>$19</strong> / Ultra <strong>$49</strong></p>
-      <p>Recall and enforcement reports plus device and drug approvals. Row metering follows <code>X-RapidAPI-Billing: Rows=N</code> where N equals records returned (limit 1..20 per request).</p>
-      <ul class="catalog-links">
-        <li><a href="https://rapidapi.com/fallRainy/api/openfda-recalls-enforcement-approvals" rel="noopener noreferrer nofollow" target="_blank">RapidAPI — openfda-recalls-enforcement-approvals</a></li>
-      </ul>
-    </article>
-
-    <article class="catalog-card">
-      <h3>UK Gov Tenders (OCDS)</h3>
-      <p class="catalog-meta">Actor <code>txnvyTckeQx4hVBc6</code> · <strong>$5.00 / 1,000 results</strong> · Open Contracting Data Standard</p>
-      <p>Public procurement notices with OCDS releases, buyer and supplier identities, value bands, CPV codes, and tender timelines.</p>
-      <ul class="catalog-links">
-        <li><a href="https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper" rel="noopener noreferrer nofollow" target="_blank">Apify Actor — uk-gov-tenders-scraper</a></li>
-        <li><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-uk-gov-tenders-csv.json" rel="noopener noreferrer nofollow" target="_blank">n8n workflow JSON — n8n-uk-gov-tenders-csv.json</a></li>
-      </ul>
-    </article>
-
-    <article class="catalog-card">
-      <h3>Singapore BCA Green Mark Buildings</h3>
-      <p class="catalog-meta">Actor <code>Z3ioK0wOAeczj6nCx</code> · <strong>$2.00 / 1,000 results</strong> · BCA public registry</p>
-      <p>Certified green buildings with Green Mark rating, project type, address, completion year, and certification details for ESG and real-estate screening.</p>
-      <ul class="catalog-links">
-        <li><a href="https://apify.com/perceptive_city_af7/sg-green-mark-buildings" rel="noopener noreferrer nofollow" target="_blank">Apify Actor — sg-green-mark-buildings</a></li>
-        <li><a href="https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings" rel="noopener noreferrer nofollow" target="_blank">RapidAPI — singapore-bca-green-mark-buildings</a></li>
-        <li><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sg-green-mark-csv.json" rel="noopener noreferrer nofollow" target="_blank">n8n workflow JSON — n8n-sg-green-mark-csv.json</a></li>
-      </ul>
-    </article>
-    </div>
-  </section>
-
-  <section id="faq" aria-labelledby="faq-heading">
-    <h2 id="faq-heading">Developer FAQ</h2>
-    <div class="faq-list">
-
-      <details>
-        <summary>How do I call the SEC EDGAR filings API from Python or curl with maxTotalChargeUsd?</summary>
-        <p>POST https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items?maxTotalChargeUsd=0.25 with Authorization: Bearer $APIFY_TOKEN and JSON input {"mode":"search","query":"artificial intelligence","forms":"10-K,10-Q,8-K","startDate":"2025-01-01","maxItems":25}. Passing maxTotalChargeUsd as a query parameter enforces a hard server-side spend cap.</p>
-      </details>
-
-      <details>
-        <summary>How can I build a ClinicalTrials.gov n8n workflow without runaway billing?</summary>
-        <p>Import the Public KVS n8n JSON workflow (n8n-clinical-trials-csv.json) for Actor KchE3qKKrwU0rCe9f, store APIFY_TOKEN as an n8n environment variable, keep retryOnFail set to false, and keep maxTotalChargeUsd=0.25 in the sync URL. 25 studies at $3.50/1K plus $0.00005 start fee costs ~$0.08755.</p>
-      </details>
-
-      <details>
-        <summary>When does Apify Pay-Per-Event beat RapidAPI Basic, Pro, or Ultra subscriptions?</summary>
-        <p>RapidAPI Basic ($0/mo) includes 100 rows/month for free testing. Above 100 rows/month, Apify PPE (0% Free, -5% Starter, -15% Scale, -25% Business discounts plus flat $0.00005 start fee) beats RapidAPI Pro ($19/mo, 5,000 rows) for lower or bursty volume, while RapidAPI Pro ($19) or Ultra ($49, 25,000 rows) saves money near monthly quota. Above 25,000 rows/month, Apify PPE scales linearly with maxTotalChargeUsd caps.</p>
-      </details>
-
-      <details>
-        <summary>How is openFDA Recalls REST API row metering calculated on RapidAPI?</summary>
-        <p>GET /v1/openfda/records returns {"items":[...]} with limit 1..20 per request and X-RapidAPI-Billing: Rows=N where N equals returned records. Error responses and /health return Rows=0.</p>
-      </details>
-
-      <details>
-        <summary>What is included in Official MCP Registry v1.0.2 (io.github.Rainy-fall-end/china-public-data-tools)?</summary>
-        <p>Version 1.0.2 exposes 8 live paid Global and APAC Apify Actors over Streamable HTTP (SEC EDGAR, ClinicalTrials.gov, UK Gov Tenders, Singapore BCA Green Mark, CN Finance News, ModelScope, TapTap, SMZDM). Authenticate with Apify OAuth or Authorization: Bearer $APIFY_TOKEN.</p>
-      </details>
-
-    </div>
-  </section>
-
-</main>
-
-<footer class="site-footer">
-  <div class="wrap">
-    <p>Open Government &amp; Regulatory Data API Playground — all calculations run locally in your browser.</p>
-    <ul class="footer-links">
-      <li><a href="https://registry.modelcontextprotocol.io/v0.1/servers/io.github.Rainy-fall-end%2Fchina-public-data-tools/versions/1.0.2" rel="noopener noreferrer nofollow" target="_blank">Official MCP Registry v1.0.2</a></li>
-      <li><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/BUYER_CATALOG.md" rel="noopener noreferrer nofollow" target="_blank">Buyer catalog (BUYER_CATALOG.md)</a></li>
-      <li><a href="https://apify.com/perceptive_city_af7" rel="noopener noreferrer nofollow" target="_blank">Apify Store profile</a></li>
-      <li><a href="https://rapidapi.com/fallRainy" rel="noopener noreferrer nofollow" target="_blank">RapidAPI hub</a></li>
-      <li><a href="../ppe-calculator/">Pay-Per-Event calculator</a></li>
-    </ul>
-  </div>
-</footer>
-
-<script>
-"use strict";
-(() => {
-function deepFreeze(obj) {
-  if (obj && typeof obj === 'object' && !Object.isFrozen(obj)) {
-    Object.freeze(obj);
-    Object.getOwnPropertyNames(obj).forEach((prop) => deepFreeze(obj[prop]));
-  }
-  return obj;
-}
-
-const DEFAULT_START_FEE_USD = 0.00005;
-const MIN_ITEMS = 1;
-const MAX_ITEMS = 5000;
-
-const APIFY_PLANS = deepFreeze([
-  { id: 'free', name: 'Free', discountPct: 0, multiplier: 1 },
-  { id: 'starter', name: 'Starter', discountPct: 5, multiplier: 0.95 },
-  { id: 'scale', name: 'Scale', discountPct: 15, multiplier: 0.85 },
-  { id: 'business', name: 'Business', discountPct: 25, multiplier: 0.75 },
-]);
-
-const RAPIDAPI_TIERS = deepFreeze([
-  { id: 'basic', name: 'Basic', monthlyUsd: 0, includedRows: 100, note: 'Free · 100 Rows/mo' },
-  { id: 'pro', name: 'Pro', monthlyUsd: 19, includedRows: 5000, note: '$19/mo · 5,000 Rows/mo' },
-  { id: 'ultra', name: 'Ultra', monthlyUsd: 49, includedRows: 25000, note: '$49/mo · 25,000 Rows/mo' },
-]);
-
-const DELIVERY_CHANNELS = deepFreeze([
-  { id: 'apify-sync', name: 'Apify Pay-Per-Event Sync API', shortName: 'Apify PPE Sync', defaultCodeTab: 'curl' },
-  { id: 'rapidapi-rest', name: 'RapidAPI Monthly Subscription REST', shortName: 'RapidAPI REST', defaultCodeTab: 'curl' },
-  { id: 'n8n-workflow', name: 'n8n Cost-Capped Workflow', shortName: 'n8n Workflow', defaultCodeTab: 'n8n' },
-  { id: 'mcp-agent', name: 'MCP AI Agent Config', shortName: 'MCP AI Agent', defaultCodeTab: 'mcp' },
-]);
-
-const MCP_REGISTRY = deepFreeze({
-  serverName: 'io.github.Rainy-fall-end/china-public-data-tools',
-  version: '1.0.2',
-  title: 'Global & APAC Public Data Tools (8 Apify Actors)',
-  registryUrl: 'https://registry.modelcontextprotocol.io/v0.1/servers/io.github.Rainy-fall-end%2Fchina-public-data-tools/versions/1.0.2',
-  kvsConfigUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/mcp.example.8tools.json',
-  buyerCatalogUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/BUYER_CATALOG.md',
-  streamableHttpUrl: 'https://mcp.apify.com/?tools=perceptive_city_af7%2Fsec-edgar-filings-scraper%2Cperceptive_city_af7%2Fclinical-trials-scraper%2Cperceptive_city_af7%2Fuk-gov-tenders-scraper%2Cperceptive_city_af7%2Fsg-green-mark-buildings%2Cperceptive_city_af7%2Fcn-finance-news-scraper%2Cperceptive_city_af7%2Fmodelscope-scraper%2Cperceptive_city_af7%2Ftaptap-scraper%2Cperceptive_city_af7%2Fsmzdm-deals-scraper',
-  stdioTools: 'perceptive_city_af7/sec-edgar-filings-scraper,perceptive_city_af7/clinical-trials-scraper,perceptive_city_af7/uk-gov-tenders-scraper,perceptive_city_af7/sg-green-mark-buildings,perceptive_city_af7/cn-finance-news-scraper,perceptive_city_af7/modelscope-scraper,perceptive_city_af7/taptap-scraper,perceptive_city_af7/smzdm-deals-scraper',
-});
-
-const DATASETS = deepFreeze([
-  {
-    id: 'sec-edgar',
-    name: 'SEC EDGAR Corporate Filings',
-    shortName: 'SEC EDGAR',
-    seoKeyword: 'SEC EDGAR API Python curl',
-    license: 'US Gov Public Domain (SEC EDGAR, zero PII)',
-    summary: 'Real-time SEC 10-K, 10-Q, 8-K corporate filings via EFTS full-text search or CIK/ticker lookup.',
-    defaultQuery: 'artificial intelligence',
-    queryLabel: 'Filing search keyword',
-    queryPlaceholder: 'e.g. artificial intelligence, semiconductor',
-    sampleFields: ['accessionNumber', 'cik', 'companyName', 'tickers', 'form', 'filingDate', 'filingUrl', 'attribution'],
-    apify: {
-      actorId: '8LFIbRbidiHPknMz5',
-      actorSlug: 'perceptive_city_af7/sec-edgar-filings-scraper',
-      storeUrl: 'https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper',
-      pricingUrl: 'https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper/pricing',
-      ratePer1K: 4.0,
-      startFeeUsd: 0.00005,
-      defaultRecommendedCap: 0.25,
-    },
-    rapidapi: {
-      slug: 'sec-edgar-corporate-filings',
-      hubUrl: 'https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings',
-      host: 'sec-edgar-corporate-filings.p.rapidapi.com',
-      endpoint: '/v1/sec-edgar/filings',
-      maxLimitPerCall: 20,
-    },
-    n8n: {
-      kvsWorkflowUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sec-edgar-filings-csv.json',
-      kvsGuideUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sec-edgar-filings-csv.md',
-      csvFileName: 'sec-edgar-filings.csv',
-    },
-    mcp: { included: true, toolName: 'perceptive_city_af7/sec-edgar-filings-scraper' },
-  },
-  {
-    id: 'clinical-trials',
-    name: 'ClinicalTrials.gov Studies & Trials',
-    shortName: 'ClinicalTrials.gov',
-    seoKeyword: 'ClinicalTrials.gov API n8n',
-    license: 'US Gov Public Domain (NIH / NLM, zero PII)',
-    summary: 'NIH ClinicalTrials.gov v2 study search by condition, intervention, sponsor, and recruitment status.',
-    defaultQuery: 'type 2 diabetes',
-    queryLabel: 'Medical condition or keyword',
-    queryPlaceholder: 'e.g. type 2 diabetes, oncology',
-    sampleFields: ['nctId', 'briefTitle', 'overallStatus', 'phases', 'conditions', 'interventions', 'sponsorName', 'studyUrl'],
-    apify: {
-      actorId: 'KchE3qKKrwU0rCe9f',
-      actorSlug: 'perceptive_city_af7/clinical-trials-scraper',
-      storeUrl: 'https://apify.com/perceptive_city_af7/clinical-trials-scraper',
-      pricingUrl: 'https://apify.com/perceptive_city_af7/clinical-trials-scraper/pricing',
-      ratePer1K: 3.5,
-      startFeeUsd: 0.00005,
-      defaultRecommendedCap: 0.25,
-    },
-    rapidapi: {
-      slug: 'clinicaltrials-gov-studies-trials',
-      hubUrl: 'https://rapidapi.com/fallRainy/api/clinicaltrials-gov-studies-trials',
-      host: 'clinicaltrials-gov-studies-trials.p.rapidapi.com',
-      endpoint: '/v1/clinical-trials/studies',
-      maxLimitPerCall: 20,
-    },
-    n8n: {
-      kvsWorkflowUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-clinical-trials-csv.json',
-      kvsGuideUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-clinical-trials-csv.md',
-      csvFileName: 'clinical-trials-studies.csv',
-    },
-    mcp: { included: true, toolName: 'perceptive_city_af7/clinical-trials-scraper' },
-  },
-  {
-    id: 'openfda',
-    name: 'openFDA Recalls, Enforcement & Approvals',
-    shortName: 'openFDA Recalls',
-    seoKeyword: 'openFDA Recalls REST API',
-    license: 'CC0 1.0 Public Domain (U.S. FDA / openFDA, zero PII)',
-    summary: 'FDA drug enforcement, medical device recalls, food recalls, and Drugs@FDA approvals via row-metered REST API.',
-    defaultQuery: 'sterility',
-    queryLabel: 'Recall / enforcement search term',
-    queryPlaceholder: 'e.g. sterility, contamination',
-    sampleFields: ['recordId', 'dataset', 'title', 'firmOrSponsor', 'classification', 'status', 'reasonOrAction', 'sourceUrl'],
-    apify: null,
-    rapidapi: {
-      slug: 'openfda-recalls-enforcement-approvals',
-      hubUrl: 'https://rapidapi.com/fallRainy/api/openfda-recalls-enforcement-approvals',
-      host: 'openfda-recalls-enforcement-approvals.p.rapidapi.com',
-      endpoint: '/v1/openfda/records',
-      maxLimitPerCall: 20,
-    },
-    n8n: { kvsWorkflowUrl: null, kvsGuideUrl: null, csvFileName: 'openfda-recalls.csv' },
-    mcp: { included: false, toolName: null },
-  },
-  {
-    id: 'uk-gov-tenders',
-    name: 'UK Gov Tenders & Procurement (OCDS)',
-    shortName: 'UK Gov Tenders',
-    seoKeyword: 'UK Gov Tenders OCDS API',
-    license: 'UK Open Government Licence v3.0 (Cabinet Office OCDS, zero PII)',
-    summary: 'UK Cabinet Office Contracts Finder public tenders and awards normalized from OCDS.',
-    defaultQuery: 'software',
-    queryLabel: 'Procurement keyword',
-    queryPlaceholder: 'e.g. software, cloud hosting',
-    sampleFields: ['ocid', 'title', 'buyerName', 'stage', 'valueAmount', 'valueCurrency', 'publishedDate', 'tenderUrl'],
-    apify: {
-      actorId: 'txnvyTckeQx4hVBc6',
-      actorSlug: 'perceptive_city_af7/uk-gov-tenders-scraper',
-      storeUrl: 'https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper',
-      pricingUrl: 'https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/pricing',
-      ratePer1K: 5.0,
-      startFeeUsd: 0.00005,
-      defaultRecommendedCap: 0.25,
-    },
-    rapidapi: null,
-    n8n: {
-      kvsWorkflowUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-uk-gov-tenders-csv.json',
-      kvsGuideUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-uk-gov-tenders-csv.md',
-      csvFileName: 'uk-gov-tenders.csv',
-    },
-    mcp: { included: true, toolName: 'perceptive_city_af7/uk-gov-tenders-scraper' },
-  },
-  {
-    id: 'sg-green-mark',
-    name: 'Singapore BCA Green Mark Buildings',
-    shortName: 'SG Green Mark',
-    seoKeyword: 'Singapore BCA Green Mark API',
-    license: 'Singapore Open Data Licence v1.0 (BCA / data.gov.sg, zero PII)',
-    summary: 'Singapore BCA commercial Green Mark sustainability certificates and ratings.',
-    defaultQuery: 'Plaza',
-    queryLabel: 'Building name or Green Mark rating',
-    queryPlaceholder: 'e.g. Plaza, Platinum, Goldplus',
-    sampleFields: ['referenceNo', 'projectName', 'projectType', 'rating', 'certifiedOn', 'expiresOn', 'sourceUrl', 'attribution'],
-    apify: {
-      actorId: 'Z3ioK0wOAeczj6nCx',
-      actorSlug: 'perceptive_city_af7/sg-green-mark-buildings',
-      storeUrl: 'https://apify.com/perceptive_city_af7/sg-green-mark-buildings',
-      pricingUrl: 'https://apify.com/perceptive_city_af7/sg-green-mark-buildings/pricing',
-      ratePer1K: 2.0,
-      startFeeUsd: 0.00005,
-      defaultRecommendedCap: 0.25,
-    },
-    rapidapi: {
-      slug: 'singapore-bca-green-mark-buildings',
-      hubUrl: 'https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings',
-      host: 'singapore-bca-green-mark-buildings.p.rapidapi.com',
-      endpoint: '/v1/sg-green-mark/certificates',
-      maxLimitPerCall: 20,
-    },
-    n8n: {
-      kvsWorkflowUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sg-green-mark-csv.json',
-      kvsGuideUrl: 'https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sg-green-mark-csv.md',
-      csvFileName: 'sg-green-mark-buildings.csv',
-    },
-    mcp: { included: true, toolName: 'perceptive_city_af7/sg-green-mark-buildings' },
-  },
-]);
-
-function getDatasetById(id) {
-  return DATASETS.find((d) => d.id === id) ?? null;
-}
-
-function getPlanById(id) {
-  const plan = APIFY_PLANS.find((p) => p.id === id);
-  if (!plan) {
-    throw new RangeError(`Unknown Apify plan id: ${id}`);
-  }
-  return plan;
-}
-
-
-function roundUsd(value, decimals) {
-  const factor = Math.pow(10, decimals);
-  return Math.round(value * factor) / factor;
-}
-
-function formatUsd(amount, { minDecimals = 2, maxDecimals = 5 } = {}) {
-  if (!Number.isFinite(amount)) {
-    throw new RangeError("Amount must be a finite number");
-  }
-  const negative = amount < 0;
-  const abs = Math.abs(amount);
-  const fixed = abs.toFixed(maxDecimals);
-  const parts = fixed.split(".");
-  const intPart = parts[0];
-  let fracPart = parts[1] || "";
-  
-  if (fracPart.length > 0) {
-    let lastNonZero = -1;
-    for (let i = fracPart.length - 1; i >= 0; i--) {
-      if (fracPart[i] !== "0") {
-        lastNonZero = i;
-        break;
-      }
-    }
-    if (lastNonZero === -1) {
-      fracPart = "0".repeat(minDecimals);
-    } else {
-      const keepLen = Math.max(lastNonZero + 1, minDecimals);
-      fracPart = fracPart.slice(0, keepLen);
-    }
-  } else {
-    fracPart = "0".repeat(minDecimals);
-  }
-  
-  const formatted = fracPart ? `${intPart}.${fracPart}` : intPart;
-  return `${negative ? "-$" : "$"}${formatted}`;
-}
-
-function calculateApifyPpeCosts({ datasetId, maxItems = 100, runsPerMonth = 1, maxTotalChargeUsd = null } = {}) {
-  const dataset = getDatasetById(datasetId);
-  if (!dataset) {
-    throw new RangeError("Invalid datasetId");
-  }
-  if (!Number.isInteger(maxItems) || maxItems < MIN_ITEMS || maxItems > MAX_ITEMS) {
-    throw new RangeError("maxItems must be an integer between MIN_ITEMS and MAX_ITEMS");
-  }
-  if (!Number.isInteger(runsPerMonth) || runsPerMonth < 1 || runsPerMonth > 1000) {
-    throw new RangeError("runsPerMonth must be an integer between 1 and 1000");
-  }
-  if (maxTotalChargeUsd !== null && !(typeof maxTotalChargeUsd === "number" && Number.isFinite(maxTotalChargeUsd) && maxTotalChargeUsd >= 0)) {
-    throw new RangeError("maxTotalChargeUsd must be null or a finite number >= 0");
-  }
-
-  if (!dataset.apify) {
-    return {
-      available: false,
-      datasetId,
-      reason: "Live on RapidAPI Hub REST API (no public Apify Store Actor yet).",
-      maxItems,
-      runsPerMonth,
-      totalMonthlyItems: maxItems * runsPerMonth,
-      plans: []
-    };
-  }
-
-  const startFeeUsd = dataset.apify.startFeeUsd ?? DEFAULT_START_FEE_USD;
-  const ratePer1K = dataset.apify.ratePer1K;
-
-  // First pass: compute plans without savings vs free
-  const plansNoSavings = APIFY_PLANS.map(plan => {
-    const multiplier = plan.multiplier;
-    const effectiveRatePer1K = roundUsd(ratePer1K * multiplier, 8);
-    const effectiveRatePerItem = roundUsd((ratePer1K / 1000) * multiplier, 8);
-    const itemCostPerRun = roundUsd(maxItems * effectiveRatePerItem, 8);
-    const perRunCost = roundUsd(startFeeUsd + itemCostPerRun, 8);
-    const monthlyCost = roundUsd(perRunCost * runsPerMonth, 8);
-    const recommendedCapUsd = roundUsd(Math.max(0.05, perRunCost * 1.1), 4);
-    const appliedCapUsd = maxTotalChargeUsd !== null ? roundUsd(maxTotalChargeUsd, 6) : recommendedCapUsd;
-    const capExceeded = appliedCapUsd < perRunCost;
-    
-    let maxItemsUnderCap;
-    if (appliedCapUsd < startFeeUsd) {
-      maxItemsUnderCap = 0;
-    } else if (effectiveRatePerItem === 0) {
-      maxItemsUnderCap = maxItems;
-    } else {
-      maxItemsUnderCap = Math.floor((appliedCapUsd - startFeeUsd + 1e-12) / effectiveRatePerItem);
-    }
-    
-    const effectiveItemsPerRun = Math.min(maxItems, maxItemsUnderCap);
-    
-    return {
-      id: plan.id,
-      name: plan.name,
-      discountPct: plan.discountPct,
-      multiplier: plan.multiplier,
-      startFeeUsd,
-      effectiveRatePer1K,
-      effectiveRatePerItem,
-      itemCostPerRun,
-      perRunCost,
-      monthlyCost,
-      recommendedCapUsd,
-      appliedCapUsd,
-      capExceeded,
-      maxItemsUnderCap,
-      effectiveItemsPerRun,
-      savingsVsFreeMonthly: 0 // placeholder, will be overwritten
-    };
-  });
-
-  const freePlan = plansNoSavings.find(p => p.id === "free");
-  const freeMonthlyCost = freePlan ? freePlan.monthlyCost : 0;
-
-  const plans = plansNoSavings.map(p => ({
-    ...p,
-    savingsVsFreeMonthly: roundUsd(freeMonthlyCost - p.monthlyCost, 8)
-  }));
-
-  return {
-    available: true,
-    datasetId,
-    actorId: dataset.apify.actorId,
-    actorSlug: dataset.apify.actorSlug,
-    ratePer1K,
-    startFeeUsd,
-    maxItems,
-    runsPerMonth,
-    totalMonthlyItems: maxItems * runsPerMonth,
-    plans
-  };
-}
-
-function calculateRapidApiComparison({ datasetId, maxItems = 100, runsPerMonth = 1 } = {}) {
-  const dataset = getDatasetById(datasetId);
-  if (!dataset) {
-    throw new RangeError("Invalid datasetId");
-  }
-  if (!Number.isInteger(maxItems) || maxItems < MIN_ITEMS || maxItems > MAX_ITEMS) {
-    throw new RangeError("maxItems must be an integer between MIN_ITEMS and MAX_ITEMS");
-  }
-  if (!Number.isInteger(runsPerMonth) || runsPerMonth < 1 || runsPerMonth > 1000) {
-    throw new RangeError("runsPerMonth must be an integer between 1 and 1000");
-  }
-
-  const totalMonthlyRows = maxItems * runsPerMonth;
-
-  if (!dataset.rapidapi) {
-    return {
-      available: false,
-      datasetId,
-      reason: "Direct Apify Sync REST API & MCP (no RapidAPI subscription required).",
-      totalMonthlyRows,
-      requestsNeededPerRun: 0,
-      monthlyRequests: 0,
-      tiers: [],
-      recommendedTier: null,
-      exceedsUltraQuota: false
-    };
-  }
-
-  const requestsNeededPerRun = Math.ceil(maxItems / dataset.rapidapi.maxLimitPerCall);
-  const monthlyRequests = requestsNeededPerRun * runsPerMonth;
-
-  const tiers = RAPIDAPI_TIERS.map(tier => {
-    const includedRows = tier.includedRows;
-    const fitsQuota = totalMonthlyRows <= includedRows;
-    const utilizationPct = roundUsd(Math.min(100, (totalMonthlyRows / includedRows) * 100), 1);
-    const effectivePer1KAtFullQuota = tier.monthlyUsd === 0 ? 0 : roundUsd((tier.monthlyUsd / includedRows) * 1000, 2);
-    const effectivePer1KAtYourVolume = totalMonthlyRows > 0 ? roundUsd((tier.monthlyUsd / totalMonthlyRows) * 1000, 2) : 0;
-    return {
-      ...tier,
-      fitsQuota,
-      utilizationPct,
-      effectivePer1KAtFullQuota,
-      effectivePer1KAtYourVolume
-    };
-  });
-
-  const recommendedTier = tiers.find(t => t.fitsQuota) || tiers[tiers.length - 1];
-  const exceedsUltraQuota = totalMonthlyRows > 25000;
-
-  return {
-    available: true,
-    datasetId,
-    slug: dataset.rapidapi.slug,
-    host: dataset.rapidapi.host,
-    endpoint: dataset.rapidapi.endpoint,
-    hubUrl: dataset.rapidapi.hubUrl,
-    totalMonthlyRows,
-    requestsNeededPerRun,
-    monthlyRequests,
-    tiers,
-    recommendedTier,
-    exceedsUltraQuota
-  };
-}
-
-function compareChannels({ datasetId, maxItems = 100, runsPerMonth = 1, planId = "free", maxTotalChargeUsd = null } = {}) {
-  const plan = getPlanById(planId);
-  if (!plan) {
-    throw new RangeError("Invalid planId");
-  }
-
-  const apify = calculateApifyPpeCosts({ datasetId, maxItems, runsPerMonth, maxTotalChargeUsd });
-  const rapidapi = calculateRapidApiComparison({ datasetId, maxItems, runsPerMonth });
-
-  const selectedApifyPlan = apify.available ? (apify.plans.find(p => p.id === planId) || apify.plans[0]) : null;
-  const totalMonthlyItems = maxItems * runsPerMonth;
-
-  let verdict;
-
-  if (apify.available && !rapidapi.available) {
-    verdict = {
-      bestChannel: "apify-sync",
-      headline: `Apify PPE (${selectedApifyPlan.name}) costs ${formatUsd(selectedApifyPlan.monthlyCost)}/mo`,
-      detail: "Only Apify Sync is available for this dataset.",
-      monthlySavingsUsd: 0
-    };
-  } else if (!apify.available && rapidapi.available) {
-    verdict = {
-      bestChannel: "rapidapi-rest",
-      headline: `RapidAPI ${rapidapi.recommendedTier.name} recommended`,
-      detail: "Only RapidAPI REST is available for this dataset.",
-      monthlySavingsUsd: 0
-    };
-  } else if (apify.available && rapidapi.available) {
-    if (totalMonthlyItems <= 100) {
-      verdict = {
-        bestChannel: "rapidapi-rest",
-        headline: "RapidAPI Basic ($0/mo for <=100 rows)",
-        detail: `RapidAPI Basic free quota ($0/mo) vs Apify PPE pay-as-you-go (${formatUsd(selectedApifyPlan.monthlyCost)}/mo).`,
-        monthlySavingsUsd: selectedApifyPlan.monthlyCost
-      };
-    } else if (rapidapi.exceedsUltraQuota) {
-      verdict = {
-        bestChannel: "apify-sync",
-        headline: "Apify PPE scales beyond 25K rows/mo",
-        detail: "RapidAPI Ultra caps at 25,000 rows/mo while Apify PPE bills linearly with maxTotalChargeUsd.",
-        monthlySavingsUsd: 0
-      };
-    } else if (selectedApifyPlan.monthlyCost <= rapidapi.recommendedTier.monthlyUsd) {
-      const monthlySavingsUsd = roundUsd(rapidapi.recommendedTier.monthlyUsd - selectedApifyPlan.monthlyCost, 4);
-      verdict = {
-        bestChannel: "apify-sync",
-        headline: `Apify PPE (${selectedApifyPlan.name}) saves ${formatUsd(monthlySavingsUsd)}/mo`,
-        detail: `Apify PPE (${selectedApifyPlan.name}) costs ${formatUsd(selectedApifyPlan.monthlyCost)}/mo vs RapidAPI ${rapidapi.recommendedTier.name} (${formatUsd(rapidapi.recommendedTier.monthlyUsd)}/mo).`,
-        monthlySavingsUsd
-      };
-    } else {
-      const monthlySavingsUsd = roundUsd(selectedApifyPlan.monthlyCost - rapidapi.recommendedTier.monthlyUsd, 4);
-      verdict = {
-        bestChannel: "rapidapi-rest",
-        headline: `RapidAPI ${rapidapi.recommendedTier.name} (${formatUsd(rapidapi.recommendedTier.monthlyUsd)}/mo) saves ${formatUsd(monthlySavingsUsd)}/mo`,
-        detail: `RapidAPI ${rapidapi.recommendedTier.name} costs ${formatUsd(rapidapi.recommendedTier.monthlyUsd)}/mo vs Apify PPE (${formatUsd(selectedApifyPlan.monthlyCost)}/mo).`,
-        monthlySavingsUsd
-      };
-    }
-  } else {
-    // Fallback if neither channel is available (should not happen with valid dataset)
-    verdict = {
-      bestChannel: "none",
-      headline: "No available channels",
-      detail: "This dataset is not available via either channel.",
-      monthlySavingsUsd: 0
-    };
-  }
-
-  return {
-    datasetId,
-    totalMonthlyItems,
-    apify,
-    rapidapi,
-    selectedApifyPlan,
-    verdict
-  };
-}
-
-
-function isValidMaxItems(maxItems) {
-  return Number.isInteger(maxItems) && maxItems >= MIN_ITEMS && maxItems <= MAX_ITEMS;
-}
-
-function toQueryString(params) {
-  return Object.entries(params)
-    .filter(([, value]) => value !== undefined && value !== null)
-    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-    .join("&");
-}
-
-function escapeShellSingle(s) {
-  return s.replace(/'/g, "'\"'\"'");
-}
-
-function buildActorInput(datasetId, { query = "", maxItems = 25 } = {}) {
-  const dataset = getDatasetById(datasetId);
-  if (!dataset) {
-    throw new RangeError(`Unknown dataset: ${datasetId}`);
-  }
-  if (!isValidMaxItems(maxItems)) {
-    throw new RangeError(`maxItems must be an integer between ${MIN_ITEMS} and ${MAX_ITEMS}`);
-  }
-  if (!dataset.apify) {
-    return null;
-  }
-
-  const cleanQuery = String(query ?? "").trim();
-
-  switch (dataset.id) {
-    case "sec-edgar":
-      return {
-        mode: "search",
-        query: cleanQuery || "artificial intelligence",
-        forms: "10-K,10-Q,8-K",
-        startDate: "2025-01-01",
-        maxItems,
-      };
-    case "clinical-trials":
-      return {
-        condition: cleanQuery || "type 2 diabetes",
-        status: "RECRUITING",
-        queryTerm: "GLP-1",
-        maxItems,
-      };
-    case "uk-gov-tenders":
-      return {
-        keyword: cleanQuery || "software",
-        stages: "tender",
-        minValue: 50000,
-        maxItems,
-      };
-    case "sg-green-mark":
-      return {
-        query: cleanQuery || "Plaza",
-        rating: "Platinum",
-        maxItems,
-      };
-    default:
-      return {
-        query: cleanQuery || dataset.defaultQuery,
-        maxItems,
-      };
-  }
-}
-
-function buildRapidApiParams(datasetId, { query = "", maxItems = 25 } = {}) {
-  const dataset = getDatasetById(datasetId);
-  if (!dataset) {
-    throw new RangeError(`Unknown dataset: ${datasetId}`);
-  }
-  if (!isValidMaxItems(maxItems)) {
-    throw new RangeError(`maxItems must be an integer between ${MIN_ITEMS} and ${MAX_ITEMS}`);
-  }
-  if (!dataset.rapidapi) {
-    return null;
-  }
-
-  const cleanQuery = String(query ?? "").trim();
-  const limit = Math.min(dataset.rapidapi.maxLimitPerCall, Math.max(1, maxItems));
-
-  switch (dataset.id) {
-    case "sec-edgar":
-      return {
-        mode: "search",
-        query: cleanQuery || "artificial intelligence",
-        forms: "10-K,10-Q,8-K",
-        limit,
-      };
-    case "clinical-trials":
-      return {
-        condition: cleanQuery || "type 2 diabetes",
-        status: "RECRUITING",
-        limit,
-      };
-    case "openfda":
-      return {
-        dataset: "drug_enforcement",
-        searchQuery: cleanQuery || "sterility",
-        limit,
-      };
-    case "sg-green-mark": {
-      const lower = cleanQuery.toLowerCase();
-      const ratingMap = {
-        platinum: "Platinum",
-        goldplus: "Goldplus",
-        gold: "Gold",
-        certified: "Certified",
-      };
-      const rating = ratingMap[lower] || "Platinum";
-      return { rating, limit };
-    }
-    default:
-      return {
-        query: cleanQuery || dataset.defaultQuery,
-        limit,
-      };
-  }
-}
-
-function buildPythonSnippet(useRapidApi, dataset, actorInput, rapidapiParams, capStr) {
-  const indent = "    ";
-  if (useRapidApi) {
-    const jsonParams = JSON.stringify(rapidapiParams);
-    const host = dataset.rapidapi.host;
-    const endpoint = dataset.rapidapi.endpoint;
-    return [
-      "import os",
-      "import httpx",
-      "import json",
-      "",
-      'token = os.environ["RAPIDAPI_KEY"]',
-      `url = f"https://${host}${endpoint}"`,
-      `params = json.loads(r'''${jsonParams}''')`,
-      "headers = {",
-      `${indent}"X-RapidAPI-Key": token,`,
-      `${indent}"X-RapidAPI-Host": "${host}",`,
-      "}",
-      "",
-      "with httpx.Client(timeout=30) as client:",
-      `${indent}response = client.get(url, params=params, headers=headers)`,
-      `${indent}response.raise_for_status()`,
-      `${indent}data = response.json()`,
-      "",
-      "if isinstance(data, list):",
-      `${indent}items = data`,
-      "else:",
-      `${indent}items = data.get("items", data.get("results", []))`,
-      "",
-      "print(f\"Retrieved {len(items)} items\")",
-      "if items:",
-      `${indent}print(items[0])`,
-    ].join("\n");
-  } else {
-    const jsonPayload = JSON.stringify(actorInput);
-    const actorId = dataset.apify.actorId;
-    const url = `https://api.apify.com/v2/acts/${actorId}/run-sync-get-dataset-items?maxTotalChargeUsd=${capStr}`;
-    return [
-      "import os",
-      "import httpx",
-      "import json",
-      "",
-      'token = os.environ["APIFY_TOKEN"]',
-      `url = "${url}"`,
-      "headers = {",
-      `${indent}"Authorization": f"Bearer {token}",`,
-      `${indent}"Content-Type": "application/json",`,
-      "}",
-      `payload = json.loads(r'''${jsonPayload}''')`,
-      "",
-      "with httpx.Client(timeout=120) as client:",
-      `${indent}response = client.post(url, headers=headers, json=payload)`,
-      `${indent}response.raise_for_status()`,
-      `${indent}data = response.json()`,
-      "",
-      "if isinstance(data, list):",
-      `${indent}items = data`,
-      "else:",
-      `${indent}items = data.get("items", data.get("results", []))`,
-      "",
-      "print(f\"Retrieved {len(items)} items\")",
-      "if items:",
-      `${indent}print(items[0])`,
-    ].join("\n");
-  }
-}
-
-function buildCurlSnippet(useRapidApi, dataset, actorInput, rapidapiParams, capStr) {
-  if (useRapidApi) {
-    const host = dataset.rapidapi.host;
-    const endpoint = dataset.rapidapi.endpoint;
-    const qs = toQueryString(rapidapiParams);
-    const url = `https://${host}${endpoint}?${qs}`;
-    const escapedUrl = escapeShellSingle(url);
-    return [
-      "# Set RAPIDAPI_KEY in your shell; never hardcode secrets",
-      "curl --request GET \\",
-      `  '${escapedUrl}' \\`,
-      '  -H "X-RapidAPI-Key: $RAPIDAPI_KEY" \\',
-      `  -H "X-RapidAPI-Host: ${host}"`,
-    ].join("\n");
-  } else {
-    const actorId = dataset.apify.actorId;
-    const url = `https://api.apify.com/v2/acts/${actorId}/run-sync-get-dataset-items?maxTotalChargeUsd=${capStr}`;
-    const body = escapeShellSingle(JSON.stringify(actorInput));
-    return [
-      `# Set APIFY_TOKEN in your shell; hard spend cap maxTotalChargeUsd=${capStr}`,
-      "curl --request POST \\",
-      `  '${url}' \\`,
-      '  -H "Authorization: Bearer $APIFY_TOKEN" \\',
-      '  -H "Content-Type: application/json" \\',
-      `  -d '${body}'`,
-    ].join("\n");
-  }
-}
-
-function buildN8nWorkflow(dataset, effectiveChannel, actorInput, rapidapiParams, capStr, useRapidApi) {
-  const fetchNodeName = `Fetch ${dataset.name}`;
-  let httpRequestParams;
-  if (useRapidApi) {
-    const host = dataset.rapidapi.host;
-    const endpoint = dataset.rapidapi.endpoint;
-    httpRequestParams = {
-      method: "GET",
-      url: `https://${host}${endpoint}`,
-      sendQuery: true,
-      queryParameters: {
-        parameters: Object.entries(rapidapiParams).map(([name, value]) => ({
-          name,
-          value: String(value),
-        })),
-      },
-      sendHeaders: true,
-      headerParameters: {
-        parameters: [
-          { name: "X-RapidAPI-Key", value: "={{$env.RAPIDAPI_KEY}}" },
-          { name: "X-RapidAPI-Host", value: host },
-        ],
-      },
-    };
-  } else {
-    const actorId = dataset.apify.actorId;
-    const url = `https://api.apify.com/v2/acts/${actorId}/run-sync-get-dataset-items?maxTotalChargeUsd=${capStr}`;
-    httpRequestParams = {
-      method: "POST",
-      url,
-      sendHeaders: true,
-      headerParameters: {
-        parameters: [
-          { name: "Authorization", value: "=Bearer {{$env.APIFY_TOKEN}}" },
-        ],
-      },
-      sendBody: true,
-      specifyBody: "json",
-      jsonBody: JSON.stringify(actorInput),
-    };
-  }
-
-  const workflow = {
-    name: `${dataset.name} via ${effectiveChannel} (n8n)`,
-    nodes: [
-      {
-        parameters: {},
-        id: "manual-trigger",
-        name: "When clicked",
-        type: "n8n-nodes-base.manualTrigger",
-        typeVersion: 1,
-        position: [0, 0],
-      },
-      {
-        parameters: httpRequestParams,
-        id: "http-request",
-        name: fetchNodeName,
-        type: "n8n-nodes-base.httpRequest",
-        typeVersion: 4.2,
-        position: [200, 0],
-        retryOnFail: false,
-      },
-      {
-        parameters: {
-          fileName: dataset.n8n.csvFileName,
-          fileFormat: "csv",
-          operation: "toFile",
-        },
-        id: "convert-to-csv",
-        name: "Convert to CSV",
-        type: "n8n-nodes-base.convertToFile",
-        typeVersion: 1.1,
-        position: [400, 0],
-      },
-    ],
-    connections: {
-      "When clicked": {
-        main: [
-          [
-            { node: fetchNodeName, type: "main", index: 0 },
-          ],
-        ],
-      },
-      [fetchNodeName]: {
-        main: [
-          [
-            { node: "Convert to CSV", type: "main", index: 0 },
-          ],
-        ],
-      },
-    },
-    active: false,
-    settings: { executionOrder: "v1" },
-  };
-
-  return JSON.stringify(workflow, null, 2);
-}
-
-function buildMcpConfig(dataset) {
-  const mcpObj = {
-    mcpServers: {},
-  };
-
-  const unifiedServer = {
-    url: MCP_REGISTRY.streamableHttpUrl,
-    headers: { Authorization: "Bearer ${APIFY_TOKEN}" },
-    registry: `${MCP_REGISTRY.serverName}@${MCP_REGISTRY.version}`,
-  };
-
-  if (dataset.mcp && dataset.mcp.included) {
-    mcpObj.mcpServers[dataset.id] = {
-      url: "https://mcp.apify.com/?tools=" + encodeURIComponent(dataset.mcp.toolName),
-      headers: { Authorization: "Bearer ${APIFY_TOKEN}" },
-    };
-    mcpObj.mcpServers["apify-global-apac-b2b"] = unifiedServer;
-  } else {
-    mcpObj.mcpServers["apify-global-apac-b2b"] = {
-      ...unifiedServer,
-      note: "openFDA is currently served via RapidAPI REST: " + dataset.rapidapi.hubUrl,
-    };
-  }
-
-  return JSON.stringify(mcpObj, null, 2);
-}
-
-function generateSnippets({
-  datasetId,
-  channel = "apify-sync",
-  query = "",
-  maxItems = 25,
-  maxTotalChargeUsd = 0.25,
-  planId = "free",
-} = {}) {
-  const dataset = getDatasetById(datasetId);
-  if (!dataset) {
-    throw new RangeError(`Unknown dataset: ${datasetId}`);
-  }
-
-  if (!isValidMaxItems(maxItems)) {
-    throw new RangeError(`maxItems must be an integer between ${MIN_ITEMS} and ${MAX_ITEMS}`);
-  }
-
-  if (!Number.isFinite(maxTotalChargeUsd) || maxTotalChargeUsd < 0) {
-    throw new RangeError("maxTotalChargeUsd must be a finite number >= 0");
-  }
-
-  if (!getPlanById(planId)) {
-    throw new RangeError(`Unknown planId: ${planId}`);
-  }
-
-  const capStr = maxTotalChargeUsd === 0 ? "0.00" : Number(maxTotalChargeUsd.toFixed(6)).toString();
-
-  const useRapidApi = !dataset.apify || (channel === "rapidapi-rest" && Boolean(dataset.rapidapi));
-
-  let effectiveChannel;
-  let channelFallbackNote;
-  if (!dataset.apify && (channel === "apify-sync" || channel === "mcp-agent")) {
-    effectiveChannel = "rapidapi-rest";
-    channelFallbackNote =
-      "openFDA is currently live via RapidAPI Hub REST API; snippets target RapidAPI ($RAPIDAPI_KEY).";
-  } else if (!dataset.rapidapi && channel === "rapidapi-rest") {
-    effectiveChannel = "apify-sync";
-    channelFallbackNote =
-      "UK Gov Tenders is served directly via Apify Sync REST API & MCP; snippets target Apify ($APIFY_TOKEN).";
-  } else {
-    effectiveChannel = channel;
-    channelFallbackNote = "";
-  }
-
-  const actorInput = buildActorInput(datasetId, { query, maxItems });
-  const rapidapiParams = buildRapidApiParams(datasetId, { query, maxItems });
-
-  const curl = buildCurlSnippet(useRapidApi, dataset, actorInput, rapidapiParams, capStr);
-  const python = buildPythonSnippet(useRapidApi, dataset, actorInput, rapidapiParams, capStr);
-  const n8n = buildN8nWorkflow(dataset, effectiveChannel, actorInput, rapidapiParams, capStr, useRapidApi);
-  const mcp = buildMcpConfig(dataset);
-
-  const apifyStoreUrl = dataset.apify
-    ? dataset.apify.storeUrl +
-      "?utm_source=open_gov_playground&utm_medium=referral&utm_campaign=open_gov_api_playground"
-    : null;
-  const apifyPricingUrl = dataset.apify ? dataset.apify.pricingUrl : null;
-  const rapidapiHubUrl = dataset.rapidapi ? dataset.rapidapi.hubUrl : null;
-
-  return {
-    datasetId,
-    channel,
-    effectiveChannel,
-    channelFallbackNote,
-    capStr,
-    actorInput,
-    rapidapiParams,
-    snippets: {
-      curl,
-      python,
-      n8n,
-      mcp,
-    },
-    ctas: {
-      apifyStoreUrl,
-      apifyPricingUrl,
-      rapidapiHubUrl,
-      kvsN8nWorkflowUrl: dataset.n8n.kvsWorkflowUrl,
-      kvsN8nGuideUrl: dataset.n8n.kvsGuideUrl,
-      mcpRegistryUrl: MCP_REGISTRY.registryUrl,
-      mcpKvsConfigUrl: MCP_REGISTRY.kvsConfigUrl,
-    },
-  };
-}
-let activeDatasetId = "sec-edgar";
-let activeChannel = "apify-sync";
-let activeCodeTab = "curl";
-let latestSnippets = { curl: "", python: "", n8n: "", mcp: "" };
-let lastAutoQuery = "artificial intelligence";
-
-const $ = (id) => document.getElementById(id);
-
-function setStatus(msg, isError) {
-  const el = $("status-banner");
-  if (!el) return;
-  el.textContent = msg || "";
-  el.classList.toggle("error", !!isError);
-  el.hidden = !msg;
-}
-
-function syncDatasetPills() {
-  const c = $("dataset-pills");
-  if (!c) return;
-  c.querySelectorAll("button[data-dataset-id]").forEach((b) => {
-    b.setAttribute("aria-pressed", String(b.dataset.datasetId === activeDatasetId));
-  });
-}
-
-function syncChannelPills() {
-  const c = $("channel-pills");
-  if (!c) return;
-  c.querySelectorAll("button[data-channel-id]").forEach((b) => {
-    b.setAttribute("aria-pressed", String(b.dataset.channelId === activeChannel));
-  });
-}
-
-function syncCodeTabs() {
-  const c = $("code-tabs");
-  if (!c) return;
-  c.querySelectorAll("button[data-code-tab]").forEach((b) => {
-    b.setAttribute("aria-selected", String(b.dataset.codeTab === activeCodeTab));
-  });
-}
-
-function selectDataset(datasetId) {
-  const dataset = getDatasetById(datasetId);
-  if (!dataset) return;
-  activeDatasetId = dataset.id || datasetId;
-  syncDatasetPills();
-
-  const label = $("query-label");
-  if (label) label.textContent = dataset.queryLabel || "Query";
-  const input = $("query-input");
-  if (input) {
-    input.placeholder = dataset.queryPlaceholder || "Search query";
-    const v = String(input.value || "").trim();
-    if (v === "" || v === lastAutoQuery) {
-      input.value = dataset.defaultQuery || "";
-      lastAutoQuery = dataset.defaultQuery || "";
-    }
-  }
-
-  const license = $("dataset-meta-license");
-  if (license) license.textContent = dataset.license || "";
-  const fields = $("dataset-meta-fields");
-  if (fields) {
-    fields.replaceChildren();
-    (dataset.sampleFields || []).forEach((f) => {
-      const span = document.createElement("span");
-      span.className = "field-tag";
-      span.textContent = f;
-      fields.appendChild(span);
+  </footer>
+
+  <script id="playground-app">
+  "use strict";
+  (() => {
+    const CAP_USD = 0.25;
+    const START_FEE_USD = 0.00005;
+    const RAPIDAPI_TIERS = Object.freeze([
+      Object.freeze({ id: "basic", name: "Basic", rows: 100, usd: 0 }),
+      Object.freeze({ id: "pro", name: "Pro", rows: 5000, usd: 19 }),
+      Object.freeze({ id: "ultra", name: "Ultra", rows: 25000, usd: 49 })
+    ]);
+    const SNIPPET_FORMATS = Object.freeze(["curl", "python", "javascript", "sheets", "n8n", "mcp"]);
+
+    const secModePayloads = Object.freeze({
+      form_d_funding: Object.freeze({ mode: "form_d_funding", query: "artificial intelligence", excludePooledFunds: true, minOfferingAmountUsd: 1000000, includeAmendments: false, maxItems: 10 }),
+      xbrl_financials: Object.freeze({ mode: "xbrl_financials", ticker: "AAPL", forms: "10-K,10-Q", maxItems: 10 }),
+      filings: Object.freeze({ mode: "filings", query: "artificial intelligence", forms: "10-K,10-Q,8-K", startDate: "2026-01-01", maxItems: 10 })
     });
-  }
-
-  if (!dataset.apify && activeChannel === "apify-sync") activeChannel = "rapidapi-rest";
-  if (!dataset.rapidapi && activeChannel === "rapidapi-rest") activeChannel = "apify-sync";
-  syncChannelPills();
-
-  renderAll();
-}
-
-function selectChannel(channelId) {
-  const channel = DELIVERY_CHANNELS.find((c) => c.id === channelId);
-  activeChannel = channelId;
-  syncChannelPills();
-  if (channel && channel.defaultCodeTab) {
-    activeCodeTab = channel.defaultCodeTab;
-    syncCodeTabs();
-  }
-  renderAll();
-}
-
-function selectCodeTab(tabId) {
-  activeCodeTab = tabId;
-  syncCodeTabs();
-  const out = $("code-output");
-  if (out) out.textContent = latestSnippets[activeCodeTab] || "";
-}
-
-function getTableWrap(bodyEl) {
-  return bodyEl ? bodyEl.closest(".table-wrap") || bodyEl.parentElement : null;
-}
-
-function renderApifyTable(apify, selectedPlanId) {
-  const body = $("apify-tier-body");
-  if (!body) return;
-  const note = $("apify-unavailable-note");
-  const wrap = getTableWrap(body);
-
-  if (!apify.available) {
-    body.replaceChildren();
-    if (wrap) wrap.hidden = true;
-    if (note) {
-      note.hidden = false;
-      note.textContent = apify.reason || "Apify is unavailable for this dataset.";
-    }
-    return;
-  }
-
-  if (note) {
-    note.hidden = true;
-    note.textContent = "";
-  }
-  if (wrap) wrap.hidden = false;
-  body.replaceChildren();
-
-  apify.plans.forEach((plan) => {
-    const tr = document.createElement("tr");
-    if (plan.id === selectedPlanId) tr.classList.add("active-row");
-    if (plan.capExceeded) tr.classList.add("cap-warn");
-
-    const pct = Math.round((1 - plan.multiplier) * 100);
-    const values = [
-      plan.name,
-      pct === 0 ? "0%" : "-" + pct + "%",
-      formatUsd(plan.perRunCost),
-      formatUsd(plan.monthlyCost),
-      plan.capExceeded ? "Capped @ " + plan.effectiveItemsPerRun.toLocaleString() : "Fits cap",
-    ];
-
-    values.forEach((text, i) => {
-      if (i === 0) {
-        const th = document.createElement("th");
-        th.scope = "row";
-        th.textContent = text;
-        tr.appendChild(th);
-        return;
-      }
-      const td = document.createElement("td");
-      td.textContent = text;
-      tr.appendChild(td);
+    const secModeSamples = Object.freeze({
+      form_d_funding: Object.freeze({ recordType: "form_d_funding", accessionNumber: "0002164008-26-000004", cik: "0002164008", filingDate: "2026-11-25", formType: "D/A", isAmendment: true, issuerName: "xLend Fund I LLC", industryGroup: "Other Real Estate", federalExemptions: ["06c"], securityTypes: ["Equity"], totalOfferingAmountUsd: 300000000, totalAmountSoldUsd: 2000000, totalInvestorsCount: 2, isPooledInvestmentFund: false, filingUrl: "https://www.sec.gov/Archives/edgar/data/2164008/000216400826000004/0002164008-26-000004-index.htm", sourceName: "US SEC EDGAR", sourceLicense: "Public Domain (US SEC EDGAR, 17 U.S.C. 105)" }),
+      xbrl_financials: Object.freeze({ recordType: "xbrl_financials", cik: "0000320193", ticker: "AAPL", companyName: "Apple Inc.", fiscalYear: 2026, fiscalPeriod: "FY", form: "10-K", periodEnd: "2026-09-26", filedDate: "2026-11-03", accessionNumber: "0000320193-26-000026", revenueUsd: 478834000000, netIncomeUsd: 132175000000, operatingIncomeUsd: 158063000000, totalAssetsUsd: 404548000000, totalLiabilitiesUsd: 292455000000, dilutedEpsUsd: 8.98, filingUrl: "https://www.sec.gov/Archives/edgar/data/320193/000032019326000026/0000320193-26-000026-index.htm" }),
+      filings: Object.freeze({ recordType: "filing", accessionNumber: "0000320193-26-000026", cik: "0000320193", companyName: "Apple Inc.", tickers: ["AAPL"], form: "10-K", filingDate: "2026-11-03", reportDate: "2026-09-26", documentDescription: "Annual report", filingUrl: "https://www.sec.gov/Archives/edgar/data/320193/000032019326000026/0000320193-26-000026-index.htm", attribution: "Source: US SEC EDGAR, U.S. Government public domain." })
     });
 
-    body.appendChild(tr);
-  });
-}
+    const PRODUCTS = Object.freeze([
+      Object.freeze({
+        id: "apify-ats-jobs", provider: "apify", family: "ats-jobs", name: "ATS Jobs & Hiring Signals", summary: "Normalized public Greenhouse, Lever, and Ashby job postings with hiring-signal categories and PII scrubbing.", actorId: "CRulq5dak4mqAUmMn", slug: "ats-jobs-hiring-signals-scraper", storeUrl: "https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper", ratePerItem: 0.004, ratePer1K: 4, pythonKey: "ats_jobs_hiring_signals", jsKey: "atsJobsHiringSignals", schemaPath: "actors/ats-jobs-hiring-signals-scraper/.actor/input_schema.json", datasetSchemaPath: "actors/ats-jobs-hiring-signals-scraper/.actor/dataset_schema.json", inputFields: ["preset","companyBoards","keywords","remoteOnly","departmentFilter","includeDescription","maxItems"], payload: { preset: "ai_leaders", keywords: "machine learning, infrastructure", remoteOnly: false, includeDescription: false, maxItems: 10 }, sample: { jobId: "ashby:openai:8fb1615c-34bf-47c4-a1d1-b7b2f836bbd3", atsPlatform: "ashby", companySlug: "openai", companyName: "OpenAI", title: "Technical Program Manager, Compute Infrastructure", department: "Technical Program Management", location: "San Francisco", country: "United States", isRemote: true, workplaceType: "hybrid", employmentType: "Full-time", compensationSummary: "$207K - $285K; offers equity", salaryMin: 207000, salaryMax: 285000, salaryCurrency: "USD", hiringSignalCategory: "Security & Infra", detectedSkills: ["Kubernetes","AWS","GCP","Azure"], publishedAt: "2026-11-05T02:20:02.702Z", jobUrl: "https://jobs.ashbyhq.com/openai/8fb1615c-34bf-47c4-a1d1-b7b2f836bbd3", sourceApi: "https://api.ashbyhq.com/posting-api/job-board/openai", scrapedAt: "2026-11-26T05:26:35Z" }, sampleNote: "Live-output example preserved in the Actor README; this excerpt is field- and type-checked against its dataset schema." 
+      }),
+      Object.freeze({
+        id: "apify-sec-edgar", provider: "apify", family: "sec-edgar", name: "SEC EDGAR v2.0: Funding & Financials", summary: "Form D startup funding, normalized XBRL company facts, and corporate filings from the U.S. SEC.", actorId: "8LFIbRbidiHPknMz5", slug: "sec-edgar-filings-scraper", storeUrl: "https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper", ratePerItem: 0.004, ratePer1K: 4, pythonKey: "sec_edgar", jsKey: "secEdgar", schemaPath: "actors/sec-edgar-filings-scraper/.actor/input_schema.json", datasetSchemaPath: "actors/sec-edgar-filings-scraper/.actor/dataset_schema.json", inputFields: ["mode","query","ticker","cik","forms","startDate","endDate","excludePooledFunds","minOfferingAmountUsd","industryFilter","includeAmendments","maxItems"], modes: ["form_d_funding","xbrl_financials","filings"], modePayloads: secModePayloads, modeSamples: secModeSamples, sampleNote: "Mode-specific examples are preserved in the Actor README and checked against the combined SEC dataset schema."
+      }),
+      Object.freeze({
+        id: "apify-global-tenders", provider: "apify", family: "global-tenders", name: "Global Public Tenders & Grants Aggregator", summary: "A deduplicated public-opportunity feed spanning seven official procurement, grants, and award sources.", actorId: "ZlabhlvEIyRVdtKiQ", slug: "global-public-tenders-grants-aggregator", storeUrl: "https://apify.com/perceptive_city_af7/global-public-tenders-grants-aggregator", ratePerItem: 0.008, ratePer1K: 8, pythonKey: "global_public_tenders", jsKey: "globalPublicTenders", schemaPath: "actors/global-public-tenders-grants-aggregator/.actor/input_schema.json", datasetSchemaPath: "actors/global-public-tenders-grants-aggregator/.actor/dataset_schema.json", inputFields: ["sources","opportunityTypes","keyword","dateFrom","dateTo","maxItems","perSourceLimit","sourceTimeoutSecs"], payload: { sources: ["uk_find_a_tender","eu_ted","us_grants_gov","usaspending","world_bank","canada_contracts","austender"], opportunityTypes: ["tender","grant","award"], keyword: "clean energy", maxItems: 10, perSourceLimit: 2, sourceTimeoutSecs: 20 }, sample: { recordId: "eu:000001-2026", source: "EU TED Tenders Search v3", countryCode: "EU", opportunityType: "tender", title: "Rail infrastructure services", description: "Official procurement summary", buyerName: "Regional Transport Authority", supplierName: null, status: "competition", valueAmount: 2500000, currency: "EUR", publishedDate: "2026-11-21", deadlineDate: "2026-12-21", categoryCodes: ["45234100"], url: "https://ted.europa.eu/en/notice/-/detail/000001-2026", sourceLicense: "TED Legal Notice / CC BY 4.0", scrapedAt: "2026-11-26T05:00:00Z" }, sampleNote: "Unified output example from the Actor README, checked against the aggregator dataset contract."
+      }),
+      Object.freeze({
+        id: "apify-pharma", provider: "apify", family: "pharma", name: "Pharma & Biotech Pipeline Intelligence", summary: "Cross-linked drug dossiers and event feeds from ClinicalTrials.gov, openFDA, ChEMBL, and Europe PMC.", actorId: "re8aRvtqBonP5HMuY", slug: "pharma-biotech-pipeline-intelligence", storeUrl: "https://apify.com/perceptive_city_af7/pharma-biotech-pipeline-intelligence", ratePerItem: 0.01, ratePer1K: 10, pythonKey: "pharma_pipeline_intelligence", jsKey: "pharmaPipelineIntelligence", schemaPath: "actors/pharma-biotech-pipeline-intelligence/.actor/input_schema.json", datasetSchemaPath: "actors/pharma-biotech-pipeline-intelligence/.actor/dataset_schema.json", inputFields: ["mode","query","drugNames","maxItems","sourceItemsPerQuery","sourceTimeoutSeconds","requestDelayMs"], payload: { mode: "drug_dossier", query: "semaglutide", maxItems: 10, sourceItemsPerQuery: 5, sourceTimeoutSeconds: 25, requestDelayMs: 150 }, sample: { recordType: "drug_dossier", mode: "drug_dossier", query: "semaglutide", drugName: "semaglutide", generatedAt: "2026-11-26T05:00:00Z", activeTrialsCount: 127, phaseDistribution: { PHASE3: 2, PHASE4: 3 }, topSponsors: [{ name: "Example sponsor", trialCount: 2 }], latestTrials: [], fdaApprovalsCount: 4, fdaRecallsCount: 1, latestFdaEvents: [], chemblId: "CHEMBL000000", maxClinicalPhase: 4, moleculeType: "Small molecule", molecularWeight: 411, atcCodes: ["A10BJ06"], pubmedPapersCount: 2500, topCitedPapers: [], sourceStatus: { clinicalTrials: { ok: true }, openFda: { ok: true }, chembl: { ok: true }, europePmc: { ok: true } }, attribution: { notice: "Public-source dossier; preserve per-source attribution." } }, sampleNote: "Representative dossier from the Actor documentation; field names and JSON types are checked against the dataset schema."
+      }),
+      Object.freeze({
+        id: "apify-usaspending", provider: "apify", family: "usaspending", name: "USAspending Federal Contracts", summary: "Normalized U.S. federal contracts, grants, and IDV records with agency, amount, NAICS, and performance fields.", actorId: "eQQ2beomyLlW4DTGM", slug: "usaspending-gov-contracts-scraper", storeUrl: "https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper", ratePerItem: 0.005, ratePer1K: 5, pythonKey: "usaspending_contracts", jsKey: "usaspendingContracts", schemaPath: "actors/usaspending-gov-contracts-scraper/.actor/input_schema.json", datasetSchemaPath: "actors/usaspending-gov-contracts-scraper/.actor/dataset_schema.json", inputFields: ["keyword","awardCategory","startDate","endDate","awardingAgency","minAwardAmount","naicsCode","sortOrder","maxItems"], payload: { keyword: "cloud software", awardCategory: "contracts", startDate: "2025-01-01", endDate: "2026-12-31", minAwardAmount: 1000000, sortOrder: "desc", maxItems: 10 }, sample: { generatedInternalId: "CONT_AWD_W911NF25C0123_9700_-NONE-_-NONE-", awardId: "W911NF-25-C-0123", awardCategory: "contracts", recipientName: "PALANTIR TECHNOLOGIES INC.", awardAmount: 18525000, startDate: "2025-03-01", endDate: "2027-02-28", awardingAgency: "Department of Defense", awardingSubAgency: "Department of the Army", awardType: "Definitive Contract", description: "Research and development services", placeOfPerformanceStateCode: "VA", placeOfPerformanceCountryCode: "USA", naicsCode: "541715", naicsDescription: "Research and Development", awardUrl: "https://www.usaspending.gov/award/CONT_AWD_W911NF25C0123_9700", attribution: "Source: USAspending.gov, U.S. Government public domain (17 U.S.C. 105)." }, sampleNote: "Published Actor sample, checked against its 18-field USAspending dataset schema."
+      }),
+      Object.freeze({
+        id: "apify-clinical-trials", provider: "apify", family: "clinical-trials", name: "ClinicalTrials.gov Scraper", summary: "ClinicalTrials.gov v2 studies filtered by condition, intervention, sponsor, status, and free-text query.", actorId: "KchE3qKKrwU0rCe9f", slug: "clinical-trials-scraper", storeUrl: "https://apify.com/perceptive_city_af7/clinical-trials-scraper", ratePerItem: 0.0035, ratePer1K: 3.5, pythonKey: "clinical_trials", jsKey: "clinicalTrials", schemaPath: "actors/clinical-trials-scraper/.actor/input_schema.json", datasetSchemaPath: "actors/clinical-trials-scraper/.actor/dataset_schema.json", inputFields: ["condition","intervention","status","sponsor","queryTerm","maxItems"], payload: { condition: "Type 2 Diabetes", intervention: "Semaglutide", status: "RECRUITING", maxItems: 10 }, sample: { nctId: "NCT05912345", briefTitle: "A Study of Semaglutide in Adults With Type 2 Diabetes", officialTitle: "A Randomised, Double-blind, Placebo-controlled Trial of Once-weekly Semaglutide in Adults With Type 2 Diabetes Mellitus", overallStatus: "RECRUITING", phases: ["PHASE2","PHASE3"], studyType: "INTERVENTIONAL", conditions: ["Type 2 Diabetes Mellitus"], interventions: ["Semaglutide","Placebo"], sponsorName: "Novo Nordisk A/S", sponsorClass: "INDUSTRY", enrollmentCount: 480, startDate: "2024-03-11", primaryCompletionDate: "2026-09-30", lastUpdatePostDate: "2025-01-17", locationsCountries: ["United States","Denmark","Japan"], studyUrl: "https://clinicaltrials.gov/study/NCT05912345", attribution: "Source: ClinicalTrials.gov, U.S. National Library of Medicine, U.S. Government public domain." }, sampleNote: "Actor README sample checked against all 17 normalized ClinicalTrials.gov output fields."
+      }),
+      Object.freeze({
+        id: "apify-uk-tenders", provider: "apify", family: "uk-tenders", name: "UK Government Tenders", summary: "Contracts Finder OCDS planning, tender, and award notices with OGL v3.0 attribution.", actorId: "txnvyTckeQx4hVBc6", slug: "uk-gov-tenders-scraper", storeUrl: "https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper", ratePerItem: 0.005, ratePer1K: 5, pythonKey: "uk_gov_tenders", jsKey: "ukGovTenders", schemaPath: "actors/uk-gov-tenders-scraper/.actor/input_schema.json", datasetSchemaPath: "actors/uk-gov-tenders-scraper/.actor/dataset_schema.json", inputFields: ["keyword","stages","minValue","publishedFrom","maxItems"], payload: { keyword: "cloud software", stages: "tender", minValue: 50000, publishedFrom: "2026-01-01", maxItems: 10 }, sample: { ocid: "ocds-b5fd17-3f2a1c7e-9b41-4b6a-8d2e-1f7b9c0e4a21", releaseId: "001234-2026", tenderId: "2026/S 123-456789", title: "Provision of Cloud Software Licences and Support", stage: "tender", tags: ["tender"], status: "active", publishedDate: "2026-11-12T09:30:00Z", deadlineDate: "2026-12-15T12:00:00Z", valueAmount: 250000, currency: "GBP", cpvCode: "48000000", buyerName: "Cabinet Office", noticeUrl: "https://www.contractsfinder.service.gov.uk/Notice/3f2a1c7e-9b41-4b6a-8d2e-1f7b9c0e4a21", sourceDataset: "Contracts Finder OCDS", sourcePublisher: "Cabinet Office", sourceUrl: "https://www.contractsfinder.service.gov.uk/Published/Notices/OCDS/Search", accessedOn: "2026-11-25", licenceName: "Open Government Licence v3.0", licenceUrl: "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/", attribution: "Contains public sector information licensed under the Open Government Licence v3.0." }, sampleNote: "Actor sample checked against the OCDS-derived dataset schema and its required attribution fields."
+      }),
+      Object.freeze({
+        id: "apify-sg-green-mark", provider: "apify", family: "sg-green-mark", name: "Singapore Green Mark Buildings", summary: "Published BCA Green Mark commercial certifications for portfolio due diligence and retrofit planning.", actorId: "Z3ioK0wOAeczj6nCx", slug: "sg-green-mark-buildings", storeUrl: "https://apify.com/perceptive_city_af7/sg-green-mark-buildings", ratePerItem: 0.002, ratePer1K: 2, pythonKey: "singapore_green_mark", jsKey: "singaporeGreenMark", schemaPath: "actors/sg-green-mark-buildings/.actor/input_schema.json", datasetSchemaPath: "actors/sg-green-mark-buildings/.actor/dataset_schema.json", inputFields: ["query","rating","expiresWithinDays","maxItems"], payload: { query: "Republic Plaza", rating: "Platinum", maxItems: 10 }, sample: { referenceNo: "GM1/6/2026", projectName: "Republic Plaza", projectType: "Commercial", rating: "Platinum", certifiedOn: "2026-09-18", expiresOn: "2029-09-18", sourceDataset: "Green Mark Buildings", sourcePublisher: "Building and Construction Authority", sourceUrl: "https://data.gov.sg/datasets/d_c4bd082b48fa7611713f39e23d250c27/view", accessedOn: "2026-11-24", licenceUrl: "https://developers.data.gov.sg/open-data-licence", attribution: "Contains information from the Building and Construction Authority under the Singapore Open Data Licence v1.0." }, sampleNote: "Normalization fixture used by the Actor test suite, checked against the complete certification schema."
+      }),
+      Object.freeze({
+        id: "rapid-sec-edgar", provider: "rapidapi", family: "sec-edgar", name: "SEC EDGAR Corporate Filings API", summary: "Row-metered SEC corporate filings search and company lookup through a fixed RapidAPI route.", rapidSlug: "sec-edgar-corporate-filings", hubUrl: "https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings", host: "sec-edgar-corporate-filings.p.rapidapi.com", path: "/v1/sec-edgar/filings", pythonKey: "sec_edgar", jsKey: "secEdgar", schemaPath: "pipelines/rapidapi_hub/openapi/sec-edgar-api.json", responseSchema: "SecFiling", inputFields: ["mode","query","forms","cik","ticker","startDate","endDate","limit"], payload: { mode: "search", query: "artificial intelligence", forms: "10-K,10-Q,8-K", startDate: "2026-01-01", limit: 5 }, sample: { items: [{ accessionNumber: "0000320193-26-000026", cik: "0000320193", companyName: "Apple Inc.", tickers: ["AAPL"], form: "10-K", filingDate: "2026-11-03", reportDate: "2026-09-26", documentDescription: "Annual report", filingUrl: "https://www.sec.gov/Archives/edgar/data/320193/000032019326000026/0000320193-26-000026-index.htm", attribution: "Source: US SEC EDGAR, U.S. Government public domain." }] }, sampleNote: "Representative response envelope checked against the SecFilings and SecFiling OpenAPI components."
+      }),
+      Object.freeze({
+        id: "rapid-clinical-trials", provider: "rapidapi", family: "clinical-trials", name: "ClinicalTrials.gov Studies & Trials API", summary: "Row-metered ClinicalTrials.gov query route for conditions, interventions, sponsors, and study status.", rapidSlug: "clinicaltrials-gov-studies-trials", hubUrl: "https://rapidapi.com/fallRainy/api/clinicaltrials-gov-studies-trials", host: "clinicaltrials-gov-studies-trials.p.rapidapi.com", path: "/v1/clinical-trials/studies", pythonKey: "clinical_trials", jsKey: "clinicalTrials", schemaPath: "pipelines/rapidapi_hub/openapi/clinical-trials-api.json", responseSchema: "ClinicalStudy", inputFields: ["condition","intervention","status","sponsor","queryTerm","limit"], payload: { condition: "Asthma", status: "RECRUITING", limit: 5 }, sample: { items: [{ nctId: "NCT01234567", briefTitle: "A Study of an Asthma Intervention", officialTitle: "Randomized Study of an Asthma Intervention", overallStatus: "RECRUITING", phases: ["PHASE2"], studyType: "INTERVENTIONAL", conditions: ["Asthma"], interventions: ["Study treatment"], sponsorName: "Example Research Sponsor", sponsorClass: "OTHER", enrollmentCount: 120, startDate: "2025-01-15", primaryCompletionDate: "2027-06-30", lastUpdatePostDate: "2026-10-15", locationsCountries: ["United States"], studyUrl: "https://clinicaltrials.gov/study/NCT01234567", attribution: "Source: ClinicalTrials.gov, U.S. Government public domain." }] }, sampleNote: "Gateway test fixture shaped by the ClinicalStudy OpenAPI component."
+      }),
+      Object.freeze({
+        id: "rapid-openfda", provider: "rapidapi", family: "openfda", name: "openFDA Recalls, Enforcement & Approvals API", summary: "Drug enforcement, device recall, food enforcement, and drug approval records through a row-metered route.", rapidSlug: "openfda-recalls-enforcement-approvals", hubUrl: "https://rapidapi.com/fallRainy/api/openfda-recalls-enforcement-approvals", host: "openfda-recalls-enforcement-approvals.p.rapidapi.com", path: "/v1/openfda/records", pythonKey: "openfda", jsKey: "openFda", schemaPath: "pipelines/rapidapi_hub/openapi/openfda-recalls-api.json", responseSchema: "OpenFdaRecord", inputFields: ["dataset","searchQuery","classification","status","limit"], payload: { dataset: "drug_enforcement", searchQuery: "labeling", classification: "Class I", status: "Ongoing", limit: 5 }, sample: { items: [{ recordId: "D-0001-2025", dataset: "drug_enforcement", eventId: "E12345", title: "Drug enforcement recall D-0001-2025", firmOrSponsor: "Acme Pharma", classification: "Class I", status: "Ongoing", productType: "Drugs", productDescription: "Tablet 10mg", reasonOrAction: "Labeling", initiatedDate: "2025-01-15", locationCountry: "United States", apiEndpoint: "drug/enforcement", sourceUrl: "https://open.fda.gov/apis/drug/enforcement/", attribution: "Source: openFDA, U.S. Government public data." }] }, sampleNote: "Normalized gateway test fixture checked against the OpenFdaRecord OpenAPI component."
+      }),
+      Object.freeze({
+        id: "rapid-sg-green-mark", provider: "rapidapi", family: "sg-green-mark", name: "Singapore BCA Green Mark Buildings API", summary: "Row-metered access to BCA Green Mark commercial certification records and ratings.", rapidSlug: "singapore-bca-green-mark-buildings", hubUrl: "https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings", host: "singapore-bca-green-mark-buildings.p.rapidapi.com", path: "/v1/sg-green-mark/certificates", pythonKey: "singapore_green_mark", jsKey: "singaporeGreenMark", schemaPath: "pipelines/rapidapi_hub/openapi/sg-green-mark-api.json", responseSchema: "Certificate", inputFields: ["limit","rating"], payload: { limit: 5, rating: "Platinum" }, sample: { items: [{ referenceNo: "GM1/6/2026", projectName: "Republic Plaza", projectType: "Commercial", rating: "Platinum", certifiedOn: "2026-09-18", expiresOn: "2029-09-18", sourceDataset: "Green Mark Buildings", sourcePublisher: "Building and Construction Authority", sourceUrl: "https://data.gov.sg/datasets/d_c4bd082b48fa7611713f39e23d250c27/view", accessedOn: "2026-11-24", licenceUrl: "https://developers.data.gov.sg/open-data-licence", attribution: "Contains information from BCA under the Singapore Open Data Licence v1.0." }] }, sampleNote: "Gateway response fixture checked against the Certificate OpenAPI component."
+      })
+    ]);
 
-function renderRapidApiTable(rapidapi) {
-  const body = $("rapidapi-tier-body");
-  if (!body) return;
-  const note = $("rapidapi-unavailable-note");
-  const wrap = getTableWrap(body);
-
-  if (!rapidapi.available) {
-    body.replaceChildren();
-    if (wrap) wrap.hidden = true;
-    if (note) {
-      note.hidden = false;
-      note.textContent = rapidapi.reason || "RapidAPI is unavailable for this dataset.";
+    function productById(id) {
+      const product = PRODUCTS.find((item) => item.id === id);
+      if (!product) throw new RangeError("Unknown product: " + id);
+      return product;
     }
-    return;
-  }
 
-  if (note) {
-    note.hidden = true;
-    note.textContent = "";
-  }
-  if (wrap) wrap.hidden = false;
-  body.replaceChildren();
+    function payloadFor(product, mode) {
+      if (product.modePayloads) return product.modePayloads[mode || product.modes[0]];
+      return product.payload;
+    }
 
-  const recommendedId = rapidapi.recommendedTier ? rapidapi.recommendedTier.id : null;
+    function sampleFor(product, mode) {
+      if (product.modeSamples) return product.modeSamples[mode || product.modes[0]];
+      return product.sample;
+    }
 
-  rapidapi.tiers.forEach((tier) => {
-    const tr = document.createElement("tr");
-    if (tier.id === recommendedId) tr.classList.add("active-row");
-    if (!tier.fitsQuota) tr.classList.add("cap-warn");
+    function stableJson(value) {
+      return JSON.stringify(value, null, 2);
+    }
 
-    const values = [
-      tier.name,
-      formatUsd(tier.monthlyUsd, { minDecimals: 0, maxDecimals: 0 }) + "/mo",
-      tier.includedRows.toLocaleString(),
-      tier.utilizationPct + "%",
-      tier.fitsQuota ? "Fits" : "Over quota",
-    ];
+    function queryString(payload) {
+      return Object.entries(payload)
+        .filter(([, value]) => value !== "" && value !== null && value !== undefined)
+        .map(([key, value]) => encodeURIComponent(key) + "=" + encodeURIComponent(Array.isArray(value) ? value.join(",") : String(value)))
+        .join("&");
+    }
 
-    values.forEach((text, i) => {
-      if (i === 0) {
-        const th = document.createElement("th");
-        th.scope = "row";
-        th.textContent = text;
-        tr.appendChild(th);
-        return;
+    function pythonLiteral(value, indent = 0) {
+      if (value === null) return "None";
+      if (value === true) return "True";
+      if (value === false) return "False";
+      if (typeof value === "string") return JSON.stringify(value);
+      if (typeof value === "number") return String(value);
+      if (Array.isArray(value)) return "[" + value.map((item) => pythonLiteral(item, indent + 2)).join(", ") + "]";
+      const pad = " ".repeat(indent);
+      const next = " ".repeat(indent + 2);
+      const entries = Object.entries(value).map(([key, item]) => next + JSON.stringify(key) + ": " + pythonLiteral(item, indent + 2));
+      return "{\n" + entries.join(",\n") + "\n" + pad + "}";
+    }
+
+    function generateSnippets(productId, mode) {
+      const product = productById(productId);
+      const payload = payloadFor(product, mode);
+      if (product.provider === "apify") {
+        const endpoint = "https://api.apify.com/v2/acts/" + product.actorId + "/run-sync-get-dataset-items?clean=true&maxTotalChargeUsd=0.25";
+        const body = stableJson(payload);
+        const compactBody = JSON.stringify(payload);
+        const workflow = {
+          name: product.name + " - cost-capped public data",
+          nodes: [{ parameters: { method: "POST", url: endpoint, sendHeaders: true, headerParameters: { parameters: [{ name: "Authorization", value: "Bearer {{APIFY_TOKEN}}" }, { name: "Content-Type", value: "application/json" }] }, sendBody: true, contentType: "raw", rawContentType: "application/json", body: compactBody, options: { response: { response: { responseFormat: "json" } } } }, id: "open-gov-request", name: "Fetch public records", type: "n8n-nodes-base.httpRequest", typeVersion: 4.2, position: [400, 260] }], connections: {}, settings: { executionOrder: "v1" }, active: false
+        };
+        const mcp = { mcpServers: { ["open-gov-" + product.id]: { command: "npx", args: ["-y", "mcp-server-open-gov-data@0.2.0"], env: { APIFY_TOKEN: "{{APIFY_TOKEN}}", MCP_APIFY_MAX_TOTAL_CHARGE_USD: "0.25" } } } };
+        return {
+          curl: "curl --request POST \\\n  --url '" + endpoint + "' \\\n  --header 'Authorization: Bearer {{APIFY_TOKEN}}' \\\n  --header 'Content-Type: application/json' \\\n  --data '" + compactBody + "'",
+          python: "# open-gov-data==0.2.0\n# Set APIFY_TOKEN in your environment; never commit it.\nfrom open_gov_data import OpenGovDataClient\n\nclient = OpenGovDataClient.from_env(timeout=30)\nresult = client.run_actor(\n    " + JSON.stringify(product.pythonKey) + ",\n    " + pythonLiteral(payload, 4) + ",\n    max_items=" + String(payload.maxItems || 10) + ",\n    max_total_charge_usd=\"0.25\",\n)\nprint(result)",
+          javascript: "// open-gov-data@0.2.0 · JavaScript or TypeScript (ESM)\n// Set APIFY_TOKEN in your environment; never commit it.\nimport { OpenGovDataClient } from 'open-gov-data';\n\nconst client = OpenGovDataClient.fromEnv();\nconst result = await client.runActor(\n  " + JSON.stringify(product.jsKey) + ",\n  " + body.replace(/^/gm, "  ").trimStart() + ",\n  { maxItems: " + String(payload.maxItems || 10) + ", maxTotalChargeUsd: '0.25' },\n);\nconsole.log(result);",
+          sheets: "/** Google Sheets Apps Script · run from Extensions > Apps Script. */\nfunction OPEN_GOV_DATA() {\n  const url = " + JSON.stringify(endpoint) + ";\n  const response = UrlFetchApp.fetch(url, {\n    method: 'post',\n    contentType: 'application/json',\n    headers: { Authorization: 'Bearer {{APIFY_TOKEN}}' },\n    payload: JSON.stringify(" + body + "),\n    muteHttpExceptions: false\n  });\n  return JSON.parse(response.getContentText());\n}",
+          n8n: stableJson(workflow),
+          mcp: stableJson(mcp)
+        };
       }
-      const td = document.createElement("td");
-      td.textContent = text;
-      tr.appendChild(td);
-    });
 
-    body.appendChild(tr);
-  });
-}
-
-function readNumber(id) {
-  const el = $(id);
-  if (!el) return NaN;
-  const raw = String(el.value == null ? "" : el.value).trim();
-  if (raw === "") return NaN;
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : NaN;
-}
-
-function renderCta(id, url) {
-  const el = $(id);
-  if (!el) return;
-  el.hidden = !url;
-  el.href = url || "#";
-}
-
-function renderAll() {
-  if (!getDatasetById(activeDatasetId)) return;
-
-  const maxItems = readNumber("max-items-input");
-  const runsPerMonth = readNumber("runs-per-month-input");
-  const maxTotalChargeUsd = readNumber("max-charge-input");
-
-  if (!Number.isInteger(maxItems) || maxItems < 1 || maxItems > 5000) {
-    setStatus("Enter a whole number for max items between 1 and 5,000.", true);
-    return;
-  }
-  if (!Number.isInteger(runsPerMonth) || runsPerMonth < 1 || runsPerMonth > 1000) {
-    setStatus("Enter a whole number for runs per month between 1 and 1,000.", true);
-    return;
-  }
-  if (!Number.isFinite(maxTotalChargeUsd) || maxTotalChargeUsd < 0) {
-    setStatus("Enter a valid max total charge (0 or more).", true);
-    return;
-  }
-
-  const planSelect = $("apify-plan-select");
-  const planId = planSelect && planSelect.value ? planSelect.value : undefined;
-  const queryInput = $("query-input");
-  const query = queryInput ? String(queryInput.value || "").trim() : "";
-
-  const cmp = compareChannels({
-    datasetId: activeDatasetId,
-    maxItems,
-    runsPerMonth,
-    planId,
-    maxTotalChargeUsd,
-  });
-
-  const gen = generateSnippets({
-    datasetId: activeDatasetId,
-    channel: activeChannel,
-    query,
-    maxItems,
-    maxTotalChargeUsd,
-    planId,
-  });
-
-  const apify = cmp.apify;
-  const rapidapi = cmp.rapidapi;
-  const plan = cmp.selectedApifyPlan;
-
-  const apifyCost = $("kpi-apify-cost");
-  if (apifyCost) apifyCost.textContent = apify.available && plan ? formatUsd(plan.monthlyCost) : "—";
-
-  const apifySub = $("kpi-apify-sub");
-  if (apifySub) {
-    apifySub.textContent = apify.available && plan
-      ? plan.name + " · " + formatUsd(plan.perRunCost) + "/run · " + cmp.totalMonthlyItems.toLocaleString() + " items/mo"
-      : (apify.reason || "Unavailable");
-  }
-
-  const capStatus = $("kpi-cap-status");
-  if (capStatus) capStatus.textContent = apify.available && plan ? (plan.capExceeded ? "Cap applied" : "Within cap") : "—";
-
-  const capSub = $("kpi-cap-sub");
-  if (capSub) {
-    capSub.textContent = apify.available && plan
-      ? "Applied " + formatUsd(plan.appliedCapUsd || 0) + " · up to " + plan.maxItemsUnderCap.toLocaleString() + " items"
-      : "";
-  }
-
-  const rapidCost = $("kpi-rapidapi-cost");
-  if (rapidCost) {
-    rapidCost.textContent = rapidapi.available && rapidapi.recommendedTier
-      ? formatUsd(rapidapi.recommendedTier.monthlyUsd, { minDecimals: 0, maxDecimals: 0 })
-      : "—";
-  }
-
-  const rapidSub = $("kpi-rapidapi-sub");
-  if (rapidSub) {
-    rapidSub.textContent = rapidapi.available
-      ? rapidapi.monthlyRequests.toLocaleString() + " requests/mo · " + rapidapi.totalMonthlyRows.toLocaleString() + " rows"
-      : (rapidapi.reason || "Unavailable");
-  }
-
-  const verdictTitle = $("kpi-verdict-title");
-  if (verdictTitle) verdictTitle.textContent = cmp.verdict.headline || "";
-
-  const verdictDetail = $("kpi-verdict-detail");
-  if (verdictDetail) verdictDetail.textContent = cmp.verdict.detail || "";
-
-  renderApifyTable(apify, plan ? plan.id : planId);
-  renderRapidApiTable(rapidapi);
-
-  const note = $("channel-note");
-  if (note) {
-    const msg = gen.channelFallbackNote || "";
-    note.textContent = msg;
-    note.hidden = !msg;
-  }
-
-  latestSnippets = gen.snippets || { curl: "", python: "", n8n: "", mcp: "" };
-
-  const out = $("code-output");
-  if (out) out.textContent = latestSnippets[activeCodeTab] || "";
-
-  const badge = $("code-badge");
-  if (badge) {
-    const parts = [gen.effectiveChannel || activeChannel];
-    if (gen.capStr) parts.push("cap " + gen.capStr);
-    badge.textContent = parts.join(" · ");
-  }
-
-  const ctas = gen.ctas || {};
-  renderCta("cta-apify-store", ctas.apifyStoreUrl);
-  renderCta("cta-apify-pricing", ctas.apifyPricingUrl);
-  renderCta("cta-rapidapi-hub", ctas.rapidapiHubUrl);
-  renderCta("cta-kvs-n8n", ctas.kvsN8nWorkflowUrl);
-  renderCta("cta-mcp-registry", ctas.mcpRegistryUrl);
-
-  setStatus(cmp.verdict.headline || "Comparison updated.", false);
-}
-
-function on(id, eventName, handler) {
-  const el = $(id);
-  if (el) el.addEventListener(eventName, handler);
-}
-
-on("dataset-pills", "click", (e) => {
-  const btn = e.target.closest("button[data-dataset-id]");
-  if (btn) selectDataset(btn.dataset.datasetId);
-});
-
-on("channel-pills", "click", (e) => {
-  const btn = e.target.closest("button[data-channel-id]");
-  if (btn) selectChannel(btn.dataset.channelId);
-});
-
-on("code-tabs", "click", (e) => {
-  const btn = e.target.closest("button[data-code-tab]");
-  if (btn) selectCodeTab(btn.dataset.codeTab);
-});
-
-on("item-presets", "click", (e) => {
-  const btn = e.target.closest("button[data-items]");
-  if (!btn) return;
-  const value = btn.dataset.items;
-  const range = $("max-items-range");
-  const num = $("max-items-input");
-  if (range) range.value = value;
-  if (num) num.value = value;
-  renderAll();
-});
-
-(function wireMaxItems() {
-  const range = $("max-items-range");
-  const num = $("max-items-input");
-  if (!range || !num) return;
-
-  range.addEventListener("input", () => {
-    num.value = range.value;
-    renderAll();
-  });
-  range.addEventListener("change", () => {
-    num.value = range.value;
-    renderAll();
-  });
-  num.addEventListener("input", () => {
-    range.value = num.value;
-    renderAll();
-  });
-  num.addEventListener("change", () => {
-    range.value = num.value;
-    renderAll();
-  });
-})();
-
-["query-input", "max-charge-input", "apify-plan-select", "runs-per-month-input"].forEach((id) => {
-  const el = $(id);
-  if (!el) return;
-  ["input", "change"].forEach((evt) => el.addEventListener(evt, () => renderAll()));
-});
-
-on("auto-cap-btn", "click", () => {
-  const maxItems = readNumber("max-items-input");
-  const runsPerMonth = readNumber("runs-per-month-input");
-  const maxTotalChargeUsd = readNumber("max-charge-input");
-  const planSelect = $("apify-plan-select");
-  const planId = planSelect && planSelect.value ? planSelect.value : undefined;
-
-  if (!Number.isFinite(maxItems) || maxItems <= 0) {
-    setStatus("Enter a valid max items value before auto-capping.", true);
-    return;
-  }
-
-  const result = compareChannels({
-    datasetId: activeDatasetId,
-    maxItems,
-    runsPerMonth: Number.isFinite(runsPerMonth) && runsPerMonth > 0 ? runsPerMonth : 1,
-    planId,
-    maxTotalChargeUsd: Number.isFinite(maxTotalChargeUsd) && maxTotalChargeUsd >= 0 ? maxTotalChargeUsd : 0,
-  });
-
-  const plan = result.selectedApifyPlan;
-  if (!result.apify.available || !plan) {
-    setStatus("Auto-cap is unavailable for this selection.", true);
-    return;
-  }
-
-  const capInput = $("max-charge-input");
-  if (capInput) capInput.value = String(plan.recommendedCapUsd);
-  renderAll();
-});
-
-on("copy-code-btn", "click", () => {
-  const text = latestSnippets[activeCodeTab] || "";
-  if (!text) {
-    setStatus("Nothing to copy yet.", true);
-    return;
-  }
-
-  const done = () => setStatus("Copied " + activeCodeTab + " snippet to clipboard.", false);
-  const fail = (err) => setStatus("Copy failed: " + (err && err.message ? err.message : "unknown error"), true);
-
-  const fallbackCopy = () => {
-    try {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.setAttribute("readonly", "");
-      ta.style.position = "fixed";
-      ta.style.top = "-1000px";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      const ok = document.execCommand("copy");
-      document.body.removeChild(ta);
-      if (ok) done();
-      else fail(new Error("execCommand returned false"));
-    } catch (err) {
-      fail(err);
+      const endpoint = "https://" + product.host + product.path;
+      const fullUrl = endpoint + "?" + queryString(payload);
+      const workflow = {
+        name: product.name + " - RapidAPI rows",
+        nodes: [{ parameters: { method: "GET", url: fullUrl, sendHeaders: true, headerParameters: { parameters: [{ name: "X-RapidAPI-Key", value: "{{RAPIDAPI_KEY}}" }, { name: "X-RapidAPI-Host", value: product.host }] }, options: { response: { response: { responseFormat: "json" } } } }, id: "open-gov-request", name: "Fetch public records", type: "n8n-nodes-base.httpRequest", typeVersion: 4.2, position: [400, 260] }], connections: {}, settings: { executionOrder: "v1" }, active: false
+      };
+      const mcp = { mcpServers: { ["open-gov-" + product.id]: { command: "npx", args: ["-y", "mcp-server-open-gov-data@0.2.0"], env: { RAPIDAPI_KEY: "{{RAPIDAPI_KEY}}" } } } };
+      return {
+        curl: "curl --request GET \\\n  --url '" + fullUrl + "' \\\n  --header 'X-RapidAPI-Key: {{RAPIDAPI_KEY}}' \\\n  --header 'X-RapidAPI-Host: " + product.host + "'",
+        python: "# open-gov-data==0.2.0\n# Set RAPIDAPI_KEY in your environment; never commit it.\nfrom open_gov_data import OpenGovDataClient\n\nclient = OpenGovDataClient.from_env(timeout=30)\nrows = client.records(\n    \"rapidapi\",\n    " + JSON.stringify(product.pythonKey) + ",\n    " + pythonLiteral(payload, 4) + ",\n    max_items=" + String(payload.limit || 5) + ",\n)\nprint(rows)",
+        javascript: "// open-gov-data@0.2.0 · JavaScript or TypeScript (ESM)\n// Set RAPIDAPI_KEY in your environment; never commit it.\nimport { OpenGovDataClient } from 'open-gov-data';\n\nconst client = OpenGovDataClient.fromEnv();\nconst rows = await client.records(\n  'rapidapi',\n  " + JSON.stringify(product.jsKey) + ",\n  " + stableJson(payload).replace(/^/gm, "  ").trimStart() + ",\n  { maxItems: " + String(payload.limit || 5) + " },\n);\nconsole.log(rows);",
+        sheets: "/** Google Sheets Apps Script · run from Extensions > Apps Script. */\nfunction OPEN_GOV_DATA() {\n  const response = UrlFetchApp.fetch(" + JSON.stringify(fullUrl) + ", {\n    method: 'get',\n    headers: {\n      'X-RapidAPI-Key': '{{RAPIDAPI_KEY}}',\n      'X-RapidAPI-Host': " + JSON.stringify(product.host) + "\n    },\n    muteHttpExceptions: false\n  });\n  return JSON.parse(response.getContentText()).items;\n}",
+        n8n: stableJson(workflow),
+        mcp: stableJson(mcp)
+      };
     }
-  };
 
-  if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
-    navigator.clipboard.writeText(text).then(done).catch(fallbackCopy);
-  } else {
-    fallbackCopy();
-  }
-});
+    function roundUsd(value) {
+      return Math.round((value + Number.EPSILON) * 1000000) / 1000000;
+    }
 
-function boot() {
-  selectDataset("sec-edgar");
-}
+    function calculateCosts(productId, monthlyRows) {
+      const selected = productById(productId);
+      const rows = Math.max(1, Math.min(50000, Math.trunc(Number(monthlyRows) || 1)));
+      const family = PRODUCTS.filter((product) => product.family === selected.family);
+      const apifyProduct = family.find((product) => product.provider === "apify") || null;
+      const rapidProduct = family.find((product) => product.provider === "rapidapi") || null;
+      let apify = null;
+      let rapidapi = null;
+      if (apifyProduct) {
+        const maxRowsPerRun = Math.max(1, Math.floor((CAP_USD - START_FEE_USD) / apifyProduct.ratePerItem));
+        const runs = Math.ceil(rows / maxRowsPerRun);
+        apify = { productId: apifyProduct.id, rows, runs, maxRowsPerRun, itemUsd: roundUsd(rows * apifyProduct.ratePerItem), monthlyUsd: roundUsd(rows * apifyProduct.ratePerItem + runs * START_FEE_USD) };
+      }
+      if (rapidProduct) {
+        const tier = RAPIDAPI_TIERS.find((item) => rows <= item.rows) || null;
+        rapidapi = tier ? { productId: rapidProduct.id, tierId: tier.id, tierName: tier.name, includedRows: tier.rows, monthlyUsd: tier.usd } : { productId: rapidProduct.id, tierId: null, tierName: null, includedRows: 25000, monthlyUsd: null };
+      }
+      let recommendation;
+      if (apify && rapidapi && rapidapi.monthlyUsd !== null) {
+        recommendation = apify.monthlyUsd <= rapidapi.monthlyUsd
+          ? { channel: "apify", label: "Apify PPE", monthlyUsd: apify.monthlyUsd, reason: "Lower listed monthly cost at this volume." }
+          : { channel: "rapidapi", label: "RapidAPI " + rapidapi.tierName, monthlyUsd: rapidapi.monthlyUsd, reason: "Lower listed monthly cost at this volume." };
+      } else if (apify) {
+        recommendation = { channel: "apify", label: "Apify PPE", monthlyUsd: apify.monthlyUsd, reason: rapidapi ? "The listed RapidAPI tiers stop at 25,000 rows." : "This product is sold through Apify PPE." };
+      } else if (rapidapi && rapidapi.monthlyUsd !== null) {
+        recommendation = { channel: "rapidapi", label: "RapidAPI " + rapidapi.tierName, monthlyUsd: rapidapi.monthlyUsd, reason: "This product is sold through RapidAPI." };
+      } else {
+        recommendation = { channel: "none", label: "No listed tier", monthlyUsd: null, reason: "The requested volume exceeds the 25,000-row RapidAPI Ultra quota." };
+      }
+      return { selectedProductId: productId, rows, apify, rapidapi, recommendation };
+    }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", boot);
-} else {
-  boot();
-}
-})();
-</script>
+    const api = Object.freeze({ PRODUCTS, RAPIDAPI_TIERS, SNIPPET_FORMATS, CAP_USD, START_FEE_USD, productById, payloadFor, sampleFor, generateSnippets, calculateCosts });
+    if (typeof window !== "undefined") window.PlaygroundApp = api;
+
+    if (typeof document === "undefined" || !document.getElementById) return;
+
+    const $ = (id) => document.getElementById(id);
+    let activeProductId = PRODUCTS[0].id;
+    let activeMode = "form_d_funding";
+    let activeFormat = "curl";
+    let latestSnippets = generateSnippets(activeProductId, activeMode);
+
+    function formatUsd(value) {
+      if (value === null || value === undefined) return "—";
+      if (value === 0) return "$0";
+      return "$" + value.toLocaleString("en-US", { minimumFractionDigits: value < 1 ? 4 : 2, maximumFractionDigits: value < 1 ? 6 : 2 });
+    }
+
+    function renderCatalog() {
+      const root = $("catalog-grid");
+      root.replaceChildren();
+      PRODUCTS.forEach((product) => {
+        const card = document.createElement("article");
+        card.className = "product-card";
+        const badge = document.createElement("span");
+        badge.className = "badge" + (product.provider === "rapidapi" ? " badge-rapid" : "");
+        badge.textContent = product.provider === "apify" ? "APIFY ACTOR" : "RAPIDAPI";
+        const title = document.createElement("h3");
+        title.textContent = product.name;
+        const copy = document.createElement("p");
+        copy.textContent = product.summary;
+        const price = document.createElement("div");
+        price.className = "product-price";
+        price.textContent = product.provider === "apify" ? "$" + product.ratePer1K.toFixed(product.ratePer1K % 1 ? 2 : 0) + " / 1,000 records" : "Basic $0 · Pro $19 · Ultra $49";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "button button-quiet";
+        button.textContent = "Use in playground";
+        button.addEventListener("click", () => {
+          activeProductId = product.id;
+          $("product-select").value = product.id;
+          if (product.modes) activeMode = product.modes[0];
+          renderAll();
+          $("playground").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        card.append(badge, title, copy, price, button);
+        root.append(card);
+      });
+    }
+
+    function renderCosts() {
+      const rows = Number($("volume-number").value);
+      const costs = calculateCosts(activeProductId, rows);
+      $("cost-volume-badge").textContent = costs.rows.toLocaleString("en-US") + " rows / month";
+      const apifyCard = $("apify-cost-card");
+      const rapidCard = $("rapid-cost-card");
+      apifyCard.classList.toggle("recommended", costs.recommendation.channel === "apify");
+      rapidCard.classList.toggle("recommended", costs.recommendation.channel === "rapidapi");
+      $("recommendation-card").classList.add("recommended");
+      $("apify-cost").textContent = costs.apify ? formatUsd(costs.apify.monthlyUsd) : "Not offered";
+      $("apify-cost-detail").textContent = costs.apify ? costs.apify.runs + " capped run" + (costs.apify.runs === 1 ? "" : "s") + " · up to " + costs.apify.maxRowsPerRun + " rows per $0.25 run" : "No matched public Apify flagship in this catalog.";
+      $("rapid-cost").textContent = costs.rapidapi && costs.rapidapi.monthlyUsd !== null ? formatUsd(costs.rapidapi.monthlyUsd) : (costs.rapidapi ? "Over quota" : "Not offered");
+      $("rapid-cost-detail").textContent = costs.rapidapi && costs.rapidapi.monthlyUsd !== null ? costs.rapidapi.tierName + " includes " + costs.rapidapi.includedRows.toLocaleString("en-US") + " rows per month" : (costs.rapidapi ? "Ultra includes at most 25,000 rows per month." : "No matched RapidAPI route in this catalog.");
+      $("recommendation").textContent = costs.recommendation.label;
+      $("recommendation-detail").textContent = (costs.recommendation.monthlyUsd === null ? "" : formatUsd(costs.recommendation.monthlyUsd) + " per month. ") + costs.recommendation.reason;
+    }
+
+    function renderAll() {
+      const product = productById(activeProductId);
+      const payload = payloadFor(product, activeMode);
+      latestSnippets = generateSnippets(product.id, activeMode);
+      const isRapid = product.provider === "rapidapi";
+      $("mode-control").hidden = !product.modes;
+      if (product.modes) $("mode-select").value = activeMode;
+      $("provider-badge").textContent = isRapid ? "RAPIDAPI" : "APIFY ACTOR";
+      $("provider-badge").className = "badge" + (isRapid ? " badge-rapid" : "");
+      $("selected-name").textContent = product.name;
+      $("selected-summary").textContent = product.summary;
+      $("selected-key").textContent = isRapid ? product.rapidSlug : product.actorId;
+      $("selected-price").textContent = isRapid ? "Basic $0 · Pro $19 · Ultra $49" : "$" + product.ratePer1K.toFixed(product.ratePer1K % 1 ? 2 : 0) + " / 1K + start fee";
+      $("payload-output").textContent = stableJson(payload);
+      $("product-cta").href = isRapid ? product.hubUrl : product.storeUrl;
+      $("product-cta").textContent = isRapid ? "Open on RapidAPI Hub" : "Open on Apify Store";
+      $("snippet-title").textContent = ({ curl: "curl", python: "Python · open-gov-data 0.2.0", javascript: "JavaScript / TypeScript · open-gov-data 0.2.0", sheets: "Google Sheets Apps Script", n8n: "n8n workflow JSON", mcp: "MCP client config" })[activeFormat];
+      $("code-output").textContent = latestSnippets[activeFormat];
+      document.querySelectorAll("[data-format]").forEach((tab) => tab.setAttribute("aria-selected", String(tab.dataset.format === activeFormat)));
+      $("sample-name").textContent = product.name + " response excerpt";
+      $("sample-note").textContent = product.sampleNote;
+      $("sample-output").textContent = stableJson(sampleFor(product, activeMode));
+      renderCosts();
+    }
+
+    function init() {
+      const selector = $("product-select");
+      const apifyGroup = document.createElement("optgroup");
+      apifyGroup.label = "Apify Actors";
+      const rapidGroup = document.createElement("optgroup");
+      rapidGroup.label = "RapidAPI endpoints";
+      PRODUCTS.forEach((product) => {
+        const option = document.createElement("option");
+        option.value = product.id;
+        option.textContent = product.name;
+        (product.provider === "apify" ? apifyGroup : rapidGroup).append(option);
+      });
+      selector.append(apifyGroup, rapidGroup);
+      selector.value = activeProductId;
+      selector.addEventListener("change", () => {
+        activeProductId = selector.value;
+        const product = productById(activeProductId);
+        if (product.modes) activeMode = product.modes[0];
+        renderAll();
+      });
+      $("mode-select").addEventListener("change", (event) => { activeMode = event.target.value; renderAll(); });
+      const syncVolume = (value) => {
+        const safe = Math.max(1, Math.min(50000, Math.trunc(Number(value) || 1)));
+        $("volume-range").value = String(safe);
+        $("volume-number").value = String(safe);
+        renderCosts();
+      };
+      $("volume-range").addEventListener("input", (event) => syncVolume(event.target.value));
+      $("volume-number").addEventListener("input", (event) => syncVolume(event.target.value));
+      document.querySelectorAll("[data-format]").forEach((tab) => tab.addEventListener("click", () => { activeFormat = tab.dataset.format; renderAll(); }));
+      $("copy-button").addEventListener("click", async () => {
+        const button = $("copy-button");
+        try {
+          await navigator.clipboard.writeText(latestSnippets[activeFormat]);
+          button.textContent = "Copied";
+        } catch (_error) {
+          button.textContent = "Select and copy";
+          const range = document.createRange();
+          range.selectNodeContents($("code-output"));
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+        window.setTimeout(() => { button.textContent = "Copy snippet"; }, 1600);
+      });
+      renderCatalog();
+      renderAll();
+    }
+
+    init();
+  })();
+  </script>
 </body>
 </html>

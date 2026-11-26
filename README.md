@@ -20,11 +20,14 @@ Production-ready, **zero-dependency** developer kits, analyst connectors, and fr
 ### Apify Store (Pay-Per-Event Serverless Datasets — No Proxies / No Browser)
 | Actor | Best For | Pricing | Live Store Page |
 |---|---|---|---|
-| **SEC EDGAR Scraper** | VC lead gen, equity research, AI RAG | `$4.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper) |
+| **ATS Jobs & Hiring Signals API (Greenhouse, Lever & Ashby)** | B2B hiring intent, recruiting, salary intel (22 tech leaders + custom URLs) | `$4.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper) |
+| **SEC EDGAR v2.0 — Form D Funding, 10-K/8-K & XBRL** | VC startup funding rounds, audited XBRL financials, AI RAG | `$4.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper) |
+| **Global Public Tenders & Grants Aggregator (7 Countries)** | Unified US, UK, EU, World Bank, Canada & Australia procurement | `$8.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/global-public-tenders-grants-aggregator) |
+| **Pharma & Biotech Pipeline Intelligence (4-Source Cross-Linked)** | ClinicalTrials + openFDA + ChEMBL + Europe PMC drug dossiers | `$10.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/pharma-biotech-pipeline-intelligence) |
+| **USASpending Federal Contracts & B2G Awards** | US federal prime contracts, NAICS/PSC codes & defense spend | `$5.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper) |
 | **ClinicalTrials.gov Scraper** | Biotech pipeline intelligence & CRO sourcing | `$3.50 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/clinical-trials-scraper) |
 | **UK Government Tenders (OCDS)** | B2G sales leads & procurement monitoring | `$5.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper) |
 | **Singapore Green Mark Buildings** | APAC ESG & PropTech compliance | `$2.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/sg-green-mark-buildings) |
-
 ---
 
 ## Free Zero-Dependency Developer & Analyst Kits (`packages/`)

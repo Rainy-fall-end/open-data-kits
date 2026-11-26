@@ -13,7 +13,7 @@ class OpenGovDataRapidApi {
         typeOptions: { password: true },
         default: '',
         required: true,
-        description: 'RapidAPI application key. It is sent only in X-RapidAPI-Key and is never logged.',
+        description: 'RapidAPI application key. Sent only in X-RapidAPI-Key and never logged.',
       },
     ];
   }

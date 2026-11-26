@@ -1,14 +1,14 @@
 {
   "name": "n8n-nodes-open-gov-data",
-  "version": "0.1.0",
-  "description": "Cost-capped n8n community node for public SEC, ClinicalTrials.gov, UK tenders, openFDA, and Singapore BCA data.",
+  "version": "0.2.0",
+  "description": "Zero-dependency, cost-capped n8n community node for 12 public Apify and RapidAPI data products.",
   "license": "MIT",
   "author": "apify-works contributors",
   "homepage": "https://github.com/fall-rainy/apify-works",
   "repository": {
     "type": "git",
     "url": "https://github.com/fall-rainy/apify-works.git",
-    "directory": "codex-work/n8n-community-node-public-data"
+    "directory": "codex-work/n8n-node-open-gov-v2"
   },
   "bugs": {
     "url": "https://github.com/fall-rainy/apify-works/issues"
@@ -23,12 +23,15 @@
     "sec-edgar",
     "clinicaltrials",
     "openfda",
-    "uk-tenders",
-    "singapore-bca"
+    "public-tenders",
+    "hiring-signals",
+    "pharma-intelligence"
   ],
-  "main": "dist/nodes/OpenGovData/OpenGovData.node.js",
+  "main": "nodes/OpenGovData/OpenGovData.node.js",
   "files": [
-    "dist",
+    "credentials",
+    "lib",
+    "nodes",
     "README.md",
     "LICENSE"
   ],
@@ -36,7 +39,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test --test-reporter=spec",
+    "test": "node --test tests",
     "verify": "node verify.mjs"
   },
   "peerDependencies": {
@@ -50,11 +53,11 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/OpenGovDataApifyApi.credentials.js",
-      "dist/credentials/OpenGovDataRapidApi.credentials.js"
+      "credentials/OpenGovDataApifyApi.credentials.js",
+      "credentials/OpenGovDataRapidApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/OpenGovData/OpenGovData.node.js"
+      "nodes/OpenGovData/OpenGovData.node.js"
     ]
   }
 }

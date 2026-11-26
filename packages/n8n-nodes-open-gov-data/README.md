@@ -1,93 +1,108 @@
 # n8n-nodes-open-gov-data
 
-An installable, zero-runtime-dependency n8n community node for eight allowlisted public-data products. It uses only Node 20 built-ins at runtime. `n8n-workflow` is declared as an optional peer for n8n ecosystem compatibility; the package does not import it.
+A zero-runtime-dependency n8n community node for 12 allowlisted, public-data products. Version `0.2.0` uses only Node 20 built-ins, keeps the v0.1 node and credential identities, validates request fields against the repository contracts, and applies a hard Apify charge ceiling of `$0.25` per run.
 
-中文摘要：这是一个面向公开政府数据的 n8n 社区节点，统一接入 4 个公开 Apify 付费 Actor 和 4 个 RapidAPI 付费 REST API。节点严格限定数据源，不包含任何私有香港 Actor，不记录密钥，并为 Apify 调用强制传递 `maxTotalChargeUsd` 硬限费参数。
+## Operations
 
-## Supported sources
+| Provider | Operation value | Product | Fixed identifier or path |
+| --- | --- | --- | --- |
+| Apify | `atsJobsHiringSignals` | ATS Jobs & Hiring Signals | `CRulq5dak4mqAUmMn` |
+| Apify | `secEdgarIntelligence` | SEC EDGAR Intelligence | `8LFIbRbidiHPknMz5` |
+| Apify | `globalPublicTenders` | Global Public Tenders & Grants | `ZlabhlvEIyRVdtKiQ` |
+| Apify | `pharmaPipelineIntelligence` | Pharma & Biotech Pipeline Intelligence | `re8aRvtqBonP5HMuY` |
+| Apify | `usaspendingContracts` | USAspending Contracts & Grants | `eQQ2beomyLlW4DTGM` |
+| Apify | `clinicalTrials` | ClinicalTrials.gov Studies | `KchE3qKKrwU0rCe9f` |
+| Apify | `ukGovTenders` | UK Government Tenders | `txnvyTckeQx4hVBc6` |
+| Apify | `sgGreenMark` | Singapore BCA Green Mark Buildings | `Z3ioK0wOAeczj6nCx` |
+| RapidAPI | `secEdgarCorporateFilings` | SEC EDGAR Corporate Filings | `/v1/sec-edgar/filings` |
+| RapidAPI | `clinicaltrialsStudies` | ClinicalTrials.gov Studies | `/v1/clinical-trials/studies` |
+| RapidAPI | `openfdaRecalls` | openFDA Recalls, Enforcement & Approvals | `/v1/openfda/records` |
+| RapidAPI | `sgGreenMarkBuildings` | Singapore BCA Green Mark Buildings | `/v1/sg-green-mark/certificates` |
 
-| Provider | Source | Identifier or path |
-| --- | --- | --- |
-| Apify | SEC EDGAR Corporate Filings | `8LFIbRbidiHPknMz5` |
-| Apify | ClinicalTrials.gov Studies & Trials | `KchE3qKKrwU0rCe9f` |
-| Apify | UK Government Tenders | `txnvyTckeQx4hVBc6` |
-| Apify | Singapore BCA Green Mark Buildings | `Z3ioK0wOAeczj6nCx` |
-| RapidAPI | SEC EDGAR Corporate Filings | `/v1/sec-edgar/filings` |
-| RapidAPI | ClinicalTrials.gov Studies & Trials | `/v1/clinical-trials/studies` |
-| RapidAPI | openFDA Recalls, Enforcement & Approvals | `/v1/openfda/records` |
-| RapidAPI | Singapore BCA Green Mark Buildings | `/v1/sg-green-mark/certificates` |
+The catalog is closed: workflows cannot supply Actor IDs, API hosts, endpoint paths, or arbitrary URLs. The SEC Actor supports `form_d_funding`, `xbrl_financials`, and `filings` modes.
 
-The catalog is a closed allowlist. Users cannot enter arbitrary Actor IDs, RapidAPI hosts, or URLs.
+## Install
 
-## Install after the package owner publishes it
+After the package owner publishes it:
 
-This workspace does **not** publish the package. After owner or CI review and publication:
-
-1. In n8n, open **Settings → Community Nodes**.
+1. Open **Settings → Community Nodes** in n8n.
 2. Install `n8n-nodes-open-gov-data`.
-3. Add either **Open Gov Data: Apify API** or **Open Gov Data: RapidAPI** credentials.
-4. Add the **Open Gov Data** node to a workflow and choose the provider and source.
+3. Add **Open Gov Data: Apify API** and/or **Open Gov Data: RapidAPI** credentials.
+4. Add **Open Gov Data** to a workflow and choose the provider and operation.
 
-For local package review, run `npm pack --dry-run --json --ignore-scripts`; no install step or third-party build tool is required.
+This workspace does not publish or install the package.
 
-## Parameters and cost controls
+## Parameters and billing controls
 
-- **Request Input** is a JSON object. It becomes the Actor input for Apify or query parameters for RapidAPI.
-- **Max Items** defaults to 10, is limited to 1–1000, and always overrides a `maxItems` value supplied in Request Input.
-- **Max Total Charge USD** is required for Apify, defaults to `$0.25`, and is always sent to Apify's synchronous Actor endpoint as `maxTotalChargeUsd`. It cannot be omitted by Request Input.
-- **Timeout** defaults to 30 seconds. Every operation makes one attempt only; there are no automatic retries that could duplicate a paid call.
+- **Request Input** is a JSON object. Only fields present in the selected Actor input schema or RapidAPI OpenAPI query contract are accepted.
+- **Max Items** defaults to `10`. It always replaces `maxItems` for Actors and `limit` for RapidAPI. RapidAPI operations allow at most 20 rows; each Actor retains its repository-defined maximum.
+- **Max Total Charge USD** is shown only for Apify, defaults to `0.25`, and cannot exceed `0.25`. It is sent as the server-side `maxTotalChargeUsd` query parameter and never placed in the Actor input body.
+- **Timeout** defaults to 30 seconds. Calls are single-attempt, do not follow redirects, and reject responses larger than 10 MiB.
 
-RapidAPI does not expose Apify's `maxTotalChargeUsd` run control. On RapidAPI calls, this node bounds requested rows with **Max Items**; account-plan charges and quotas remain governed by the user's RapidAPI subscription.
-
-Example SEC Actor input:
+Example SEC funding input:
 
 ```json
 {
-  "mode": "search",
+  "mode": "form_d_funding",
   "query": "artificial intelligence",
-  "forms": "10-K,10-Q,8-K",
-  "startDate": "2026-01-01"
+  "excludePooledFunds": true,
+  "minOfferingAmountUsd": 1000000
 }
 ```
 
-Example ClinicalTrials.gov RapidAPI query:
+Example SEC XBRL input:
 
 ```json
 {
-  "condition": "type 2 diabetes",
-  "status": "RECRUITING",
-  "queryTerm": "GLP-1"
+  "mode": "xbrl_financials",
+  "ticker": "AAPL",
+  "forms": "10-K,10-Q"
 }
 ```
 
-## Credential safety
+Example openFDA query:
 
-- Apify tokens must match the modern `apify_api_…` format. RapidAPI keys must be at least 20 URL-safe characters.
-- Credentials are accepted only from n8n credential records and sent only in request headers.
-- Request Input rejects credential-like fields, including `authorization`, `token`, `APIFY_TOKEN`, and `X-RapidAPI-Key`.
-- Upstream error bodies are never copied into node errors. Stable error codes report authentication, HTTP status, invalid JSON, network failure, and timeout without including secrets.
-- The implementation contains no logging calls and never places a credential in a URL.
+```json
+{
+  "dataset": "drug_enforcement",
+  "classification": "Class I",
+  "status": "Ongoing"
+}
+```
+
+## v0.1 compatibility
+
+The n8n node name remains `openGovData`; credential names remain `openGovDataApifyApi` and `openGovDataRapidApi`; node type version remains `1`; parameter names and provider values are unchanged. Saved v0.1 source values are resolved internally to the corresponding v0.2 canonical operation, but aliases are not shown as duplicate products in the dropdown.
+
+## Credential and network safety
+
+- Credentials come only from n8n credential records and are sent only in request headers.
+- Credential-like input fields and any input value containing the active credential are rejected before HTTP.
+- Response strings containing the active credential are replaced with `[REDACTED]`; error messages never include URLs, response bodies, input values, or credentials.
+- Runtime destinations are fixed by the catalog. Test endpoint overrides require an explicit opt-in and accept only an uncredentialed `http://127.0.0.1`, `http://[::1]`, or `http://localhost` origin.
+- The node performs no retries and rejects redirects.
 
 ## Offline verification
 
-Requires Node 20 and npm (npm is used only for a local dry-run package manifest):
+From this directory, with Node 20+ and npm available:
 
 ```text
 node verify.mjs
 ```
 
-The verifier syntax-checks shipped JavaScript, confirms the dependency and n8n metadata contracts, runs offline unit and local-loopback HTTP integration tests, runs `npm pack --dry-run`, and atomically writes `evidence.json`. It never contacts an external service, invokes a paid API, installs dependencies, or publishes to npm.
+The verifier checks JavaScript syntax, exact n8n metadata, the 12-operation allowlist, v0.1 aliases, all eight repository Actor schemas, all four repository OpenAPI operations, and package contents. It runs all tests, sends all 12 operations through a real `127.0.0.1` HTTP mock, proves the cap/SSRF/redaction guards, runs `npm pack --dry-run` in offline mode, makes no external calls, and atomically writes `evidence.json`.
 
-## Development layout
+## Layout
 
 ```text
-dist/credentials/             n8n credential descriptions
-dist/lib/                     allowlisted catalog and Node 20 fetch client
-dist/nodes/OpenGovData/       executable n8n node and icon
-test/                         offline and loopback integration tests
-verify.mjs                    one-command verification and evidence writer
+credentials/                 n8n credential descriptions
+lib/                         catalog, schema validation, and HTTP client
+nodes/OpenGovData/           backwards-compatible n8n node and icon
+tests/                       offline and loopback tests
+verify.mjs                   deterministic one-command verifier
+evidence.json                generated verification evidence
 ```
 
 ## License
 
-MIT. Upstream public datasets retain their own attribution and reuse terms; workflows should preserve any `attribution` fields returned by the products.
+MIT. Upstream datasets retain their own attribution and reuse terms. Preserve returned `attribution`, source URL, and licence fields in downstream workflows.

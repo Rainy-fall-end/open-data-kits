@@ -13,7 +13,7 @@ class OpenGovDataApifyApi {
         typeOptions: { password: true },
         default: '',
         required: true,
-        description: 'Apify personal API token. It is sent only in the Authorization header and is never logged.',
+        description: 'Apify API token. Sent only in the Authorization header and never logged.',
       },
     ];
   }

@@ -8,12 +8,20 @@ async function readBody(request) {
   return Buffer.concat(chunks).toString('utf8');
 }
 
+function sendJson(response, statusCode, payload, headers = {}) {
+  const body = JSON.stringify(payload);
+  response.writeHead(statusCode, {
+    'content-type': 'application/json; charset=utf-8',
+    'content-length': Buffer.byteLength(body),
+    connection: 'close',
+    ...headers,
+  });
+  response.end(body);
+}
+
 async function withLoopbackServer(handler, callback) {
   const server = http.createServer((request, response) => {
-    Promise.resolve(handler(request, response)).catch((error) => {
-      response.statusCode = 500;
-      response.end(JSON.stringify({ error: error.message }));
-    });
+    Promise.resolve(handler(request, response)).catch(() => sendJson(response, 500, { detail: 'mock failure' }));
   });
   await new Promise((resolve, reject) => {
     server.once('error', reject);
@@ -27,11 +35,6 @@ async function withLoopbackServer(handler, callback) {
     server.closeAllConnections?.();
     await new Promise((resolve) => server.close(resolve));
   }
-}
-
-function sendJson(response, statusCode, payload) {
-  response.writeHead(statusCode, { 'content-type': 'application/json' });
-  response.end(JSON.stringify(payload));
 }
 
 module.exports = { readBody, sendJson, withLoopbackServer };

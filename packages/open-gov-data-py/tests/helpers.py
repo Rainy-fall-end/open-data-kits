@@ -1,4 +1,4 @@
-"""Local-loopback HTTP helpers used by integration tests."""
+"""127.0.0.1-only HTTP helpers."""
 
 from __future__ import annotations
 
@@ -23,9 +23,7 @@ def read_body(request: BaseHTTPRequestHandler) -> bytes:
     return request.rfile.read(length)
 
 
-def send_json(
-    request: BaseHTTPRequestHandler, status: int, value: object
-) -> None:
+def send_json(request: BaseHTTPRequestHandler, status: int, value: object) -> None:
     payload = json.dumps(value, separators=(",", ":")).encode("utf-8")
     request.send_response(status)
     request.send_header("content-type", "application/json")
@@ -39,13 +37,16 @@ def loopback_server(callback: HandlerCallback) -> Iterator[str]:
     errors: list[BaseException] = []
 
     class Handler(BaseHTTPRequestHandler):
-        def do_GET(self) -> None:  # noqa: N802 - stdlib handler contract
+        def do_GET(self) -> None:  # noqa: N802
             self._dispatch()
 
-        def do_POST(self) -> None:  # noqa: N802 - stdlib handler contract
+        def do_POST(self) -> None:  # noqa: N802
             self._dispatch()
 
         def _dispatch(self) -> None:
+            if self.client_address[0] != "127.0.0.1":
+                errors.append(AssertionError("non-loopback test client"))
+                return
             try:
                 callback(self)
             except BaseException as error:
@@ -63,6 +64,7 @@ def loopback_server(callback: HandlerCallback) -> Iterator[str]:
     thread.start()
     try:
         host, port = server.server_address
+        assert host == "127.0.0.1"
         yield f"http://{host}:{port}"
     finally:
         server.shutdown()
@@ -70,4 +72,3 @@ def loopback_server(callback: HandlerCallback) -> Iterator[str]:
         thread.join(timeout=2)
         if errors:
             raise errors[0]
-

@@ -1,4 +1,4 @@
-"""Command-line interface for open-gov-data."""
+"""Backwards-compatible command-line interface for open-gov-data."""
 
 from __future__ import annotations
 
@@ -16,9 +16,9 @@ from .errors import OpenGovDataError, safe_error
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="open-gov-data",
-        description="Query allowlisted public government-data products.",
+        description="Query the closed public government-data product catalog.",
     )
-    parser.add_argument("--version", action="version", version="%(prog)s 0.1.0")
+    parser.add_argument("--version", action="version", version="%(prog)s 0.2.0")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     catalog = subparsers.add_parser("catalog", help="show the closed source catalog")
@@ -89,10 +89,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     except (BrokenPipeError, KeyboardInterrupt):
         return 130
-    except Exception as error:  # defensive CLI boundary; details stay private
+    except Exception as error:
         _write_json(sys.stderr, safe_error(error), compact=True)
         return 1
 
 
 __all__ = ["main"]
-

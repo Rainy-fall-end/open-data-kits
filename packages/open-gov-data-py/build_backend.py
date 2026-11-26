@@ -1,4 +1,4 @@
-"""Tiny dependency-free PEP 517 backend for this pure-Python package."""
+"""Small deterministic, dependency-free PEP 517 backend."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ import csv
 import gzip
 import hashlib
 import io
-import os
 import tarfile
 import zipfile
 from pathlib import Path
@@ -17,7 +16,7 @@ from typing import Final
 ROOT: Final = Path(__file__).resolve().parent
 NAME: Final = "open-gov-data"
 NORMALIZED_NAME: Final = "open_gov_data"
-VERSION: Final = "0.1.0"
+VERSION: Final = "0.2.0"
 DIST_INFO: Final = f"{NORMALIZED_NAME}-{VERSION}.dist-info"
 WHEEL_NAME: Final = f"{NORMALIZED_NAME}-{VERSION}-py3-none-any.whl"
 SDIST_ROOT: Final = f"{NORMALIZED_NAME}-{VERSION}"
@@ -32,14 +31,14 @@ def _metadata() -> bytes:
             "Metadata-Version: 2.4",
             f"Name: {NAME}",
             f"Version: {VERSION}",
-            "Summary: Zero-dependency Python SDK and CLI for allowlisted public government-data APIs",
+            "Summary: Zero-dependency Python SDK for a closed catalog of public government-data APIs",
             "Author: apify-works maintainers",
             "License-Expression: MIT",
             "License-File: LICENSE",
             "Requires-Python: >=3.11",
             "Description-Content-Type: text/markdown",
-            "Keywords: apify,rapidapi,government-data,sec-edgar,clinicaltrials,openfda,uk-tenders,singapore-bca",
-            "Classifier: Development Status :: 3 - Alpha",
+            "Keywords: apify,rapidapi,government-data,sec-edgar,clinicaltrials,openfda,public-tenders",
+            "Classifier: Development Status :: 4 - Beta",
             "Classifier: Environment :: Console",
             "Classifier: Intended Audience :: Developers",
             "Classifier: License :: OSI Approved :: MIT License",
@@ -138,10 +137,10 @@ def _sdist_files() -> list[Path]:
         ROOT / "build_backend.py",
         ROOT / "verify.py",
     ]
-    discovered = list((ROOT / "src" / "open_gov_data").glob("*.py"))
-    tests = list((ROOT / "tests").glob("*.py")) if (ROOT / "tests").is_dir() else []
+    source = list((ROOT / "src" / "open_gov_data").glob("*.py"))
+    tests = list((ROOT / "tests").glob("*.py"))
     return sorted(
-        [path for path in [*fixed, *discovered, *tests] if path.is_file()],
+        [path for path in [*fixed, *source, *tests] if path.is_file()],
         key=lambda path: path.relative_to(ROOT).as_posix(),
     )
 

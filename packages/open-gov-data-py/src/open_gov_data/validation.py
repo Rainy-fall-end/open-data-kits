@@ -1,4 +1,4 @@
-"""Validation helpers shared by the SDK and CLI."""
+"""Validation helpers shared by the generic and typed SDK interfaces."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ MIN_TIMEOUT_SECONDS: Final = 0.1
 MAX_TIMEOUT_SECONDS: Final = 300.0
 MIN_CHARGE_USD: Final = Decimal("0.00005")
 MAX_CHARGE_USD: Final = Decimal("100")
+TYPED_HELPER_MAX_CHARGE_USD: Final = Decimal("0.25")
 MAX_INPUT_BYTES: Final = 1_000_000
 MAX_INPUT_DEPTH: Final = 32
 
@@ -42,7 +43,7 @@ def _fail(code: str, message: str) -> OpenGovDataError:
 
 
 def validate_credential(provider: str, value: object) -> str:
-    """Validate a provider credential without echoing any portion of it."""
+    """Validate a credential without echoing any portion of it."""
 
     label = "Apify credential" if provider == "apify" else "RapidAPI credential"
     if not isinstance(value, str) or not value:
@@ -55,16 +56,22 @@ def validate_credential(provider: str, value: object) -> str:
     return value
 
 
-def validate_max_items(value: object) -> int:
-    """Require an integer row cap in the supported range."""
+def validate_max_items(value: object, *, maximum: int = MAX_ITEMS) -> int:
+    """Require an integer row cap in the requested range.
+
+    The one-argument behavior is unchanged from v0.1. Typed Actor helpers pass
+    their repository-schema maximum explicitly.
+    """
 
     if isinstance(value, bool) or not isinstance(value, int):
         raise _fail(
-            "MAX_ITEMS_INVALID", f"max_items must be an integer from 1 to {MAX_ITEMS}"
+            "MAX_ITEMS_INVALID",
+            f"max_items must be an integer from 1 to {maximum}",
         )
-    if value < 1 or value > MAX_ITEMS:
+    if value < 1 or value > maximum:
         raise _fail(
-            "MAX_ITEMS_INVALID", f"max_items must be an integer from 1 to {MAX_ITEMS}"
+            "MAX_ITEMS_INVALID",
+            f"max_items must be an integer from 1 to {maximum}",
         )
     return value
 
@@ -219,16 +226,73 @@ def rapidapi_query_value(value: object) -> str | None:
     raise _fail("INPUT_INVALID", "RapidAPI query values must be scalar or arrays")
 
 
+def _validate_schema_value(name: str, value: Any, spec: Mapping[str, Any]) -> None:
+    kind = spec["type"]
+    valid = False
+    number: int | float | None = None
+    if kind == "string":
+        valid = isinstance(value, str)
+    elif kind == "boolean":
+        valid = isinstance(value, bool)
+    elif kind == "integer":
+        valid = isinstance(value, int) and not isinstance(value, bool)
+        if valid:
+            number = value
+    elif kind == "number":
+        valid = isinstance(value, (int, float)) and not isinstance(value, bool)
+        if valid:
+            number = value
+            valid = math.isfinite(float(value))
+    elif kind == "array":
+        valid = isinstance(value, list)
+    if not valid:
+        raise _fail("SCHEMA_VALIDATION", f"{name} must be a {kind}")
+
+    if "enum" in spec and value not in spec["enum"]:
+        raise _fail("SCHEMA_VALIDATION", f"{name} is not an allowed value")
+    if isinstance(value, str):
+        if len(value) < spec.get("minLength", 0):
+            raise _fail("SCHEMA_VALIDATION", f"{name} is shorter than allowed")
+        maximum_length = spec.get("maxLength")
+        if maximum_length is not None and len(value) > maximum_length:
+            raise _fail("SCHEMA_VALIDATION", f"{name} is longer than allowed")
+    if number is not None:
+        minimum = spec.get("minimum")
+        maximum = spec.get("maximum")
+        if minimum is not None and number < minimum:
+            raise _fail("SCHEMA_VALIDATION", f"{name} is below its minimum")
+        if maximum is not None and number > maximum:
+            raise _fail("SCHEMA_VALIDATION", f"{name} exceeds its maximum")
+    if isinstance(value, list) and spec.get("items") == "string":
+        if any(not isinstance(item, str) for item in value):
+            raise _fail("SCHEMA_VALIDATION", f"{name} must contain only strings")
+
+
+def validate_schema_input(
+    value: Mapping[str, Any], schema: Mapping[str, Mapping[str, Any]]
+) -> dict[str, Any]:
+    """Validate a closed typed-helper payload against an embedded schema."""
+
+    parsed = parse_input(value)
+    unknown = sorted(set(parsed).difference(schema))
+    if unknown:
+        raise _fail("SCHEMA_VALIDATION", "request contains unknown fields")
+    for name, nested in parsed.items():
+        _validate_schema_value(name, nested, schema[name])
+    return parsed
+
+
 __all__ = [
     "MAX_CHARGE_USD",
     "MAX_ITEMS",
     "MIN_CHARGE_USD",
+    "TYPED_HELPER_MAX_CHARGE_USD",
     "format_charge",
     "parse_input",
     "rapidapi_query_value",
     "validate_charge",
     "validate_credential",
     "validate_max_items",
+    "validate_schema_input",
     "validate_timeout",
 ]
-

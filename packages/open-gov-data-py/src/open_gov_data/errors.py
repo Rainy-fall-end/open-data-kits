@@ -1,4 +1,4 @@
-"""Stable, credential-safe SDK exceptions."""
+"""Stable exceptions whose messages never contain credentials or response bodies."""
 
 from __future__ import annotations
 
@@ -6,11 +6,7 @@ from typing import Any
 
 
 class OpenGovDataError(Exception):
-    """An expected SDK failure whose message is safe to display.
-
-    Upstream response bodies and underlying exception strings are deliberately
-    excluded so reflected credentials cannot escape through ``str(error)``.
-    """
+    """An expected SDK failure that is safe to display."""
 
     def __init__(
         self, code: str, message: str, *, status_code: int | None = None
@@ -27,15 +23,11 @@ class OpenGovDataError(Exception):
 
 
 def safe_error(error: BaseException) -> dict[str, Any]:
-    """Convert any exception to a safe public error object."""
+    """Convert any exception to a public, credential-safe error object."""
 
     if isinstance(error, OpenGovDataError):
         return error.as_dict()
-    return {
-        "code": "UNKNOWN_ERROR",
-        "message": "Open Gov Data request failed",
-    }
+    return {"code": "UNKNOWN_ERROR", "message": "Open Gov Data request failed"}
 
 
 __all__ = ["OpenGovDataError", "safe_error"]
-

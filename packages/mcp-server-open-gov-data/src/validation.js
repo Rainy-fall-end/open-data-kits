@@ -33,15 +33,14 @@ function validateType(value, type, path) {
 
 function validateDate(value, path) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) fail(path, 'must be an RFC 3339 full-date');
-  const date = new Date(`${value}T00:00:00.000Z`);
-  if (Number.isNaN(date.valueOf()) || date.toISOString().slice(0, 10) !== value) {
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.valueOf()) || parsed.toISOString().slice(0, 10) !== value) {
     fail(path, 'must be a valid calendar date');
   }
 }
 
 export function validateAgainstSchema(value, schema, path = '$') {
   if (!isObject(schema)) throw new TypeError('Schema must be an object');
-
   if (schema.const !== undefined && !Object.is(value, schema.const)) {
     fail(path, 'must equal the required constant');
   }
@@ -59,7 +58,6 @@ export function validateAgainstSchema(value, schema, path = '$') {
   } else if (schema.else) {
     validateAgainstSchema(value, schema.else, path);
   }
-
   if (schema.type) validateType(value, schema.type, path);
 
   if (typeof value === 'string') {

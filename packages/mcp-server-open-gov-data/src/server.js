@@ -12,11 +12,8 @@ export const SUPPORTED_PROTOCOL_VERSIONS = Object.freeze([
   '2024-11-05',
 ]);
 
-const SERVER_INFO = Object.freeze({
-  name: 'mcp-server-open-gov-data',
-  version: '0.1.0',
-});
-
+const SERVER_INFO = Object.freeze({ name: 'mcp-server-open-gov-data', version: '0.2.0' });
+const emptyObjectSchema = { type: 'object', additionalProperties: false };
 const initializeSchema = {
   type: 'object',
   required: ['protocolVersion', 'capabilities', 'clientInfo'],
@@ -36,13 +33,11 @@ const initializeSchema = {
   },
   additionalProperties: true,
 };
-
 const toolsListSchema = {
   type: 'object',
   properties: { cursor: { type: 'string', minLength: 1, maxLength: 200 } },
   additionalProperties: false,
 };
-
 const toolsCallSchema = {
   type: 'object',
   required: ['name'],
@@ -70,10 +65,7 @@ function validId(value) {
 function toolErrorResult(error) {
   return {
     isError: true,
-    content: [{
-      type: 'text',
-      text: JSON.stringify({ error: safeError(error) }),
-    }],
+    content: [{ type: 'text', text: JSON.stringify({ error: safeError(error) }) }],
   };
 }
 
@@ -145,31 +137,22 @@ export class McpServer {
         protocolVersion,
         capabilities: { tools: { listChanged: false } },
         serverInfo: SERVER_INFO,
-        instructions: 'Eight allowlisted read-only paid open-government-data tools. Apify calls always include a hard server-side charge cap.',
+        instructions: 'Twelve fixed read-only public-data tools. Every Apify call has a server-enforced charge cap.',
       };
     }
 
     if (method === 'notifications/initialized') {
       if (!this.#initialized) throw new OpenGovError('NOT_INITIALIZED', 'Server not initialized');
-      if (params !== undefined) validateAgainstSchema(params, {
-        type: 'object',
-        additionalProperties: false,
-      }, '$.params');
+      if (params !== undefined) validateAgainstSchema(params, emptyObjectSchema, '$.params');
       return {};
     }
-
     if (method === 'ping') {
-      if (params !== undefined) validateAgainstSchema(params, {
-        type: 'object',
-        additionalProperties: false,
-      }, '$.params');
+      if (params !== undefined) validateAgainstSchema(params, emptyObjectSchema, '$.params');
       return {};
     }
-
     if (!this.#initialized) {
       throw new OpenGovError('NOT_INITIALIZED', 'Server not initialized');
     }
-
     if (method === 'tools/list') {
       validateAgainstSchema(params ?? {}, toolsListSchema, '$.params');
       if (params?.cursor !== undefined) {
@@ -177,7 +160,6 @@ export class McpServer {
       }
       return { tools: this.tools };
     }
-
     if (method === 'tools/call') {
       validateAgainstSchema(params, toolsCallSchema, '$.params');
       const definition = this.#definitionByName.get(params.name);
@@ -188,14 +170,11 @@ export class McpServer {
       validateAgainstSchema(args, definition.tool.inputSchema, '$.params.arguments');
       try {
         const payload = await this.#executor(definition, args, this.#config);
-        return {
-          content: [{ type: 'text', text: JSON.stringify(payload) }],
-        };
+        return { content: [{ type: 'text', text: JSON.stringify(payload) }] };
       } catch (error) {
         return toolErrorResult(error);
       }
     }
-
     throw new OpenGovError('METHOD_NOT_FOUND', 'Method not found');
   }
 }
@@ -205,7 +184,6 @@ export async function runStdioServer(options = {}) {
   const output = options.output || process.stdout;
   const server = options.server || new McpServer(options);
   const lines = createInterface({ input, crlfDelay: Infinity, terminal: false });
-
   for await (const line of lines) {
     if (line.trim() === '') continue;
     let reply;
@@ -213,11 +191,11 @@ export async function runStdioServer(options = {}) {
       reply = errorResponse(null, -32700, 'Parse error');
     } else {
       try {
-        const message = JSON.parse(line);
-        reply = await server.handleMessage(message);
+        reply = await server.handleMessage(JSON.parse(line));
       } catch (error) {
-        if (error instanceof SyntaxError) reply = errorResponse(null, -32700, 'Parse error');
-        else reply = errorResponse(null, -32603, 'Internal error');
+        reply = error instanceof SyntaxError
+          ? errorResponse(null, -32700, 'Parse error')
+          : errorResponse(null, -32603, 'Internal error');
       }
     }
     if (reply !== null) output.write(`${JSON.stringify(reply)}\n`);

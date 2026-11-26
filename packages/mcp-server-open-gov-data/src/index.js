@@ -1,4 +1,9 @@
-export { APIFY_ACTOR_IDS, RAPIDAPI_SLUGS, createToolCatalog } from './catalog.js';
+export {
+  APIFY_ACTOR_IDS,
+  RAPIDAPI_HOSTS,
+  RAPIDAPI_SLUGS,
+  createToolCatalog,
+} from './catalog.js';
 export {
   createConfig,
   DEFAULT_MAX_TOTAL_CHARGE_MICROS,

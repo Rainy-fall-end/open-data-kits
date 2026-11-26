@@ -25,8 +25,5 @@ export function safeError(error) {
     if (Number.isInteger(error.statusCode)) result.statusCode = error.statusCode;
     return result;
   }
-  return {
-    code: 'INTERNAL_ERROR',
-    message: 'Internal server error',
-  };
+  return { code: 'INTERNAL_ERROR', message: 'Internal server error' };
 }

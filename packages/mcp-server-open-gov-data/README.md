@@ -1,27 +1,31 @@
 # mcp-server-open-gov-data
 
-A zero-third-party-dependency local MCP server for eight allowlisted paid, read-only open-government-data tools. It implements JSON-RPC 2.0 over newline-delimited stdio on Node.js 20+ and never accepts an arbitrary Actor ID, host, URL, or credential in tool arguments.
+Version 0.2.0 is a zero-third-party-dependency MCP server for twelve fixed, live public-data integrations: eight public Apify Actors and four RapidAPI endpoints. It runs on Node.js 20+ and speaks newline-delimited JSON-RPC 2.0 over stdio.
 
-中文摘要：这是一个仅使用 Node.js 20+ 内置模块的本地 MCP stdio Server。它固定暴露 4 个 RapidAPI 付费查询工具和 4 个欧美/新加坡 Apify 付费 Actor 工具；不包含两款私有香港 Actor，不从参数读取密钥，并对每次 Apify 调用强制附加不可绕过的 `maxTotalChargeUsd` 服务端限费参数。
+The server never accepts an Actor ID, hostname, URL, or credential as a tool argument. Production destinations are pinned in source, redirects are rejected, responses are size-limited, and configured credentials are redacted even if an upstream response echoes one. No private Actors are included.
 
 ## Tools
 
-| MCP tool | Provider | Fixed source |
-|---|---|---|
-| `rapidapi_sec_edgar_filings` | RapidAPI | `sec-edgar-corporate-filings` · `GET /v1/sec-edgar/filings` |
-| `rapidapi_clinical_trials` | RapidAPI | `clinicaltrials-gov-studies-trials` · `GET /v1/clinical-trials/studies` |
-| `rapidapi_openfda_records` | RapidAPI | `openfda-recalls-enforcement-approvals` · `GET /v1/openfda/records` |
-| `rapidapi_singapore_green_mark` | RapidAPI | `singapore-bca-green-mark-buildings` · `GET /v1/sg-green-mark/certificates` |
-| `apify_sec_edgar_filings` | Apify | Actor `8LFIbRbidiHPknMz5` |
-| `apify_clinical_trials` | Apify | Actor `KchE3qKKrwU0rCe9f` |
-| `apify_uk_gov_tenders` | Apify | Actor `txnvyTckeQx4hVBc6` |
-| `apify_singapore_green_mark` | Apify | Actor `Z3ioK0wOAeczj6nCx` |
+| MCP tool | Fixed live source |
+|---|---|
+| `apify_ats_jobs_hiring_signals` | Apify Actor `CRulq5dak4mqAUmMn` |
+| `apify_sec_edgar_intelligence` | Apify Actor `8LFIbRbidiHPknMz5`; modes `form_d_funding`, `xbrl_financials`, `filings` |
+| `apify_global_public_tenders` | Apify Actor `ZlabhlvEIyRVdtKiQ` |
+| `apify_pharma_pipeline_intelligence` | Apify Actor `re8aRvtqBonP5HMuY` |
+| `apify_usaspending_contracts` | Apify Actor `eQQ2beomyLlW4DTGM` |
+| `apify_clinical_trials` | Apify Actor `KchE3qKKrwU0rCe9f` |
+| `apify_uk_gov_tenders` | Apify Actor `txnvyTckeQx4hVBc6` |
+| `apify_sg_green_mark` | Apify Actor `Z3ioK0wOAeczj6nCx` |
+| `rapidapi_sec_edgar` | `sec-edgar-corporate-filings` / `GET /v1/sec-edgar/filings` |
+| `rapidapi_clinical_trials` | `clinicaltrials-gov-studies-trials` / `GET /v1/clinical-trials/studies` |
+| `rapidapi_openfda` | `openfda-recalls-enforcement-approvals` / `GET /v1/openfda/records` |
+| `rapidapi_sg_green_mark` | `singapore-bca-green-mark-buildings` / `GET /v1/sg-green-mark/certificates` |
 
-Every `inputSchema` is closed with `additionalProperties: false`. The schemas enforce provider-specific enums, lengths, calendar dates, numeric ranges, row limits, and the active Apify hard cost ceiling before any HTTP request starts.
+Every tool uses a closed `inputSchema` (`additionalProperties: false`). The eight Actor schemas preserve the field names, types, enums, and numeric bounds in the repository's real `.actor/input_schema.json` contracts. The four RapidAPI schemas mirror their checked OpenAPI operations.
 
 ## Run locally
 
-No install or build step is required:
+There is no install or build step:
 
 ```powershell
 $env:APIFY_TOKEN = '<your Apify token>'
@@ -29,53 +33,86 @@ $env:RAPIDAPI_KEY = '<your RapidAPI key>'
 node .\bin\mcp-server-open-gov-data.js
 ```
 
-After installing the package, use the `mcp-server-open-gov-data` executable. Configure only the credential needed by the tools you intend to call. Credentials are read from the process environment, are never tool arguments, and are never included in successful metadata or error messages.
+Only the credential for the tool being called is required. Keep credentials in each client's local secret configuration and never commit a populated configuration.
 
-Example MCP client entry when running this checkout (replace the path with an absolute local path):
+## Claude Desktop
+
+Open Claude Desktop's developer settings and merge this entry into `claude_desktop_config.json`. Replace the path and the two placeholder values locally.
 
 ```json
 {
   "mcpServers": {
     "open-gov-data": {
       "command": "node",
-      "args": ["C:/path/to/mcp-server-open-gov-data/bin/mcp-server-open-gov-data.js"],
+      "args": ["C:/absolute/path/mcp-server-open-gov-v2/bin/mcp-server-open-gov-data.js"],
       "env": {
-        "APIFY_TOKEN": "${APIFY_TOKEN}",
-        "RAPIDAPI_KEY": "${RAPIDAPI_KEY}"
+        "APIFY_TOKEN": "<local-apify-token>",
+        "RAPIDAPI_KEY": "<local-rapidapi-key>"
       }
     }
   }
 }
 ```
 
-Environment interpolation depends on the MCP client. If unsupported, inject secrets using that client's credential mechanism rather than committing them to a shared configuration file.
+## Cursor
+
+Save the following as `.cursor/mcp.json` in your project, replacing the path and local secret placeholders:
+
+```json
+{
+  "mcpServers": {
+    "open-gov-data": {
+      "command": "node",
+      "args": ["C:/absolute/path/mcp-server-open-gov-v2/bin/mcp-server-open-gov-data.js"],
+      "env": {
+        "APIFY_TOKEN": "<local-apify-token>",
+        "RAPIDAPI_KEY": "<local-rapidapi-key>"
+      }
+    }
+  }
+}
+```
+
+## Windsurf
+
+Merge this into Windsurf's `mcp_config.json`, replacing the path and local secret placeholders:
+
+```json
+{
+  "mcpServers": {
+    "open-gov-data": {
+      "command": "node",
+      "args": ["C:/absolute/path/mcp-server-open-gov-v2/bin/mcp-server-open-gov-data.js"],
+      "env": {
+        "APIFY_TOKEN": "<local-apify-token>",
+        "RAPIDAPI_KEY": "<local-rapidapi-key>"
+      }
+    }
+  }
+}
+```
 
 ## Cost and network safeguards
 
-- `MCP_APIFY_MAX_TOTAL_CHARGE_USD` is the immutable process-level hard ceiling for one Apify run. It defaults to `0.25`, accepts at most six decimal places, and is capped at USD 100 during configuration validation.
-- An omitted per-call `maxTotalChargeUsd` defaults to USD `0.25`, or to the environment ceiling when that ceiling is lower. A call can lower the cap but cannot raise it above the environment ceiling.
-- Apify requests always use `POST /v2/acts/{fixed-id}/run-sync-get-dataset-items?maxTotalChargeUsd=...&clean=true`. User-supplied cost fields are removed from the Actor input body.
-- RapidAPI has no server-side per-request dollar cap. Each tool performs exactly one request, never retries automatically, and constrains `limit` to `1..20`.
-- Redirects are handled in `manual` mode and rejected. Responses are streamed through a 2 MiB decoded-body limit; oversized `Content-Length` values are rejected before parsing.
-- `MCP_HTTP_TIMEOUT_MS` defaults to 30000 and may be set from 100 through 120000 milliseconds.
-- Production destinations are hard-coded HTTPS origins. Loopback overrides exist only for the test suite, require `NODE_ENV=test`, and accept only explicit-port HTTP loopback origins.
-- HTTP error bodies and invalid JSON bodies are never copied into MCP errors. stdout is reserved for protocol messages; startup failure text is generic and contains no configuration values.
+- Every Apify call always includes `maxTotalChargeUsd` in the query string. The per-call default and default process ceiling are both USD `0.25`.
+- `MCP_APIFY_MAX_TOTAL_CHARGE_USD` can lower or raise the process ceiling (up to USD 100), but a tool call can never exceed it. Amounts have at most six decimal places.
+- User-supplied `maxTotalChargeUsd` is removed from the Actor input body, and omitted `maxItems` defaults to 10.
+- RapidAPI tools perform exactly one request with `limit` constrained by the checked contract. RapidAPI does not offer an equivalent per-request dollar-cap parameter.
+- Requests are not retried automatically. Redirects are blocked, decoded responses are capped at 2 MiB, and the timeout defaults to 30 seconds.
+- HTTP loopback overrides are accepted only with `NODE_ENV=test`, only for `127.0.0.1`, `localhost`, or `::1`, and only with an explicit port. They exist solely for offline verification.
+- stdout contains protocol messages only. Error bodies and malformed upstream payloads are never reflected in MCP errors.
 
-## Protocol behavior
+## Protocol and verification
 
-The server implements `initialize`, `notifications/initialized`, `ping`, `tools/list`, and `tools/call`. It emits one JSON-RPC 2.0 object per stdout line, processes calls sequentially, returns standard parse/request/method/parameter errors, and represents upstream tool failures as MCP tool results with `isError: true`.
+The server implements `initialize`, `notifications/initialized`, `ping`, `tools/list`, and `tools/call`. Calls are processed sequentially. Invalid arguments receive JSON-RPC `-32602`; upstream failures are returned as MCP tool results with `isError: true`.
 
-## Offline verification
-
-All verification is local. The HTTP integration tests start an ephemeral `127.0.0.1` server and drive the real executable as a child process over stdio. They do not contact Apify, RapidAPI, npm registry, or any other external service.
+Verification is local and makes no external request. It starts an ephemeral `127.0.0.1` HTTP server, spawns the real stdio executable, calls all twelve tools, checks missing credentials and validation failures, previews the npm package, and writes `evidence.json`.
 
 ```powershell
-node --test
-npm pack --dry-run --json
-node verify.mjs
+npm run verify
 ```
 
-`node verify.mjs` reruns the tests and pack preview, performs zero-dependency/allowlist/static import checks, and writes `evidence.json`. This repository workflow does not run `npm publish`.
+The workflow performs `npm pack --dry-run`; it does not publish the package.
 
 ## License
 

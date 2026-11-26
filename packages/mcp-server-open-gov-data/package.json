@@ -1,7 +1,7 @@
 {
   "name": "mcp-server-open-gov-data",
-  "version": "0.1.0",
-  "description": "Zero-dependency MCP stdio server for eight allowlisted paid open-government-data tools on RapidAPI and Apify.",
+  "version": "0.2.0",
+  "description": "Zero-dependency Node.js MCP stdio server for 12 allowlisted public Apify and RapidAPI open-government-data tools.",
   "type": "module",
   "main": "./src/index.js",
   "exports": {
@@ -22,7 +22,6 @@
   },
   "scripts": {
     "start": "node ./bin/mcp-server-open-gov-data.js",
-    "test": "node --test",
     "verify": "node verify.mjs"
   },
   "keywords": [
@@ -33,8 +32,8 @@
     "rapidapi",
     "open-government-data",
     "sec-edgar",
-    "clinicaltrials",
-    "openfda"
+    "public-tenders",
+    "clinical-trials"
   ],
   "license": "MIT",
   "author": "apify-works contributors",
@@ -42,7 +41,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/fall-rainy/apify-works.git",
-    "directory": "codex-work/mcp-stdio-server-open-gov"
+    "directory": "codex-work/mcp-server-open-gov-v2"
   },
   "sideEffects": false
 }

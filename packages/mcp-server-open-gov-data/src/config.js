@@ -14,7 +14,7 @@ function configError(message) {
 
 export function parseUsdMicros(value, label = 'charge limit') {
   if (typeof value === 'number') {
-    if (!Number.isFinite(value) || value <= 0) throw configError(`${label} must be a positive amount`);
+    if (!Number.isFinite(value) || value <= 0) throw configError(`${label} must be positive`);
     const scaled = value * USD_SCALE;
     if (!Number.isSafeInteger(scaled)) {
       throw configError(`${label} must use at most six decimal places`);
@@ -25,8 +25,7 @@ export function parseUsdMicros(value, label = 'charge limit') {
     throw configError(`${label} must be a positive decimal with at most six decimal places`);
   }
   const [whole, fraction = ''] = value.split('.');
-  const micros = (BigInt(whole) * BigInt(USD_SCALE))
-    + BigInt(fraction.padEnd(6, '0'));
+  const micros = (BigInt(whole) * BigInt(USD_SCALE)) + BigInt(fraction.padEnd(6, '0'));
   if (micros <= 0n || micros > BigInt(Number.MAX_SAFE_INTEGER)) {
     throw configError(`${label} is outside the supported range`);
   }
@@ -74,14 +73,15 @@ function validateTestBaseUrl(value, label, env) {
   } catch {
     throw configError(`${label} must be a loopback URL`);
   }
-  const rootOnly = url.pathname === '/' && !url.search && !url.hash;
   const valid = (
     url.protocol === 'http:'
     && LOOPBACK_HOSTS.has(url.hostname)
     && url.port.length > 0
     && !url.username
     && !url.password
-    && rootOnly
+    && url.pathname === '/'
+    && !url.search
+    && !url.hash
   );
   if (!valid) throw configError(`${label} must be an HTTP loopback origin with an explicit port`);
   return url.origin;
@@ -98,18 +98,13 @@ export function createConfig(env = process.env) {
   if (hardChargeMicros > MAX_HARD_CHARGE_MICROS) {
     throw configError('MCP_APIFY_MAX_TOTAL_CHARGE_USD cannot exceed 100 USD');
   }
-  const defaultChargeMicros = Math.min(
-    DEFAULT_MAX_TOTAL_CHARGE_MICROS,
-    hardChargeMicros,
-  );
-
   return Object.freeze({
     apifyToken: validateCredential(env.APIFY_TOKEN),
     rapidApiKey: validateCredential(
       env.RAPIDAPI_KEY || env.X_RAPIDAPI_KEY || env['X-RapidAPI-Key'],
     ),
     hardChargeMicros,
-    defaultChargeMicros,
+    defaultChargeMicros: Math.min(DEFAULT_MAX_TOTAL_CHARGE_MICROS, hardChargeMicros),
     timeoutMs: parseIntegerSetting(
       env.MCP_HTTP_TIMEOUT_MS,
       30_000,

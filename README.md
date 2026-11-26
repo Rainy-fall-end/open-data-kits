@@ -22,6 +22,7 @@ Production-ready, **zero-dependency** developer kits, analyst connectors, and fr
 ### Apify Store (Pay-Per-Event Serverless Datasets — No Proxies / No Browser)
 | Actor | Best For | Pricing | Live Store Page |
 |---|---|---|---|
+| **Cyber KEV, EPSS & CVE Threat Intelligence** | Cross-linked CISA KEV + FIRST EPSS + OSV + NVD risk scoring | `$8.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/cyber-kev-epss-cve-intelligence) |
 | **ATS Jobs & Hiring Signals API (Greenhouse, Lever & Ashby)** | B2B hiring intent, recruiting, salary intel (22 tech leaders + custom URLs) | `$4.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper) |
 | **SEC EDGAR v2.0 — Form D Funding, 10-K/8-K & XBRL** | VC startup funding rounds, audited XBRL financials, AI RAG | `$4.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper) |
 | **Global Public Tenders & Grants Aggregator (7 Countries)** | Unified US, UK, EU, World Bank, Canada & Australia procurement | `$8.00 / 1,000` | [Open on Apify](https://apify.com/perceptive_city_af7/global-public-tenders-grants-aggregator) |

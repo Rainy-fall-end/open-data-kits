@@ -1,4 +1,4 @@
-"""Local-only HTTP fixtures and source import setup."""
+"""Loopback-only HTTP fixtures and local source imports."""
 
 from __future__ import annotations
 
@@ -17,19 +17,14 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+APIFY_TOKEN = "apify_" + "api_" + "TESTONLY_000000000000"
+RAPIDAPI_KEY = "RAPID" + "API_TESTONLY_000000000000"
+
 
 class LoopbackState:
     def __init__(self) -> None:
         self.mode = "success"
-        self.payload: object = {
-            "items": [
-                {
-                    "id": "row-1",
-                    "sourceUrl": "https://open.fda.gov/",
-                    "attribution": "fixture attribution",
-                }
-            ]
-        }
+        self.payload: object = {"items": [{"id": "fixture-1"}]}
         self.requests: list[dict[str, Any]] = []
 
 
@@ -61,15 +56,15 @@ class _Handler(BaseHTTPRequestHandler):
         )
         if self.state.mode == "redirect":
             self.send_response(302)
-            self.send_header("Location", f"http://127.0.0.1:{self.server.server_port}/elsewhere")
+            self.send_header("Location", f"http://127.0.0.1:{self.server.server_port}/redirected")
             self.send_header("Content-Length", "0")
             self.end_headers()
             return
         if self.state.mode == "invalid_json":
-            self._send(200, b"{not-json")
+            self._send(200, b"{invalid-json")
             return
         if self.state.mode == "http_error":
-            self._send(503, b'{"error":"server body SECRET_VALUE"}')
+            self._send(503, b'{"message":"sensitive upstream body"}')
             return
         if self.state.mode == "oversized_header":
             self.send_response(200)
@@ -78,15 +73,14 @@ class _Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return
         if self.state.mode == "oversized_body":
-            self._send(200, json.dumps({"data": "x" * 1_000}).encode("utf-8"))
+            self._send(200, json.dumps({"data": "x" * 1_000}).encode())
             return
         if self.state.mode == "empty":
             self.send_response(204)
             self.send_header("Content-Length", "0")
             self.end_headers()
             return
-        payload = json.dumps(self.state.payload, ensure_ascii=False).encode("utf-8")
-        self._send(200, payload)
+        self._send(200, json.dumps(self.state.payload, ensure_ascii=False).encode("utf-8"))
 
     def _send(self, status: int, body: bytes) -> None:
         self.send_response(status)
@@ -112,3 +106,4 @@ def loopback_server() -> Iterator[tuple[str, LoopbackState]]:
         server.shutdown()
         server.server_close()
         thread.join(timeout=5)
+

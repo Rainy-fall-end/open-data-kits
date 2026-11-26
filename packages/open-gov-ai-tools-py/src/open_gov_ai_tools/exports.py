@@ -1,4 +1,4 @@
-"""Provider-specific Function Calling schema exporters."""
+"""OpenAI, Anthropic, and Gemini Function Calling schema exports."""
 
 from __future__ import annotations
 
@@ -26,20 +26,10 @@ def _charge(value: Decimal | str | int | float) -> Decimal:
 
 
 def _definitions(
-    hard_charge_usd: Decimal | str | int | float,
-    definitions: Sequence[ToolDefinition] | None,
+    max_total_charge_usd: Decimal | str | int | float,
+    catalog: Sequence[ToolDefinition] | None,
 ) -> tuple[ToolDefinition, ...]:
-    if definitions is not None:
-        return tuple(definitions)
-    return build_catalog(_charge(hard_charge_usd))
-
-
-def _description(definition: ToolDefinition) -> str:
-    if definition.source == "sec_edgar":
-        return (
-            f"{definition.description} When mode is company, provide at least one of cik or ticker."
-        )
-    return definition.description
+    return tuple(catalog) if catalog is not None else build_catalog(_charge(max_total_charge_usd))
 
 
 def export_openai_tools(
@@ -48,13 +38,7 @@ def export_openai_tools(
     max_total_charge_usd: Decimal | str | int | float = DEFAULT_MAX_TOTAL_CHARGE_USD,
     _catalog: Sequence[ToolDefinition] | None = None,
 ) -> list[dict[str, Any]]:
-    """Export OpenAI tools JSON.
-
-    ``chat_completions`` returns the established nested ``function`` shape.
-    ``responses`` returns the flat function shape used by the Responses API.
-    Dispatcher-side validation remains authoritative, so exported functions use
-    non-strict model generation while keeping ``additionalProperties: false``.
-    """
+    """Return nested Chat Completions or flat Responses function tools."""
 
     if style not in {"chat_completions", "responses"}:
         raise ValueError("style must be 'chat_completions' or 'responses'")
@@ -62,14 +46,15 @@ def export_openai_tools(
     for definition in _definitions(max_total_charge_usd, _catalog):
         function = {
             "name": definition.name,
-            "description": _description(definition),
+            "description": definition.description,
             "parameters": thaw(definition.parameters),
             "strict": False,
         }
-        if style == "chat_completions":
-            result.append({"type": "function", "function": function})
-        else:
-            result.append({"type": "function", **function})
+        result.append(
+            {"type": "function", "function": function}
+            if style == "chat_completions"
+            else {"type": "function", **function}
+        )
     return result
 
 
@@ -78,12 +63,12 @@ def export_anthropic_tools(
     max_total_charge_usd: Decimal | str | int | float = DEFAULT_MAX_TOTAL_CHARGE_USD,
     _catalog: Sequence[ToolDefinition] | None = None,
 ) -> list[dict[str, Any]]:
-    """Export Anthropic Claude ``tools`` JSON."""
+    """Return Anthropic Claude tool definitions."""
 
     return [
         {
             "name": definition.name,
-            "description": _description(definition),
+            "description": definition.description,
             "input_schema": thaw(definition.parameters),
         }
         for definition in _definitions(max_total_charge_usd, _catalog)
@@ -94,8 +79,6 @@ _GEMINI_SCHEMA_KEYS: Final = frozenset(
     {
         "description",
         "enum",
-        "exclusiveMaximum",
-        "exclusiveMinimum",
         "format",
         "items",
         "maxItems",
@@ -113,8 +96,6 @@ _GEMINI_SCHEMA_KEYS: Final = frozenset(
 
 
 def _gemini_schema(schema: Mapping[str, Any]) -> dict[str, Any]:
-    """Project canonical JSON Schema onto Gemini's function parameter subset."""
-
     result: dict[str, Any] = {}
     for key, value in schema.items():
         if key not in _GEMINI_SCHEMA_KEYS:
@@ -127,8 +108,6 @@ def _gemini_schema(schema: Mapping[str, Any]) -> dict[str, Any]:
             }
         elif key == "items" and isinstance(value, Mapping):
             result[key] = _gemini_schema(value)
-        elif isinstance(value, tuple):
-            result[key] = [thaw(item) for item in value]
         else:
             result[key] = thaw(value)
     return result
@@ -139,12 +118,12 @@ def export_gemini_function_declarations(
     max_total_charge_usd: Decimal | str | int | float = DEFAULT_MAX_TOTAL_CHARGE_USD,
     _catalog: Sequence[ToolDefinition] | None = None,
 ) -> list[dict[str, Any]]:
-    """Export Google Gemini ``function_declarations`` JSON."""
+    """Return Gemini ``functionDeclarations`` entries."""
 
     return [
         {
             "name": definition.name,
-            "description": _description(definition),
+            "description": definition.description,
             "parameters": _gemini_schema(definition.parameters),
         }
         for definition in _definitions(max_total_charge_usd, _catalog)
@@ -156,11 +135,11 @@ def export_gemini_tools(
     max_total_charge_usd: Decimal | str | int | float = DEFAULT_MAX_TOTAL_CHARGE_USD,
     _catalog: Sequence[ToolDefinition] | None = None,
 ) -> list[dict[str, Any]]:
-    """Return the legacy Gemini ``tools`` wrapper around declarations."""
+    """Return Gemini REST's ``tools`` array wrapper."""
 
     return [
         {
-            "function_declarations": export_gemini_function_declarations(
+            "functionDeclarations": export_gemini_function_declarations(
                 max_total_charge_usd=max_total_charge_usd,
                 _catalog=_catalog,
             )
@@ -173,9 +152,9 @@ def catalog_snapshot(
     max_total_charge_usd: Decimal | str | int | float = DEFAULT_MAX_TOTAL_CHARGE_USD,
     _catalog: Sequence[ToolDefinition] | None = None,
 ) -> list[dict[str, Any]]:
-    """Return a JSON-safe copy of the closed catalog for inspection."""
+    """Return a mutable JSON-compatible copy of the immutable catalog."""
 
-    snapshot: list[dict[str, Any]] = []
+    result: list[dict[str, Any]] = []
     for definition in _definitions(max_total_charge_usd, _catalog):
         item: dict[str, Any] = {
             "name": definition.name,
@@ -195,11 +174,13 @@ def catalog_snapshot(
         if definition.actor_id is not None:
             item["actor_id"] = definition.actor_id
         if definition.api_slug is not None:
-            item["api_slug"] = definition.api_slug
-            item["host"] = definition.host
-            item["path"] = definition.path
-        snapshot.append(item)
-    return snapshot
+            item.update(
+                api_slug=definition.api_slug,
+                host=definition.host,
+                path=definition.path,
+            )
+        result.append(item)
+    return result
 
 
 __all__ = [
@@ -210,3 +191,4 @@ __all__ = [
     "export_gemini_tools",
     "export_openai_tools",
 ]
+

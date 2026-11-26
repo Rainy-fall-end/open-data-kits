@@ -18,7 +18,7 @@ from .exports import (
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="open-gov-ai-tools",
-        description="Export eight allowlisted open-government Function Calling tools as JSON.",
+        description="Export exactly twelve allowlisted public-data tools as JSON.",
     )
     parser.add_argument(
         "format",
@@ -55,11 +55,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         value = export_gemini_tools(**options)
     else:
         value = catalog_snapshot(**options)
-    if args.compact:
-        print(json.dumps(value, ensure_ascii=False, separators=(",", ":")))
-    else:
-        print(json.dumps(value, ensure_ascii=False, indent=2))
+    separators = (",", ":") if args.compact else None
+    print(json.dumps(value, ensure_ascii=False, indent=None if args.compact else 2, separators=separators))
     return 0
 
 
 __all__ = ["build_parser", "main"]
+

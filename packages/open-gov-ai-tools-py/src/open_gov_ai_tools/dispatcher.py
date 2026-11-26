@@ -1,4 +1,4 @@
-"""Hardened zero-dependency executor for the closed tool catalog."""
+"""SSRF-resistant, zero-dependency dispatcher for the closed tool catalog."""
 
 from __future__ import annotations
 
@@ -31,14 +31,14 @@ from .validation import parse_arguments, validate_tool_arguments
 APIFY_BASE_URL: Final = "https://api.apify.com"
 DEFAULT_MAX_RESPONSE_BYTES: Final = 2_000_000
 MAX_CONFIGURED_RESPONSE_BYTES: Final = 10_000_000
-USER_AGENT: Final = "open-gov-ai-tools/0.1.0 (Python urllib)"
+USER_AGENT: Final = "open-gov-ai-tools/0.2.0 (Python urllib)"
 _LOOPBACK_HOSTS: Final = frozenset({"127.0.0.1", "::1", "localhost"})
 _APIFY_TOKEN: Final = re.compile(r"^apify_api_[A-Za-z0-9_-]{12,}$", re.ASCII)
 _RAPIDAPI_KEY: Final = re.compile(r"^[A-Za-z0-9_-]{20,256}$", re.ASCII)
 
 
 class _NoRedirectHandler(HTTPRedirectHandler):
-    """Turn every redirect into an HTTPError without forwarding credentials."""
+    """Block redirects so authorization headers cannot cross origins."""
 
     def redirect_request(
         self,
@@ -73,10 +73,7 @@ def _parse_charge(value: object) -> Decimal:
     try:
         number = Decimal(str(value))
     except (InvalidOperation, ValueError):
-        raise OpenGovToolsError(
-            "COST_LIMIT_INVALID",
-            "max_total_charge_usd must be a positive decimal with at most 6 decimal places",
-        ) from None
+        raise OpenGovToolsError("COST_LIMIT_INVALID", "Invalid Apify charge cap") from None
     if (
         not number.is_finite()
         or number <= 0
@@ -106,15 +103,9 @@ def _validate_timeout(value: object) -> float:
 
 def _validate_response_limit(value: object) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
-        raise OpenGovToolsError(
-            "RESPONSE_LIMIT_INVALID",
-            f"max_response_bytes must be from 1 to {MAX_CONFIGURED_RESPONSE_BYTES}",
-        )
+        raise OpenGovToolsError("RESPONSE_LIMIT_INVALID", "max_response_bytes is invalid")
     if value < 1 or value > MAX_CONFIGURED_RESPONSE_BYTES:
-        raise OpenGovToolsError(
-            "RESPONSE_LIMIT_INVALID",
-            f"max_response_bytes must be from 1 to {MAX_CONFIGURED_RESPONSE_BYTES}",
-        )
+        raise OpenGovToolsError("RESPONSE_LIMIT_INVALID", "max_response_bytes is invalid")
     return value
 
 
@@ -129,7 +120,7 @@ def _validate_base_url(value: str, *, production_url: str | None) -> str:
     is_production = production_url is not None and value.rstrip("/") == production_url
     is_loopback = (
         parts.scheme in {"http", "https"}
-        and parts.hostname in _LOOPBACK_HOSTS
+        and (parts.hostname or "").casefold() in _LOOPBACK_HOSTS
         and port is not None
     )
     if (
@@ -142,7 +133,7 @@ def _validate_base_url(value: str, *, production_url: str | None) -> str:
     ):
         raise OpenGovToolsError(
             "ENDPOINT_INVALID",
-            "Endpoint overrides are restricted to local loopback testing",
+            "Endpoint overrides are restricted to explicit loopback test servers",
         )
     return value.rstrip("/")
 
@@ -152,13 +143,19 @@ def _url(base_url: str, path: str, query: Mapping[str, str]) -> str:
     return urlunsplit((base.scheme, base.netloc, path, urlencode(query), ""))
 
 
+def _query_value(value: object) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value)
+
+
 def extract_records(payload: object) -> list[object]:
-    """Normalize common upstream envelopes to a record list."""
+    """Normalize common API envelopes to a list."""
 
     if isinstance(payload, list):
         return list(payload)
     if isinstance(payload, dict):
-        for key in ("items", "results", "records", "data"):
+        for key in ("items", "results", "records", "data", "studies"):
             value = payload.get(key)
             if isinstance(value, list):
                 return list(value)
@@ -169,12 +166,7 @@ def extract_records(payload: object) -> list[object]:
 
 
 class ToolDispatcher:
-    """Execute only the eight allowlisted tools with fixed security limits.
-
-    Credentials are stored in private attributes, omitted from ``repr``, never
-    placed in request URLs, and never copied into result or error payloads.
-    Endpoint overrides are private test hooks restricted to local loopback hosts.
-    """
+    """Execute only the twelve allowlisted routes with fixed security limits."""
 
     __slots__ = (
         "_apify_base_url",
@@ -204,10 +196,7 @@ class ToolDispatcher:
         self._hard_charge_cap = _parse_charge(max_total_charge_usd)
         self._timeout = _validate_timeout(timeout)
         self._max_response_bytes = _validate_response_limit(max_response_bytes)
-        self._apify_base_url = _validate_base_url(
-            _apify_base_url,
-            production_url=APIFY_BASE_URL,
-        )
+        self._apify_base_url = _validate_base_url(_apify_base_url, production_url=APIFY_BASE_URL)
         self._rapidapi_base_url = (
             None
             if _rapidapi_base_url is None
@@ -219,9 +208,8 @@ class ToolDispatcher:
             _validate_credential("rapidapi", rapidapi_key)
         self._apify_token = apify_token
         self._rapidapi_key = rapidapi_key
-        definitions = build_catalog(self._hard_charge_cap)
-        self._catalog = definitions
-        self._definitions = {definition.name: definition for definition in definitions}
+        self._catalog = build_catalog(self._hard_charge_cap)
+        self._definitions = {definition.name: definition for definition in self._catalog}
         self._opener = _opener or build_opener(_NoRedirectHandler())
 
     @classmethod
@@ -233,8 +221,6 @@ class ToolDispatcher:
         timeout: float = 30.0,
         max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
     ) -> "ToolDispatcher":
-        """Load credentials from environment variables without logging them."""
-
         values = os.environ if environ is None else environ
         rapidapi_key = (
             values.get("RAPIDAPI_KEY")
@@ -260,8 +246,6 @@ class ToolDispatcher:
 
     @property
     def max_total_charge_usd(self) -> Decimal:
-        """The immutable per-dispatcher Apify charge ceiling."""
-
         return self._hard_charge_cap
 
     def catalog(self) -> list[dict[str, Any]]:
@@ -284,13 +268,10 @@ class ToolDispatcher:
         tool_name: str,
         arguments: Mapping[str, Any] | str | None,
     ) -> dict[str, Any]:
-        """Strictly validate and default arguments without making a request."""
-
         definition = self._definition(tool_name)
         parsed = parse_arguments(arguments)
         if definition.provider == "apify" and "maxTotalChargeUsd" in parsed:
-            requested = _parse_charge(parsed["maxTotalChargeUsd"])
-            if requested > self._hard_charge_cap:
+            if _parse_charge(parsed["maxTotalChargeUsd"]) > self._hard_charge_cap:
                 raise OpenGovToolsError(
                     "COST_LIMIT_EXCEEDED",
                     "Requested Apify charge cap exceeds the dispatcher hard limit",
@@ -302,7 +283,7 @@ class ToolDispatcher:
         tool_name: str,
         arguments: Mapping[str, Any] | str | None = None,
     ) -> dict[str, Any]:
-        """Validate and execute one tool once; paid calls are never retried."""
+        """Validate and execute one paid request without automatic retries."""
 
         definition = self._definition(tool_name)
         validated = self.validate(tool_name, arguments)
@@ -320,12 +301,9 @@ class ToolDispatcher:
         return extract_records(self.dispatch(tool_name, arguments)["data"])
 
     def _definition(self, tool_name: object) -> ToolDefinition:
-        if not isinstance(tool_name, str):
+        if not isinstance(tool_name, str) or tool_name not in self._definitions:
             raise OpenGovToolsError("TOOL_NOT_ALLOWED", "Tool is not allowlisted")
-        definition = self._definitions.get(tool_name)
-        if definition is None:
-            raise OpenGovToolsError("TOOL_NOT_ALLOWED", "Tool is not allowlisted")
-        return definition
+        return self._definitions[tool_name]
 
     def _run_apify(
         self,
@@ -338,10 +316,7 @@ class ToolDispatcher:
         actor_input = dict(arguments)
         charge = _parse_charge(actor_input.pop("maxTotalChargeUsd"))
         if charge > self._hard_charge_cap:
-            raise OpenGovToolsError(
-                "COST_LIMIT_EXCEEDED",
-                "Requested Apify charge cap exceeds the dispatcher hard limit",
-            )
+            raise OpenGovToolsError("COST_LIMIT_EXCEEDED", "Apify charge cap exceeds hard limit")
         body = json.dumps(
             actor_input,
             ensure_ascii=False,
@@ -385,8 +360,11 @@ class ToolDispatcher:
         assert definition.path is not None
         assert definition.api_slug is not None
         base_url = self._rapidapi_base_url or f"https://{definition.host}"
-        query = {key: str(value) for key, value in arguments.items()}
-        request_url = _url(base_url, definition.path, query)
+        request_url = _url(
+            base_url,
+            definition.path,
+            {key: _query_value(value) for key, value in arguments.items()},
+        )
         request = Request(
             request_url,
             method="GET",
@@ -408,10 +386,16 @@ class ToolDispatcher:
         }
 
     def _fetch_json(self, request: Request) -> object:
+        if os.environ.get("OPEN_GOV_AI_TOOLS_OFFLINE_TEST") == "1":
+            hostname = (urlsplit(request.full_url).hostname or "").casefold()
+            if hostname not in _LOOPBACK_HOSTS:
+                raise OpenGovToolsError(
+                    "OFFLINE_BLOCKED",
+                    "External network access is disabled for offline verification",
+                )
         try:
             with self._opener.open(request, timeout=self._timeout) as response:
-                status = response.getcode()
-                if status == 204:
+                if response.getcode() == 204:
                     return None
                 length = response.headers.get("Content-Length")
                 if length is not None and length.isdigit() and int(length) > self._max_response_bytes:
@@ -441,15 +425,9 @@ class ToolDispatcher:
         except URLError as error:
             if isinstance(error.reason, (TimeoutError, socket.timeout)):
                 raise OpenGovToolsError("TIMEOUT", "Upstream request timed out") from None
-            raise OpenGovToolsError(
-                "NETWORK_ERROR",
-                "Upstream network request failed",
-            ) from None
+            raise OpenGovToolsError("NETWORK_ERROR", "Upstream network request failed") from None
         except (HTTPException, OSError, ValueError):
-            raise OpenGovToolsError(
-                "NETWORK_ERROR",
-                "Upstream network request failed",
-            ) from None
+            raise OpenGovToolsError("NETWORK_ERROR", "Upstream network request failed") from None
         if len(payload) > self._max_response_bytes:
             raise OpenGovToolsError(
                 "RESPONSE_TOO_LARGE",
@@ -460,15 +438,7 @@ class ToolDispatcher:
         try:
             return json.loads(payload.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError):
-            raise OpenGovToolsError(
-                "RESPONSE_INVALID",
-                "Upstream returned invalid JSON",
-            ) from None
+            raise OpenGovToolsError("RESPONSE_INVALID", "Upstream returned invalid JSON") from None
 
 
-__all__ = [
-    "APIFY_BASE_URL",
-    "DEFAULT_MAX_RESPONSE_BYTES",
-    "ToolDispatcher",
-    "extract_records",
-]
+__all__ = ["APIFY_BASE_URL", "DEFAULT_MAX_RESPONSE_BYTES", "ToolDispatcher", "extract_records"]

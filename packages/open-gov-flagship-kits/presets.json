@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "maxTotalChargeUsd": 0.25,
+  "presets": [
+    {
+      "key": "ats_jobs",
+      "name": "ATS Jobs & Hiring Signals",
+      "actorId": "CRulq5dak4mqAUmMn",
+      "slug": "ats-jobs-hiring-signals-scraper",
+      "schemaPath": "actors/ats-jobs-hiring-signals-scraper/.actor/input_schema.json",
+      "functionName": "importAtsJobs",
+      "sheetName": "ATS Hiring Signals",
+      "n8nFile": "01-ats-jobs-hiring-signals.json",
+      "input": {
+        "preset": "ai_leaders",
+        "keywords": "AI, Machine Learning, LLM",
+        "remoteOnly": false,
+        "departmentFilter": "",
+        "includeDescription": false,
+        "maxItems": 50
+      }
+    },
+    {
+      "key": "sec_form_d",
+      "name": "SEC Form D Startup Funding",
+      "actorId": "8LFIbRbidiHPknMz5",
+      "slug": "sec-edgar-filings-scraper",
+      "schemaPath": "actors/sec-edgar-filings-scraper/.actor/input_schema.json",
+      "functionName": "importSecFormD",
+      "sheetName": "SEC Form D Funding",
+      "n8nFile": "02-sec-form-d-startup-funding.json",
+      "input": {
+        "mode": "form_d_funding",
+        "query": "artificial intelligence",
+        "excludePooledFunds": true,
+        "minOfferingAmountUsd": 1000000,
+        "industryFilter": "",
+        "includeAmendments": false,
+        "maxItems": 100
+      }
+    },
+    {
+      "key": "sec_xbrl_aapl",
+      "name": "SEC XBRL AAPL Financials",
+      "actorId": "8LFIbRbidiHPknMz5",
+      "slug": "sec-edgar-filings-scraper",
+      "schemaPath": "actors/sec-edgar-filings-scraper/.actor/input_schema.json",
+      "functionName": "importSecXbrlAapl",
+      "sheetName": "AAPL XBRL Financials",
+      "n8nFile": "03-sec-xbrl-aapl-financials.json",
+      "input": {
+        "mode": "xbrl_financials",
+        "ticker": "AAPL",
+        "forms": "10-K,10-Q",
+        "maxItems": 50
+      }
+    },
+    {
+      "key": "global_tenders",
+      "name": "Global Public Tenders & Grants",
+      "actorId": "ZlabhlvEIyRVdtKiQ",
+      "slug": "global-public-tenders-grants-aggregator",
+      "schemaPath": "actors/global-public-tenders-grants-aggregator/.actor/input_schema.json",
+      "functionName": "importGlobalTenders",
+      "sheetName": "Global Tenders",
+      "n8nFile": "04-global-public-tenders-grants.json",
+      "input": {
+        "sources": [
+          "uk_find_a_tender",
+          "eu_ted",
+          "us_grants_gov",
+          "usaspending",
+          "world_bank",
+          "canada_contracts",
+          "austender"
+        ],
+        "opportunityTypes": [
+          "tender",
+          "grant",
+          "award"
+        ],
+        "keyword": "artificial intelligence",
+        "dateFrom": "",
+        "dateTo": "",
+        "maxItems": 50,
+        "perSourceLimit": 10,
+        "sourceTimeoutSecs": 20
+      }
+    },
+    {
+      "key": "pharma_pipeline",
+      "name": "Pharma & Biotech Pipeline Intelligence",
+      "actorId": "re8aRvtqBonP5HMuY",
+      "slug": "pharma-biotech-pipeline-intelligence",
+      "schemaPath": "actors/pharma-biotech-pipeline-intelligence/.actor/input_schema.json",
+      "functionName": "importPharmaPipeline",
+      "sheetName": "Pharma Pipeline",
+      "n8nFile": "05-pharma-biotech-pipeline.json",
+      "input": {
+        "mode": "drug_dossier",
+        "query": "semaglutide",
+        "drugNames": [],
+        "maxItems": 10,
+        "sourceItemsPerQuery": 5,
+        "sourceTimeoutSeconds": 25,
+        "requestDelayMs": 150
+      }
+    },
+    {
+      "key": "usaspending_contracts",
+      "name": "USASpending Federal Contracts",
+      "actorId": "eQQ2beomyLlW4DTGM",
+      "slug": "usaspending-gov-contracts-scraper",
+      "schemaPath": "actors/usaspending-gov-contracts-scraper/.actor/input_schema.json",
+      "functionName": "importUsaSpendingContracts",
+      "sheetName": "Federal Contracts",
+      "n8nFile": "06-usaspending-federal-contracts.json",
+      "input": {
+        "keyword": "cybersecurity",
+        "awardCategory": "contracts",
+        "startDate": "2025-01-01",
+        "endDate": "2026-12-31",
+        "awardingAgency": "",
+        "minAwardAmount": 1000000,
+        "naicsCode": "541511",
+        "sortOrder": "desc",
+        "maxItems": 50
+      }
+    }
+  ]
+}

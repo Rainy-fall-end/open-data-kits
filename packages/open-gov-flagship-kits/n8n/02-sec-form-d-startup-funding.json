@@ -1,0 +1,129 @@
+{
+  "name": "Flagship 2 - SEC Form D Startup Funding",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger-sec_form_d",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "actor-sec_form_d",
+              "name": "actorId",
+              "value": "8LFIbRbidiHPknMz5",
+              "type": "string"
+            },
+            {
+              "id": "format-sec_form_d",
+              "name": "outputFormat",
+              "value": "json",
+              "type": "string"
+            },
+            {
+              "id": "input-sec_form_d",
+              "name": "input",
+              "value": "={{ {\"mode\":\"form_d_funding\",\"query\":\"artificial intelligence\",\"excludePooledFunds\":true,\"minOfferingAmountUsd\":1000000,\"industryFilter\":\"\",\"includeAmendments\":false,\"maxItems\":100} }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "preset-sec_form_d",
+      "name": "Preset (set outputFormat to json or csv)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "format",
+              "value": "={{ $json.outputFormat }}"
+            },
+            {
+              "name": "clean",
+              "value": "true"
+            },
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.25"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.APIFY_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.input }}",
+        "options": {}
+      },
+      "id": "run-sec_form_d",
+      "name": "Run actor and return dataset",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Preset (set outputFormat to json or csv)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preset (set outputFormat to json or csv)": {
+      "main": [
+        [
+          {
+            "node": "Run actor and return dataset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "00000000-0000-4000-8000-000000000002",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

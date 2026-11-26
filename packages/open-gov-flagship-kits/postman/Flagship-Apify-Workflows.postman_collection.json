@@ -1,0 +1,489 @@
+{
+  "info": {
+    "_postman_id": "3c23c8d6-d21e-4c5f-9368-b74fe5b0e7d2",
+    "name": "Flagship Apify Workflows",
+    "description": "Six cost-capped buyer workflows for five public-data Apify Actors. Set APIFY_TOKEN in the collection variables before running.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{APIFY_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "APIFY_TOKEN",
+      "value": "",
+      "type": "secret"
+    }
+  ],
+  "item": [
+    {
+      "name": "ATS Jobs & Hiring Signals",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP status is successful\", function () {",
+              "  pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "const rows = pm.response.json();",
+              "pm.test(\"Response is a dataset array\", function () {",
+              "  pm.expect(rows).to.be.an(\"array\");",
+              "});",
+              "pm.test(\"Result respects maxItems (50)\", function () {",
+              "  pm.expect(rows.length).to.be.at.most(50);",
+              "});",
+              "pm.test(\"Maximum charge is fixed at USD 0.25\", function () {",
+              "  const parameter = pm.request.url.query.find(function (item) { return item.key === \"maxTotalChargeUsd\"; });",
+              "  pm.expect(parameter && parameter.value).to.eql(\"0.25\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"preset\": \"ai_leaders\",\n  \"keywords\": \"AI, Machine Learning, LLM\",\n  \"remoteOnly\": false,\n  \"departmentFilter\": \"\",\n  \"includeDescription\": false,\n  \"maxItems\": 50\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.apify.com/v2/acts/CRulq5dak4mqAUmMn/run-sync-get-dataset-items?format=json&clean=true&maxTotalChargeUsd=0.25",
+          "protocol": "https",
+          "host": [
+            "api",
+            "apify",
+            "com"
+          ],
+          "path": [
+            "v2",
+            "acts",
+            "CRulq5dak4mqAUmMn",
+            "run-sync-get-dataset-items"
+          ],
+          "query": [
+            {
+              "key": "format",
+              "value": "json"
+            },
+            {
+              "key": "clean",
+              "value": "true"
+            },
+            {
+              "key": "maxTotalChargeUsd",
+              "value": "0.25"
+            }
+          ]
+        },
+        "description": "Runs the public ATS Jobs & Hiring Signals preset and returns clean JSON dataset items."
+      },
+      "response": []
+    },
+    {
+      "name": "SEC Form D Startup Funding",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP status is successful\", function () {",
+              "  pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "const rows = pm.response.json();",
+              "pm.test(\"Response is a dataset array\", function () {",
+              "  pm.expect(rows).to.be.an(\"array\");",
+              "});",
+              "pm.test(\"Result respects maxItems (100)\", function () {",
+              "  pm.expect(rows.length).to.be.at.most(100);",
+              "});",
+              "pm.test(\"Maximum charge is fixed at USD 0.25\", function () {",
+              "  const parameter = pm.request.url.query.find(function (item) { return item.key === \"maxTotalChargeUsd\"; });",
+              "  pm.expect(parameter && parameter.value).to.eql(\"0.25\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mode\": \"form_d_funding\",\n  \"query\": \"artificial intelligence\",\n  \"excludePooledFunds\": true,\n  \"minOfferingAmountUsd\": 1000000,\n  \"industryFilter\": \"\",\n  \"includeAmendments\": false,\n  \"maxItems\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items?format=json&clean=true&maxTotalChargeUsd=0.25",
+          "protocol": "https",
+          "host": [
+            "api",
+            "apify",
+            "com"
+          ],
+          "path": [
+            "v2",
+            "acts",
+            "8LFIbRbidiHPknMz5",
+            "run-sync-get-dataset-items"
+          ],
+          "query": [
+            {
+              "key": "format",
+              "value": "json"
+            },
+            {
+              "key": "clean",
+              "value": "true"
+            },
+            {
+              "key": "maxTotalChargeUsd",
+              "value": "0.25"
+            }
+          ]
+        },
+        "description": "Runs the public SEC Form D Startup Funding preset and returns clean JSON dataset items."
+      },
+      "response": []
+    },
+    {
+      "name": "SEC XBRL AAPL Financials",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP status is successful\", function () {",
+              "  pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "const rows = pm.response.json();",
+              "pm.test(\"Response is a dataset array\", function () {",
+              "  pm.expect(rows).to.be.an(\"array\");",
+              "});",
+              "pm.test(\"Result respects maxItems (50)\", function () {",
+              "  pm.expect(rows.length).to.be.at.most(50);",
+              "});",
+              "pm.test(\"Maximum charge is fixed at USD 0.25\", function () {",
+              "  const parameter = pm.request.url.query.find(function (item) { return item.key === \"maxTotalChargeUsd\"; });",
+              "  pm.expect(parameter && parameter.value).to.eql(\"0.25\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mode\": \"xbrl_financials\",\n  \"ticker\": \"AAPL\",\n  \"forms\": \"10-K,10-Q\",\n  \"maxItems\": 50\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items?format=json&clean=true&maxTotalChargeUsd=0.25",
+          "protocol": "https",
+          "host": [
+            "api",
+            "apify",
+            "com"
+          ],
+          "path": [
+            "v2",
+            "acts",
+            "8LFIbRbidiHPknMz5",
+            "run-sync-get-dataset-items"
+          ],
+          "query": [
+            {
+              "key": "format",
+              "value": "json"
+            },
+            {
+              "key": "clean",
+              "value": "true"
+            },
+            {
+              "key": "maxTotalChargeUsd",
+              "value": "0.25"
+            }
+          ]
+        },
+        "description": "Runs the public SEC XBRL AAPL Financials preset and returns clean JSON dataset items."
+      },
+      "response": []
+    },
+    {
+      "name": "Global Public Tenders & Grants",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP status is successful\", function () {",
+              "  pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "const rows = pm.response.json();",
+              "pm.test(\"Response is a dataset array\", function () {",
+              "  pm.expect(rows).to.be.an(\"array\");",
+              "});",
+              "pm.test(\"Result respects maxItems (50)\", function () {",
+              "  pm.expect(rows.length).to.be.at.most(50);",
+              "});",
+              "pm.test(\"Maximum charge is fixed at USD 0.25\", function () {",
+              "  const parameter = pm.request.url.query.find(function (item) { return item.key === \"maxTotalChargeUsd\"; });",
+              "  pm.expect(parameter && parameter.value).to.eql(\"0.25\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sources\": [\n    \"uk_find_a_tender\",\n    \"eu_ted\",\n    \"us_grants_gov\",\n    \"usaspending\",\n    \"world_bank\",\n    \"canada_contracts\",\n    \"austender\"\n  ],\n  \"opportunityTypes\": [\n    \"tender\",\n    \"grant\",\n    \"award\"\n  ],\n  \"keyword\": \"artificial intelligence\",\n  \"dateFrom\": \"\",\n  \"dateTo\": \"\",\n  \"maxItems\": 50,\n  \"perSourceLimit\": 10,\n  \"sourceTimeoutSecs\": 20\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.apify.com/v2/acts/ZlabhlvEIyRVdtKiQ/run-sync-get-dataset-items?format=json&clean=true&maxTotalChargeUsd=0.25",
+          "protocol": "https",
+          "host": [
+            "api",
+            "apify",
+            "com"
+          ],
+          "path": [
+            "v2",
+            "acts",
+            "ZlabhlvEIyRVdtKiQ",
+            "run-sync-get-dataset-items"
+          ],
+          "query": [
+            {
+              "key": "format",
+              "value": "json"
+            },
+            {
+              "key": "clean",
+              "value": "true"
+            },
+            {
+              "key": "maxTotalChargeUsd",
+              "value": "0.25"
+            }
+          ]
+        },
+        "description": "Runs the public Global Public Tenders & Grants preset and returns clean JSON dataset items."
+      },
+      "response": []
+    },
+    {
+      "name": "Pharma & Biotech Pipeline Intelligence",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP status is successful\", function () {",
+              "  pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "const rows = pm.response.json();",
+              "pm.test(\"Response is a dataset array\", function () {",
+              "  pm.expect(rows).to.be.an(\"array\");",
+              "});",
+              "pm.test(\"Result respects maxItems (10)\", function () {",
+              "  pm.expect(rows.length).to.be.at.most(10);",
+              "});",
+              "pm.test(\"Maximum charge is fixed at USD 0.25\", function () {",
+              "  const parameter = pm.request.url.query.find(function (item) { return item.key === \"maxTotalChargeUsd\"; });",
+              "  pm.expect(parameter && parameter.value).to.eql(\"0.25\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mode\": \"drug_dossier\",\n  \"query\": \"semaglutide\",\n  \"drugNames\": [],\n  \"maxItems\": 10,\n  \"sourceItemsPerQuery\": 5,\n  \"sourceTimeoutSeconds\": 25,\n  \"requestDelayMs\": 150\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.apify.com/v2/acts/re8aRvtqBonP5HMuY/run-sync-get-dataset-items?format=json&clean=true&maxTotalChargeUsd=0.25",
+          "protocol": "https",
+          "host": [
+            "api",
+            "apify",
+            "com"
+          ],
+          "path": [
+            "v2",
+            "acts",
+            "re8aRvtqBonP5HMuY",
+            "run-sync-get-dataset-items"
+          ],
+          "query": [
+            {
+              "key": "format",
+              "value": "json"
+            },
+            {
+              "key": "clean",
+              "value": "true"
+            },
+            {
+              "key": "maxTotalChargeUsd",
+              "value": "0.25"
+            }
+          ]
+        },
+        "description": "Runs the public Pharma & Biotech Pipeline Intelligence preset and returns clean JSON dataset items."
+      },
+      "response": []
+    },
+    {
+      "name": "USASpending Federal Contracts",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP status is successful\", function () {",
+              "  pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "const rows = pm.response.json();",
+              "pm.test(\"Response is a dataset array\", function () {",
+              "  pm.expect(rows).to.be.an(\"array\");",
+              "});",
+              "pm.test(\"Result respects maxItems (50)\", function () {",
+              "  pm.expect(rows.length).to.be.at.most(50);",
+              "});",
+              "pm.test(\"Maximum charge is fixed at USD 0.25\", function () {",
+              "  const parameter = pm.request.url.query.find(function (item) { return item.key === \"maxTotalChargeUsd\"; });",
+              "  pm.expect(parameter && parameter.value).to.eql(\"0.25\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"keyword\": \"cybersecurity\",\n  \"awardCategory\": \"contracts\",\n  \"startDate\": \"2025-01-01\",\n  \"endDate\": \"2026-12-31\",\n  \"awardingAgency\": \"\",\n  \"minAwardAmount\": 1000000,\n  \"naicsCode\": \"541511\",\n  \"sortOrder\": \"desc\",\n  \"maxItems\": 50\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items?format=json&clean=true&maxTotalChargeUsd=0.25",
+          "protocol": "https",
+          "host": [
+            "api",
+            "apify",
+            "com"
+          ],
+          "path": [
+            "v2",
+            "acts",
+            "eQQ2beomyLlW4DTGM",
+            "run-sync-get-dataset-items"
+          ],
+          "query": [
+            {
+              "key": "format",
+              "value": "json"
+            },
+            {
+              "key": "clean",
+              "value": "true"
+            },
+            {
+              "key": "maxTotalChargeUsd",
+              "value": "0.25"
+            }
+          ]
+        },
+        "description": "Runs the public USASpending Federal Contracts preset and returns clean JSON dataset items."
+      },
+      "response": []
+    }
+  ]
+}

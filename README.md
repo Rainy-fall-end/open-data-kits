@@ -34,6 +34,7 @@ Production-ready, **zero-dependency** developer kits, analyst connectors, and fr
 
 | Kit | Target Users | Highlights | Path |
 |---|---|---|---|
+| **Flagship Conversion Kits (n8n + Google Sheets + Postman)** | VC, Sales, Recruiting & Biotech Teams | 6 ready-to-import presets for ATS Jobs, SEC Form D/XBRL, 7-Country Tenders, Pharma Pipeline & USASpending | [`packages/open-gov-flagship-kits/`](packages/open-gov-flagship-kits/) |
 | **Google Sheets & Excel Power Query BI Connectors** | Analysts, Ops, Biotech, Finance | Copy-paste `.gs` Apps Script + `.pq` M scripts, formula-injection safe | [`packages/open-gov-bi-connectors/`](packages/open-gov-bi-connectors/) |
 | **Postman v2.1, Insomnia v4 & Bruno Collections** | API Developers & QA | Ready-to-import collections with assertions & `$0.25` spend caps | [`packages/open-gov-api-collections/`](packages/open-gov-api-collections/) |
 | **AI Agent Function-Calling & RAG Toolpack (Python)** | OpenAI, Anthropic & Gemini Agents | JSON tool schemas + grounded provenance citations, zero deps | [`packages/open-gov-ai-tools-py/`](packages/open-gov-ai-tools-py/) |

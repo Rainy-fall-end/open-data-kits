@@ -1,0 +1,129 @@
+{
+  "name": "Flagship 6 - USASpending Federal Contracts",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger-usaspending_contracts",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "actor-usaspending_contracts",
+              "name": "actorId",
+              "value": "eQQ2beomyLlW4DTGM",
+              "type": "string"
+            },
+            {
+              "id": "format-usaspending_contracts",
+              "name": "outputFormat",
+              "value": "json",
+              "type": "string"
+            },
+            {
+              "id": "input-usaspending_contracts",
+              "name": "input",
+              "value": "={{ {\"keyword\":\"cybersecurity\",\"awardCategory\":\"contracts\",\"startDate\":\"2025-01-01\",\"endDate\":\"2026-12-31\",\"awardingAgency\":\"\",\"minAwardAmount\":1000000,\"naicsCode\":\"541511\",\"sortOrder\":\"desc\",\"maxItems\":50} }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "preset-usaspending_contracts",
+      "name": "Preset (set outputFormat to json or csv)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "format",
+              "value": "={{ $json.outputFormat }}"
+            },
+            {
+              "name": "clean",
+              "value": "true"
+            },
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.25"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.APIFY_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.input }}",
+        "options": {}
+      },
+      "id": "run-usaspending_contracts",
+      "name": "Run actor and return dataset",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Preset (set outputFormat to json or csv)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preset (set outputFormat to json or csv)": {
+      "main": [
+        [
+          {
+            "node": "Run actor and return dataset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "00000000-0000-4000-8000-000000000006",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

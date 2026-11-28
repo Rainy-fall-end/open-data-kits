@@ -2,7 +2,7 @@
 
 Import this workflow, add your Apify API token, execute once, and download a UTF-8 CSV of TapTap mobile game rankings. It uses only built-in nodes and is capped at two items for a low-cost test run.
 
-[Download workflow](./n8n-taptap-rankings-csv.json) · [Free JSON sample](./taptap-sample.json) · [n8n import instructions](https://docs.n8n.io/workflows/export-import/)
+[Download workflow](./n8n-taptap-rankings-csv.json) · [Free JSON sample](https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/taptap-sample.json) · [n8n import instructions](https://docs.n8n.io/workflows/export-import/)
 
 ## What it does
 

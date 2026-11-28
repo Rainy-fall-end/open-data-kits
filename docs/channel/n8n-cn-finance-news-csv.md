@@ -1,6 +1,6 @@
 # Export CLS.cn financial news to CSV in n8n
 
-1. Download the workflow JSON and import the file from a new workflow's menu in n8n. The workflow uses the built-in Manual Trigger and HTTP Request nodes. [Download workflow](./n8n-cn-finance-news-csv.json) · [Free JSON sample](./cn-finance-sample.json) · [n8n import instructions](https://docs.n8n.io/workflows/export-import/)
+1. Download the workflow JSON and import the file from a new workflow's menu in n8n. The workflow uses the built-in Manual Trigger and HTTP Request nodes. [Download workflow](./n8n-cn-finance-news-csv.json) · [Free JSON sample](https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/cn-finance-sample.json) · [n8n import instructions](https://docs.n8n.io/workflows/export-import/)
 2. Open **Run CLS.cn financial news and download CSV**. Create or select a **Header Auth** credential. Set **Name** to `Authorization` and **Value** to `Bearer` followed by a space and your Apify API token. Save it in the n8n credential editor. [Apify account settings](https://console.apify.com/settings/integrations)
 3. Select **Execute workflow** once. In the HTTP Request output, open **Binary** and download the `data` file. The UTF-8 CSV includes columns `source,id,title,content,published_at,ctime,level,subjects,stock_codes,share_url`.
 

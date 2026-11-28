@@ -1,6 +1,6 @@
 # Export SMZDM featured deals to CSV in n8n
 
-[Download workflow](./n8n-smzdm-deals-csv.json) · [Free JSON sample](./smzdm-deals-sample.json) · [n8n import instructions](https://docs.n8n.io/workflows/export-import/)
+[Download workflow](./n8n-smzdm-deals-csv.json) · [Free JSON sample](https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/smzdm-deals-sample.json) · [n8n import instructions](https://docs.n8n.io/workflows/export-import/)
 
 This buyer setup guide gets you from import to CSV using only n8n built-in nodes: **Manual Trigger + HTTP Request**. It scans SMZDM (什么值得买) public featured deals (`jingxuan`) and returns a UTF-8 CSV.
 

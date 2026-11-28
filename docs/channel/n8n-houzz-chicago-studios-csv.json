@@ -23,7 +23,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://api.apify.com/v2/actors/perceptive_city_af7~houzz-professionals-lead-scraper/run-sync-get-dataset-items",
+        "url": "https://api.apify.com/v2/acts/QjzQIaEGgXjvnfm1g/run-sync-get-dataset-items",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "sendQuery": true,
@@ -91,7 +91,7 @@
         -390
       ],
       "parameters": {
-        "content": "## Shortlist Chicago interior design studios with websites and reviews\nFor furniture and materials reps building a studio shortlist. Each result must have a company website and at least three Houzz reviews.\n\n[Preview and try this search in Apify](https://apify.com/perceptive_city_af7/houzz-professionals-lead-scraper/examples/find-chicago-interior-design-studios?utm_source=n8n_workflow&utm_medium=referral&utm_campaign=houzz_first_buyers&utm_content=chicago_studios)\n\n1. Open **Fetch up to five matching profiles**. Select an n8n Header Auth credential with name `Authorization` and value `Bearer YOUR_APIFY_TOKEN`. Keep the token inside the credential.\n2. Run manually. Each run returns up to five profiles and has a $0.01 spending limit. Fewer matches can qualify.\n3. Open **Download shortlist as CSV → Binary → data** to save the file. Empty results yield a header-only file. If a request times out, check your Apify run history before retrying.",
+        "content": "## Shortlist Chicago interior design studios with websites and reviews\nFor furniture and materials reps building a studio shortlist. Each result must have a company website and at least three Houzz reviews.\n\n[Preview and try this search in Apify](https://apify.com/perceptive_city_af7/houzz-professionals-scraper/examples/find-chicago-interior-design-studios?utm_source=n8n_workflow&utm_medium=referral&utm_campaign=houzz_first_buyers&utm_content=chicago_studios)\n\n1. Open **Fetch up to five matching profiles**. Select an n8n Header Auth credential with name `Authorization` and value `Bearer YOUR_APIFY_TOKEN`. Keep the token inside the credential.\n2. Run manually. Each run returns up to five profiles and has a $0.01 spending limit. Fewer matches can qualify.\n3. Open **Download shortlist as CSV → Binary → data** to save the file. Empty results yield a header-only file. If a request times out, check your Apify run history before retrying.",
         "width": 730,
         "height": 440
       }

@@ -7,6 +7,10 @@ Production-ready, **zero-dependency** developer kits, analyst connectors, and fr
 
 ---
 
+## NYC contractor business emails
+
+Start with up to 20 New York City general contractors whose active city registrations publish a business email. Each row links to the original record. A full 20-result run costs $0.029 on the Free plan, with a $0.03 Actor charge cap. [Try the NYC example](https://apify.com/perceptive_city_af7/houzz-professionals-scraper/examples/find-20-nyc-contractors-with-public-business-emails) · [Preview the fields and 50-company sample](https://rainy-fall-end.github.io/open-data-kits/nyc-contractor-emails/) · [Download the n8n CSV workflow](https://rainy-fall-end.github.io/open-data-kits/channel/n8n-nyc-contractor-emails-csv.json).
+
 ## Small searches you can run on Apify
 
 | Research question | Preset search | Download |
@@ -19,15 +23,6 @@ Production-ready, **zero-dependency** developer kits, analyst connectors, and fr
 | Research UK contract awards and suppliers | [Open the Apify example](https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/examples/research-uk-contract-awards-and-suppliers?utm_source=github&utm_medium=referral&utm_campaign=portfolio_trials&utm_content=research-uk-contract-awards-and-suppliers) | [n8n CSV workflow](docs/channel/n8n-uk-gov-tenders-csv.json) |
 
 [See all sample searches, including Asian market data, funding and clinical research](https://rainy-fall-end.github.io/open-data-kits/#buyer-trials).
-
-## Houzz shortlists for suppliers and agencies
-
-| What are you looking for? | Try it on Apify | Import into n8n |
-|---|---|---|
-| General contractors serving Los Angeles who publish a business email | [Try the five-profile email search](https://apify.com/perceptive_city_af7/houzz-professionals-scraper/examples/find-los-angeles-contractors-with-public-emails?utm_source=github&utm_medium=referral&utm_campaign=houzz_first_buyers&utm_content=la_contractors) | [Download the LA contractor CSV workflow](https://rainy-fall-end.github.io/open-data-kits/channel/n8n-houzz-la-contractors-csv.json) |
-| Interior design studios serving Chicago with a website and at least three reviews | [Try the five-studio shortlist](https://apify.com/perceptive_city_af7/houzz-professionals-scraper/examples/find-chicago-interior-design-studios?utm_source=github&utm_medium=referral&utm_campaign=houzz_first_buyers&utm_content=chicago_studios) | [Download the Chicago studio CSV workflow](https://rainy-fall-end.github.io/open-data-kits/channel/n8n-houzz-chicago-studios-csv.json) |
-
-[Preview the CSV columns and compare the two searches](https://rainy-fall-end.github.io/open-data-kits/houzz/). Each optional workflow uses manual execution, your own Apify Header Auth credential and a $0.01 per-run spending cap. [How to import a workflow into n8n](https://docs.n8n.io/workflows/export-import/).
 
 ## Live Production APIs & Scrapers
 

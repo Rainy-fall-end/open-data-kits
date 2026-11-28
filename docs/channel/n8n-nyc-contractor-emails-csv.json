@@ -1,0 +1,137 @@
+{
+  "name": "Export NYC general contractor business contacts to CSV",
+  "nodes": [
+    {
+      "id": "43c23c39-9e40-511c-97db-46ec76d280ee",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "13a96a2b-2856-5aa6-bd45-4a7b44b6e1bf",
+      "name": "Use this workflow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -320
+      ],
+      "parameters": {
+        "content": "## NYC general contractor contacts\nExport up to 20 businesses with an active NYC general contractor registration and an email in the city record. Each result includes its contact source. [Preview the Apify task](https://apify.com/perceptive_city_af7/houzz-professionals-scraper/examples/find-20-nyc-contractors-with-public-business-emails).\n\n1. In **Fetch NYC contractor contacts**, choose a **Header Auth** credential with header name `Authorization` and value `Bearer YOUR_APIFY_TOKEN`.\n2. Click **Execute Workflow** once. The Free-plan result price is $0.029 for 20 businesses. The Actor charge limit is $0.03 per run, and zero matching results cost $0 in Actor charges.\n3. Open **Convert to CSV → Output → Binary → data** and download `nyc-contractor-emails.csv`. Automatic retries are off. If a request times out, check your Apify runs before starting it again.",
+        "width": 770,
+        "height": 320,
+        "color": 4
+      }
+    },
+    {
+      "id": "a96c1491-3090-5953-9122-118d612e6a12",
+      "name": "Fetch NYC contractor contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": false,
+      "position": [
+        280,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/QjzQIaEGgXjvnfm1g/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.03"
+            },
+            {
+              "name": "timeout",
+              "value": "120"
+            },
+            {
+              "name": "limit",
+              "value": "20"
+            },
+            {
+              "name": "format",
+              "value": "json"
+            },
+            {
+              "name": "clean",
+              "value": "true"
+            },
+            {
+              "name": "fields",
+              "value": "businessName,category,licenseNumber,licenseStatus,borough,city,state,primaryEmail,phone,emailSourceUrl,phoneSourceUrl,scrapedAt"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"licenseType\": \"GENERAL CONTRACTOR\",\n  \"maxItems\": 20,\n  \"requireEmail\": true\n}",
+        "options": {
+          "timeout": 150000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        },
+        "genericAuthType": "httpHeaderAuth",
+        "contentType": "json"
+      }
+    },
+    {
+      "id": "ce74fe86-7a62-5426-a6d9-556a2faf6ef8",
+      "name": "Convert to CSV",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        0
+      ],
+      "parameters": {
+        "operation": "csv",
+        "binaryPropertyName": "data",
+        "options": {
+          "fileName": "nyc-contractor-emails.csv",
+          "headerRow": true
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Fetch NYC contractor contacts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch NYC contractor contacts": {
+      "main": [
+        [
+          {
+            "node": "Convert to CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

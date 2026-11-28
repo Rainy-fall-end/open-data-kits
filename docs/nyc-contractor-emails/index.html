@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NYC Contractor Emails from DOB License Records</title>
+  <meta name="description" content="Try 20 New York City general contractors with published business emails. Preview a masked result and check pricing before the run.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; form-action 'none'; base-uri 'none'">
+  <link rel="canonical" href="https://rainy-fall-end.github.io/open-data-kits/nyc-contractor-emails/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Open Data Kits">
+  <meta property="og:title" content="NYC Contractor Emails from DOB License Records">
+  <meta property="og:description" content="Preview the New York City license fields and open a capped 20-contact example.">
+  <meta property="og:url" content="https://rainy-fall-end.github.io/open-data-kits/nyc-contractor-emails/">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070d19;
+      --surface: #0f172a;
+      --border: #314159;
+      --text: #f8fafc;
+      --muted: #b1bfd2;
+      --accent: #5ee2b6;
+      --link: #65cefb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 1rem/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .wrap { width: min(100% - 2.5rem, 64rem); margin-inline: auto; }
+    a { color: var(--link); text-underline-offset: .2em; }
+    a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    .skip { position: absolute; left: .75rem; top: -8rem; background: var(--surface); padding: .6rem; }
+    .skip:focus { top: .25rem; }
+    header, .preview, footer { border-top: 1px solid var(--border); }
+    header { border-top: 0; border-bottom: 1px solid var(--border); }
+    nav { display: flex; justify-content: space-between; align-items: center; gap: .75rem; padding-block: 1.1rem; }
+    .brand { font-size: 1.05rem; font-weight: 750; color: var(--text); text-decoration: none; }
+    .brand span { color: var(--accent); }
+    .hero { padding-block: clamp(2.4rem, 7vw, 4.8rem) 2.3rem; background: radial-gradient(ellipse at 18% 0, #113334 0, transparent 67%); }
+    h1, h2 { margin: 0; line-height: 1.13; }
+    h1 { max-width: 18ch; font-size: clamp(2.55rem, 6.6vw, 4.6rem); letter-spacing: -.05em; }
+    h2 { font-size: clamp(1.65rem, 3.6vw, 2.3rem); letter-spacing: -.03em; }
+    p { margin: .8rem 0 0; }
+    .intro { max-width: 63ch; color: var(--muted); font-size: 1.12rem; }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
+    .task { display: flex; flex-direction: column; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: clamp(1.2rem, 3vw, 2rem); }
+    .task h2 { font-size: clamp(1.6rem, 2.8vw, 2rem); }
+    .task p, .preview p, .workflows p { color: var(--muted); }
+    .task ul { margin: .9rem 0 1.4rem; padding-left: 1.2rem; }
+    .task li + li { margin-top: .35rem; }
+    .button { display: inline-block; padding: .65rem 1rem; min-height: 44px; margin-top: auto; border-radius: 8px; background: var(--accent); color: #061b17; font-weight: 700; text-decoration: none; }
+    .button:hover { background: #8af0ce; }
+    .hero .button { margin-top: 1.1rem; }
+    .cost { max-width: 83ch; margin: 1.15rem 0 2.7rem; color: var(--muted); font-size: .94rem; }
+    .cost strong { color: var(--text); }
+    .preview, .workflows { padding-block: 2.3rem; }
+    .preview p, .workflows p { max-width: 72ch; }
+    .table-wrap { margin-top: 1.15rem; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: .8rem .95rem; border-bottom: 1px solid var(--border); }
+    thead th { color: var(--muted); background: var(--surface); font-size: .88rem; }
+    tbody th { font-weight: 650; }
+    tbody th span { display: block; color: var(--muted); font-weight: 400; font-size: .9rem; }
+    tbody tr:last-child > * { border-bottom: 0; }
+    .file-links { display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; margin-top: 1rem; }
+    .file-links a { display: inline-block; padding-block: .2rem; }
+    .workflows { border-top: 1px solid var(--border); }
+    footer { padding-block: 1.4rem; }
+    @media (max-width: 40rem) {
+      .cards { grid-template-columns: 1fr; }
+      .wrap { width: calc(100% - 2rem); }
+      .button { text-align: center; width: 100%; }
+      th, td { padding: .6rem .4rem; overflow-wrap: anywhere; }
+      table { font-size: .85rem; }
+      tbody th span, thead th { font-size: .8rem; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header><nav class="wrap" aria-label="Primary"><a class="brand" href="../">Open Data Kits</a><a href="#sample">Preview a result</a></nav></header>
+  <main id="main">
+    <section class="hero"><div class="wrap">
+      <h1>NYC general contractors with a published business email</h1>
+      <p class="intro">Build a shortlist from active general contractor registrations in New York City. Each business links back to its Department of Buildings record so you can check the published contact details.</p>
+      <a class="button" href="https://apify.com/perceptive_city_af7/houzz-professionals-scraper/examples/find-20-nyc-contractors-with-public-business-emails?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=nyc_contractor_trial">Try up to 20 NYC contacts</a>
+      <p><strong>$0.029 for 20 results on Apify’s Free plan.</strong> The example caps Actor charges at $0.03 per run. Each distinct company with a qualifying contact and an official source counts once. Zero results cost $0 in Actor charges. <a href="https://apify.com/perceptive_city_af7/houzz-professionals-scraper/pricing">Check your plan’s rate</a>.</p>
+    </div></section>
+    <section class="wrap workflows" id="sample">
+      <h2>What you get</h2>
+      <p>Export the business name, published email, borough, license type, license number and source link. A business phone appears when the record contains a qualifying number. Email delivery and phone service are untested.</p>
+      <div class="table-wrap"><table aria-label="Illustrative masked result">
+        <thead><tr><th scope="col">Business</th><th scope="col">Business email</th><th scope="col">Registration</th></tr></thead>
+        <tbody><tr><th scope="row">Example Construction LLC</th><td>of•••@example.invalid</td><td>GENERAL CONTRACTOR · 12••••</td></tr></tbody>
+      </table></div>
+      <p>This fictional row illustrates the fields. The live search uses the contact details published in the city directory.</p>
+    </section>
+    <section class="wrap preview" aria-labelledby="coverage">
+      <h2 id="coverage">How often did the city records include a contact?</h2>
+      <p><strong>31 of 50 companies (62%)</strong> had a qualifying published business email. <strong>50 of 50 (100%)</strong> had a qualifying business phone. On November 28, 2026, we took the first 50 distinct identifiable businesses in ascending DOB record ID order, after filtering for active general contractors with addresses in the five boroughs and before filtering for contact details.</p>
+      <p>The sample had 31 distinct emails and 50 distinct phones. In the separate 20-company trial, all 20 returned business emails matched their official records. You can also read the city’s source data free of charge. <a href="https://data.cityofnewyork.us/Housing-Development/DOB-License-Info/t8hj-ruu2/data">Inspect the DOB dataset and field definitions</a>.</p>
+    </section>
+    <section class="wrap workflows" aria-labelledby="workflow">
+      <h2 id="workflow">Download the n8n CSV workflow</h2>
+      <p>Import the JSON in n8n, add your Apify token as a Header Auth credential, and execute the workflow once. Download <code>nyc-contractor-emails.csv</code> from the final node. The workflow uses the same 20-company limit and $0.03 charge cap as the example.</p>
+      <div class="file-links"><a href="../channel/n8n-nyc-contractor-emails-csv.json" download>Download workflow JSON</a><a href="https://docs.n8n.io/workflows/export-import/">How to import a workflow</a></div>
+    </section>
+  </main>
+  <footer class="wrap"><a href="../#buyer-trials">Browse all example searches</a></footer>
+</body>
+</html>

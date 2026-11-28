@@ -1,0 +1,37 @@
+[
+  {
+    "dataset_id": "evalscope/CC-OCR-V2",
+    "downloads": 4640569,
+    "license": "mit",
+    "has_preview": false,
+    "url": "https://modelscope.cn/datasets/evalscope/CC-OCR-V2"
+  },
+  {
+    "dataset_id": "huangjintao/latex_ocr_test",
+    "downloads": 2229632,
+    "license": "Apache License 2.0",
+    "has_preview": true,
+    "url": "https://modelscope.cn/datasets/huangjintao/latex_ocr_test"
+  },
+  {
+    "dataset_id": "baidu/MarathonDocBench",
+    "downloads": 639487,
+    "license": "apache-2.0",
+    "has_preview": true,
+    "url": "https://modelscope.cn/datasets/baidu/MarathonDocBench"
+  },
+  {
+    "dataset_id": "AI-ModelScope/LaTeX_OCR",
+    "downloads": 442062,
+    "license": "Apache License 2.0",
+    "has_preview": true,
+    "url": "https://modelscope.cn/datasets/AI-ModelScope/LaTeX_OCR"
+  },
+  {
+    "dataset_id": "PaddlePaddle/PaddleOCR-VL_demo",
+    "downloads": 369784,
+    "license": "Apache License 2.0",
+    "has_preview": true,
+    "url": "https://modelscope.cn/datasets/PaddlePaddle/PaddleOCR-VL_demo"
+  }
+]

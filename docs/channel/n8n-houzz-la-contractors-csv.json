@@ -1,0 +1,129 @@
+{
+  "name": "Export Los Angeles contractors with published business emails",
+  "nodes": [
+    {
+      "id": "d9fe9a7d-9413-4303-8041-4c1ff49fa3d8",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        60,
+        140
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "6ed6946e-49c1-40e5-b62f-842aeafec241",
+      "name": "Fetch up to five matching profiles",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        340,
+        140
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/actors/perceptive_city_af7~houzz-professionals-lead-scraper/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "format",
+              "value": "json"
+            },
+            {
+              "name": "limit",
+              "value": "5"
+            },
+            {
+              "name": "fields",
+              "value": "professionalId,businessName,category,city,state,primaryEmail,emailSource,contactPageUrl,websiteUrl,profileUrl"
+            },
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.01"
+            },
+            {
+              "name": "timeout",
+              "value": "120"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"categories\": [\n    \"general-contractors\"\n  ],\n  \"locations\": [\n    \"Los Angeles, CA\"\n  ],\n  \"maxItems\": 5,\n  \"requireEmail\": true,\n  \"smartZeroResultFallback\": false,\n  \"enableProfileEnrichment\": true,\n  \"enableWebsiteEnrichment\": true,\n  \"enableSerpEnrichment\": false\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json",
+              "fullResponse": true
+            }
+          },
+          "timeout": 145000
+        }
+      },
+      "retryOnFail": false,
+      "alwaysOutputData": true
+    },
+    {
+      "id": "fbcd7a0c-eea6-4c45-a447-ee617b2ea1cb",
+      "name": "Download shortlist as CSV",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        140
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const rows = $input.first().json.body;\nif (!Array.isArray(rows)) {\n  throw new Error('Expected an array of profiles from Apify.');\n}\nconst columns = [\"professionalId\", \"businessName\", \"category\", \"city\", \"state\", \"primaryEmail\", \"emailSource\", \"contactPageUrl\", \"websiteUrl\", \"profileUrl\"];\nfunction csvCell(value) {\n  let text = String(value ?? '');\n  if (/^[\\s\\uFEFF]*[=+@-]/.test(text) || /^[\\t\\r\\n]/.test(text)) text = \"'\" + text;\n  return '\"' + text.replace(/\"/g, '\"\"') + '\"';\n}\nconst lines = [columns.join(','), ...rows.map(row => columns.map(key => csvCell(row[key])).join(','))];\nconst content = '\\uFEFF' + lines.join('\\r\\n') + '\\r\\n';\nreturn [{json: {profiles: rows.length}, binary: {data: {\n  data: Buffer.from(content, 'utf8').toString('base64'),\n  mimeType: 'text/csv', fileExtension: 'csv', fileName: 'houzz-la-contractors.csv'\n}}}];"
+      }
+    },
+    {
+      "id": "a7dd5c44-8895-41ef-8271-aa058bf1934d",
+      "name": "Setup and trial link",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -390
+      ],
+      "parameters": {
+        "content": "## Export Los Angeles contractors with published business emails\nFor agencies and suppliers building a company contact list. The CSV records where the email was published. Mailbox deliverability is untested.\n\n[Preview and try this search in Apify](https://apify.com/perceptive_city_af7/houzz-professionals-lead-scraper/examples/find-los-angeles-contractors-with-public-emails?utm_source=n8n_workflow&utm_medium=referral&utm_campaign=houzz_first_buyers&utm_content=la_contractors)\n\n1. Open **Fetch up to five matching profiles**. Select an n8n Header Auth credential with name `Authorization` and value `Bearer YOUR_APIFY_TOKEN`. Keep the token inside the credential.\n2. Run manually. Each run returns up to five profiles and has a $0.01 spending limit. Fewer matches can qualify.\n3. Open **Download shortlist as CSV → Binary → data** to save the file. Empty results yield a header-only file. If a request times out, check your Apify run history before retrying.",
+        "width": 730,
+        "height": 440
+      }
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Fetch up to five matching profiles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch up to five matching profiles": {
+      "main": [
+        [
+          {
+            "node": "Download shortlist as CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

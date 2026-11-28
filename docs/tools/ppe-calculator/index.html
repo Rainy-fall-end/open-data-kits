@@ -26,7 +26,7 @@
       "Estimates Apify Pay-Per-Event costs with tier discounts",
       "Calculates maxTotalChargeUsd caps",
       "Estimates creator net profit with 80/20 split",
-      "Compares Free, Starter, Scale, and Business plans"
+      "Compares Free, Bronze, Silver and Gold discount tiers"
     ]
   }
   </script>
@@ -40,7 +40,7 @@
         "name": "How do Apify Pay-Per-Event start fees work?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Apify PPE actors may charge a start fee per run. The calculator adds your start fee multiplied by the number of runs to the per-event charge."
+          "text": "The preset Actors charge one start event per GB of allocated memory, with a minimum of one per run. At 512 MB that adds $0.00005 per run."
         }
       },
       {
@@ -48,7 +48,7 @@
         "name": "What discounts do paid Apify plans apply to PPE events?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Starter plans take 5% off the per-event rate, Scale takes 15%, and Business takes 25%. Free plans have no discount."
+          "text": "UK Contracts Finder charges the same event price in every tier. The other listed presets discount result events by 5% on Bronze, 15% on Silver and 25% on Gold and above. For Custom, enter your effective event rate."
         }
       },
       {
@@ -56,7 +56,7 @@
         "name": "What is maxTotalChargeUsd and how do I use it?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "maxTotalChargeUsd is an optional actor input that caps the total charge for a run. The calculator shows the required cap for each plan so unexpected event volume cannot exceed your budget."
+          "text": "maxTotalChargeUsd is a run option that limits the event charges for one run. Supply it as a query parameter when using the HTTP API."
         }
       },
       {
@@ -64,7 +64,7 @@
         "name": "What is the creator 80/20 net payout split?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Apify pays creators 80% of net revenue after platform fees and compute costs are deducted. The calculator estimates gross revenue, Apify's 20% fee, compute cost, net payout, and margin."
+          "text": "Only paid users contribute to creator profit. This estimate deducts the 20% Apify share and estimated compute from paid-user event revenue. Storage, proxy and other platform costs may also apply."
         }
       }
     ]
@@ -174,6 +174,7 @@
     }
 
     .panel {
+      min-width: 0;
       background: var(--paper);
       border: 1px solid var(--line);
       border-radius: 14px;
@@ -617,16 +618,26 @@
               <input id="rate-per-1k" type="number" min="0" step="0.01" value="5.00" inputmode="decimal">
             </div>
             <div class="field">
-              <label for="start-fee">Start fee per run ($)</label>
+              <label for="start-fee">Start fee per GB ($)</label>
               <input id="start-fee" type="number" min="0" step="0.00001" value="0.00005" inputmode="decimal">
             </div>
             <div class="field">
-              <label for="plan-select">Apify plan</label>
+              <label for="memory-mb">Actor memory</label>
+              <select id="memory-mb">
+                <option value="256">256 MB</option>
+                <option value="512" selected>512 MB</option>
+                <option value="1024">1024 MB</option>
+                <option value="2048">2048 MB</option>
+                <option value="4096">4096 MB</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="plan-select">Buyer discount tier</label>
               <select id="plan-select">
                 <option value="free">Free</option>
-                <option value="starter">Starter</option>
-                <option value="scale">Scale</option>
-                <option value="business">Business</option>
+                <option value="bronze">Bronze</option>
+                <option value="silver">Silver</option>
+                <option value="gold">Gold</option>
               </select>
             </div>
             <div class="field">
@@ -646,15 +657,15 @@
           <div class="metric-grid">
             <div class="metric-card" id="card-per-run">
               <span>Per run cost</span>
-              <output id="summary-per-run">$0.53</output>
+              <output id="summary-per-run">$0.50005</output>
             </div>
             <div class="metric-card" id="card-total">
               <span>Total estimated cost</span>
-              <output id="summary-total">$0.53</output>
+              <output id="summary-total">$0.50005</output>
             </div>
             <div class="metric-card" id="card-cap">
               <span>Required maxTotalChargeUsd</span>
-              <output id="summary-cap">$0.53</output>
+              <output id="summary-cap">$0.50005</output>
             </div>
           </div>
 
@@ -675,13 +686,13 @@
           </div>
 
           <div>
-            Budget fit: <output id="budget-result" class="budget-result">Within budget</output>
+            Budget fit: <output id="budget-result" class="budget-result">Up to 999 items/run</output>
           </div>
 
           <div class="snippet">
             <div class="snippet-header">
-              <code id="snippet-code">{"maxTotalChargeUsd":5,"plan":"starter"}</code>
-              <span id="snippet-cap-badge" class="badge">Starter -5%</span>
+              <code id="snippet-code">{"actor":"perceptive_city_af7/uk-gov-tenders-scraper","runOptions":{"maxTotalChargeUsd":0.50005},"input":{"maxItems":100,"keyword":""}}</code>
+              <span id="snippet-cap-badge" class="badge">Free · maxTotalChargeUsd=0.50005</span>
             </div>
             <div>
               <button type="button" id="copy-snippet" class="button">Copy JSON + cap</button>
@@ -695,28 +706,18 @@
 
     <section id="creator-profit" aria-labelledby="creator-profit-title">
       <h2 id="creator-profit-title">Creator Profit Estimator</h2>
-      <p>Estimate your net payout after Apify's 80/20 split and compute costs.</p>
+      <p>Free-plan users contribute $0 to creator profit. For paid users, the estimate subtracts Apify’s 20% share and compute. You can adjust the CU price for your contract. Storage, proxy and other usage can reduce the payout. <a href="https://docs.apify.com/actors/monetize/pricing-and-costs">Apify pricing and costs</a>.</p>
       <div class="creator-grid">
         <div class="panel">
           <h3>Actor run profile</h3>
           <div class="input-grid" style="grid-template-columns:1fr;">
-            <div class="field">
-              <label for="memory-mb">Actor memory</label>
-              <select id="memory-mb">
-                <option value="256">256 MB</option>
-                <option value="512" selected>512 MB</option>
-                <option value="1024">1024 MB</option>
-                <option value="2048">2048 MB</option>
-                <option value="4096">4096 MB</option>
-              </select>
-            </div>
             <div class="field">
               <label for="duration-sec">Average run duration (seconds)</label>
               <input id="duration-sec" type="number" min="0" step="1" value="15" inputmode="numeric">
             </div>
             <div class="field">
               <label for="cu-price">CU price ($ per CU)</label>
-              <input id="cu-price" type="number" min="0" step="0.01" value="0.30" inputmode="decimal">
+              <input id="cu-price" type="number" min="0" step="0.01" value="0.20" inputmode="decimal">
             </div>
           </div>
         </div>
@@ -726,23 +727,23 @@
           <dl class="creator-results">
             <div>
               <dt>Gross revenue</dt>
-              <dd><output id="creator-gross">$0.45</output></dd>
+              <dd><output id="creator-gross">$0.00</output></dd>
             </div>
             <div>
               <dt>Apify fee (20%)</dt>
-              <dd><output id="creator-fee">$0.09</output></dd>
+              <dd><output id="creator-fee">$0.00</output></dd>
             </div>
             <div>
               <dt>Compute cost</dt>
-              <dd><output id="creator-compute">$0.02</output></dd>
+              <dd><output id="creator-compute">$0.00</output></dd>
             </div>
             <div>
               <dt>Net payout</dt>
-              <dd><output id="creator-net">$0.34</output></dd>
+              <dd><output id="creator-net">$0.00</output></dd>
             </div>
             <div>
               <dt>Margin</dt>
-              <dd><output id="creator-margin">76%</output></dd>
+              <dd><output id="creator-margin">—</output></dd>
             </div>
           </dl>
         </div>
@@ -755,7 +756,7 @@
       <div class="actor-grid">
         <article class="actor-card" data-actor="uk-gov-tenders-scraper">
           <h3>UK Government Tenders</h3>
-          <p>Official UK Find a Tender (FTS) OCDS procurement notices &amp; contract awards.</p>
+          <p>UK Contracts Finder OCDS procurement notices &amp; contract awards.</p>
           <p class="rate">$5.00 / 1K events</p>
           <div class="actor-links">
             <a href="https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper" data-actor-link>View Actor</a>
@@ -806,19 +807,19 @@
       <div class="faq-list">
         <details>
           <summary>How do Apify Pay-Per-Event start fees work?</summary>
-          <p>Apify PPE actors may charge a start fee per run. The calculator adds your start fee multiplied by the number of runs to the per-event charge.</p>
+          <p>The preset Actors charge one start event per GB of allocated memory, with a minimum of one per run. At 512 MB that adds $0.00005 per run.</p>
         </details>
         <details>
           <summary>What discounts do paid Apify plans apply to PPE events?</summary>
-          <p>Starter plans take 5% off the per-event rate, Scale takes 15%, and Business takes 25%. Free plans have no discount.</p>
+          <p>UK Contracts Finder charges the same event price in every tier. The other listed presets discount result events by 5% on Bronze, 15% on Silver and 25% on Gold and above. For Custom, enter your effective event rate.</p>
         </details>
         <details>
           <summary>What is maxTotalChargeUsd and how do I use it?</summary>
-          <p>maxTotalChargeUsd is an optional actor input that caps the total charge for a run. The calculator shows the required cap for each plan so unexpected event volume cannot exceed your budget.</p>
+          <p>maxTotalChargeUsd is a run option that limits the event charges for one run. Supply it as a query parameter when using the HTTP API.</p>
         </details>
         <details>
           <summary>What is the creator 80/20 net payout split?</summary>
-          <p>Apify pays creators 80% of net revenue after platform fees and compute costs are deducted. The calculator estimates gross revenue, Apify's 20% fee, compute cost, net payout, and margin.</p>
+          <p>Only paid users contribute to creator profit. This estimate deducts the 20% Apify share and estimated compute from paid-user event revenue. Storage, proxy and other platform costs may also apply.</p>
         </details>
       </div>
       <noscript>
@@ -838,14 +839,14 @@
 (() => {
 const DEFAULT_START_FEE_USD = 0.00005;
 const APIFY_FEE_RATE = 0.20;
-const DEFAULT_CU_PRICE_USD = 0.30;
+const DEFAULT_CU_PRICE_USD = 0.20;
 const FREE_COMPUTE_WINDOW_SECONDS = 5;
 
 const APIFY_PLANS = Object.freeze([
-  Object.freeze({ id: 'free', name: 'Free', discountPct: 0, multiplier: 1 }),
-  Object.freeze({ id: 'starter', name: 'Starter', discountPct: 5, multiplier: 0.95 }),
-  Object.freeze({ id: 'scale', name: 'Scale', discountPct: 15, multiplier: 0.85 }),
-  Object.freeze({ id: 'business', name: 'Business', discountPct: 25, multiplier: 0.75 }),
+  Object.freeze({ id: 'free', name: 'Free', discountPct: 0, multiplier: 1, cuPriceUsd: 0.20 }),
+  Object.freeze({ id: 'bronze', name: 'Bronze', discountPct: 5, multiplier: 0.95, cuPriceUsd: 0.20 }),
+  Object.freeze({ id: 'silver', name: 'Silver', discountPct: 15, multiplier: 0.85, cuPriceUsd: 0.16 }),
+  Object.freeze({ id: 'gold', name: 'Gold', discountPct: 25, multiplier: 0.75, cuPriceUsd: 0.13 }),
 ]);
 
 const ACTOR_PRESETS = Object.freeze([
@@ -860,10 +861,11 @@ const ACTOR_PRESETS = Object.freeze([
     startFeeUsd: DEFAULT_START_FEE_USD,
     defaultMemoryMb: 512,
     defaultInput: { maxItems: 100, keyword: '' },
-    summary: 'Official UK Find a Tender (FTS) OCDS procurement notices & contract awards.'
+    summary: 'UK Contracts Finder OCDS procurement notices & contract awards.'
   }),
   Object.freeze({
     id: 'smzdm-deals-scraper',
+    tiered: true,
     name: 'SMZDM Deals',
     shortName: 'SMZDM Deals',
     actorPath: 'perceptive_city_af7/smzdm-deals-scraper',
@@ -877,6 +879,7 @@ const ACTOR_PRESETS = Object.freeze([
   }),
   Object.freeze({
     id: 'cn-finance-news-scraper',
+    tiered: true,
     name: 'China Finance News & A-Share Filings',
     shortName: 'CN Finance News',
     actorPath: 'perceptive_city_af7/cn-finance-news-scraper',
@@ -890,6 +893,7 @@ const ACTOR_PRESETS = Object.freeze([
   }),
   Object.freeze({
     id: 'taptap-scraper',
+    tiered: true,
     name: 'TapTap Game Rankings & Reviews',
     shortName: 'TapTap Games',
     actorPath: 'perceptive_city_af7/taptap-scraper',
@@ -903,6 +907,7 @@ const ACTOR_PRESETS = Object.freeze([
   }),
   Object.freeze({
     id: 'modelscope-scraper',
+    tiered: true,
     name: 'ModelScope AI Models & Datasets',
     shortName: 'ModelScope AI',
     actorPath: 'perceptive_city_af7/modelscope-scraper',
@@ -938,15 +943,7 @@ function getPresetById(id) {
   return ACTOR_PRESETS.find((preset) => preset.id === id) ?? null;
 }
 
-function getPlanById(id) {
-  const plan = APIFY_PLANS.find((plan) => plan.id === id);
-  if (!plan) {
-    throw new RangeError(`Unknown plan: ${id}`);
-  }
-  return plan;
-}
-
-function calculatePlanCosts({ itemsPerRun = 100, runs = 1, ratePer1K = 5.0, startFeeUsd = DEFAULT_START_FEE_USD, bufferPct = 0 } = {}) {
+function calculatePlanCosts({ itemsPerRun = 100, runs = 1, ratePer1K = 5.0, startFeeUsd = DEFAULT_START_FEE_USD, bufferPct = 0, tiered = false } = {}) {
   assertNonNegative(itemsPerRun, 'itemsPerRun', { integer: true });
   assertNonNegative(runs, 'runs', { integer: true });
   assertNonNegative(ratePer1K, 'ratePer1K');
@@ -962,8 +959,8 @@ function calculatePlanCosts({ itemsPerRun = 100, runs = 1, ratePer1K = 5.0, star
   const freeTotal = roundUsd(freePerRunCost * runs, 8);
 
   const plans = APIFY_PLANS.map(plan => {
-    const effectiveRatePer1K = roundUsd(ratePer1K * plan.multiplier, 8);
-    const effectiveRatePerItem = roundUsd((ratePer1K / 1000) * plan.multiplier, 8);
+    const effectiveRatePer1K = roundUsd(ratePer1K * (tiered ? plan.multiplier : 1), 8);
+    const effectiveRatePerItem = effectiveRatePer1K / 1000;
     const startFeePerRun = roundUsd(startFeeUsd, 8);
     const itemCostPerRun = roundUsd(itemsPerRun * effectiveRatePerItem, 8);
     const perRunCost = roundUsd(startFeePerRun + itemCostPerRun, 8);
@@ -972,6 +969,7 @@ function calculatePlanCosts({ itemsPerRun = 100, runs = 1, ratePer1K = 5.0, star
     const savingsVsFreeTotal = roundUsd(freeTotal - totalCost, 8);
     return {
       ...plan,
+      discountPct: tiered ? plan.discountPct : 0,
       effectiveRatePer1K,
       effectiveRatePerItem,
       startFeePerRun,
@@ -994,44 +992,12 @@ function calculatePlanCosts({ itemsPerRun = 100, runs = 1, ratePer1K = 5.0, star
   };
 }
 
-function calculateMaxItemsForBudget({ budgetUsd, ratePer1K, startFeeUsd = DEFAULT_START_FEE_USD, planId = "free" } = {}) {
+function maxItemsForBudget(budgetUsd, selected) {
   assertNonNegative(budgetUsd, 'budgetUsd');
-  assertNonNegative(ratePer1K, 'ratePer1K');
-  assertNonNegative(startFeeUsd, 'startFeeUsd');
-  const plan = getPlanById(planId);
-
-  if (budgetUsd < startFeeUsd) {
-    return {
-      planId,
-      budgetUsd,
-      maxItems: 0,
-      estimatedCost: 0,
-      remainingUsd: roundUsd(budgetUsd, 8),
-    };
-  }
-
-  if (ratePer1K === 0) {
-    return {
-      planId,
-      budgetUsd,
-      maxItems: Infinity,
-      estimatedCost: startFeeUsd,
-      remainingUsd: roundUsd(budgetUsd - startFeeUsd, 8),
-    };
-  }
-
-  const effectiveRatePerItem = roundUsd((ratePer1K / 1000) * plan.multiplier, 8);
-  const maxItems = Math.floor((budgetUsd - startFeeUsd + 1e-12) / effectiveRatePerItem);
-  const estimatedCost = roundUsd(startFeeUsd + maxItems * effectiveRatePerItem, 8);
-  const remainingUsd = roundUsd(Math.max(0, budgetUsd - estimatedCost), 8);
-
-  return {
-    planId,
-    budgetUsd,
-    maxItems,
-    estimatedCost,
-    remainingUsd,
-  };
+  const available = budgetUsd - selected.startFeePerRun;
+  if (available < 0) return 0;
+  if (selected.effectiveRatePerItem === 0) return Infinity;
+  return Math.floor((available + 1e-12) / selected.effectiveRatePerItem);
 }
 
 function estimateComputeCost({
@@ -1052,32 +1018,18 @@ function estimateComputeCost({
   return { memoryMb, durationSeconds, billableSeconds, cuHours, computeCostUsd };
 }
 
-function calculateCreatorProfit({
-  itemsPerRun = 100,
-  runs = 1,
-  ratePer1K = 5.0,
-  startFeeUsd = DEFAULT_START_FEE_USD,
-  planId = "free",
-  computeCostPerRunUsd = 0,
-  apifyFeeRate = APIFY_FEE_RATE
-} = {}) {
-  assertNonNegative(computeCostPerRunUsd, 'computeCostPerRunUsd');
-  assertNonNegative(apifyFeeRate, 'apifyFeeRate', { max: 1 });
-  getPlanById(planId);
-
-  const result = calculatePlanCosts({ itemsPerRun, runs, ratePer1K, startFeeUsd });
-  const selected = result.plans.find((p) => p.id === planId);
-  const grossRevenueUsd = selected.totalCost;
-  const apifyFeeUsd = roundUsd(grossRevenueUsd * apifyFeeRate, 8);
-  const creatorShareBeforeComputeUsd = roundUsd(grossRevenueUsd * (1 - apifyFeeRate), 8);
-  const totalComputeCostUsd = roundUsd(computeCostPerRunUsd * runs, 8);
+function calculateCreatorProfit(selected, runs, computeCostPerRunUsd) {
+  const isPaid = selected.id !== 'free';
+  const grossRevenueUsd = isPaid ? selected.totalCost : 0;
+  const apifyFeeUsd = roundUsd(grossRevenueUsd * APIFY_FEE_RATE, 8);
+  const creatorShareBeforeComputeUsd = roundUsd(grossRevenueUsd * (1 - APIFY_FEE_RATE), 8);
+  const totalComputeCostUsd = isPaid ? roundUsd(computeCostPerRunUsd * runs, 8) : 0;
   const netPayoutUsd = roundUsd(creatorShareBeforeComputeUsd - totalComputeCostUsd, 8);
   const netPerRunUsd = runs > 0 ? roundUsd(netPayoutUsd / runs, 8) : 0;
   const netMarginPct = grossRevenueUsd > 0 ? roundUsd((netPayoutUsd / grossRevenueUsd) * 100, 2) : 0;
   const isProfitable = netPayoutUsd >= 0;
 
   return {
-    planId,
     grossRevenueUsd,
     apifyFeeUsd,
     creatorShareBeforeComputeUsd,
@@ -1089,48 +1041,10 @@ function calculateCreatorProfit({
   };
 }
 
-function buildBudgetSnippet({
-  presetId = null,
-  actorPath = "your-username/your-actor",
-  itemsPerRun = 100,
-  planId = "free",
-  ratePer1K = 5.0,
-  startFeeUsd = DEFAULT_START_FEE_USD,
-  bufferPct = 0
-} = {}) {
-  getPlanById(planId);
-
-  let finalActorPath = actorPath;
-  let finalRatePer1K = ratePer1K;
-  let finalStartFeeUsd = startFeeUsd;
-  let storeUrl = null;
-  let inputObject;
-
-  if (presetId) {
-    const preset = getPresetById(presetId);
-    if (!preset) {
-      throw new RangeError(`Preset not found: ${presetId}`);
-    }
-    finalActorPath = preset.actorPath;
-    finalRatePer1K = preset.ratePer1K;
-    finalStartFeeUsd = preset.startFeeUsd;
-    storeUrl = preset.storeUrl
-      ? `${preset.storeUrl}?utm_source=ppe_calculator&utm_medium=referral&utm_campaign=apify_ppe_cost_calculator`
-      : null;
-    inputObject = { ...(preset.defaultInput ?? {}), maxItems: itemsPerRun };
-  } else {
-    inputObject = { maxItems: itemsPerRun };
-  }
-
-  const result = calculatePlanCosts({
-    itemsPerRun,
-    runs: 1,
-    ratePer1K: finalRatePer1K,
-    startFeeUsd: finalStartFeeUsd,
-    bufferPct
-  });
-  const selected = result.plans.find((p) => p.id === planId);
-  const maxTotalChargeUsd = selected.maxTotalChargeUsd;
+function buildBudgetSnippet(preset, itemsPerRun, maxTotalChargeUsd) {
+  const finalActorPath = preset ? preset.actorPath : "your-username/your-actor";
+  const storeUrl = preset ? preset.storeUrl + "?utm_source=ppe_calculator&utm_medium=referral&utm_campaign=apify_ppe_cost_calculator" : null;
+  const inputObject = { ...preset?.defaultInput, maxItems: itemsPerRun };
   const maxTotalChargeStr = maxTotalChargeUsd === 0
     ? "0.00"
     : maxTotalChargeUsd.toFixed(6).replace(/\.?0+$/, "");
@@ -1234,7 +1148,8 @@ function recalculate() {
   const itemsPerRun = numVal("items-per-run");
   const runs = numVal("runs-count");
   const ratePer1K = numVal("rate-per-1k");
-  const startFeeUsd = numVal("start-fee");
+  const startFeeUsd = numVal("start-fee") * Math.max(1, Math.ceil(numVal("memory-mb") / 1024));
+  const preset = getPresetById(activePresetId);
   const planSelect = byId("plan-select");
   const planId = planSelect ? planSelect.value : "free";
   const bufferPct = numVal("buffer-pct");
@@ -1249,7 +1164,8 @@ function recalculate() {
       runs,
       ratePer1K,
       startFeeUsd,
-      bufferPct
+      bufferPct,
+      tiered: Boolean(preset?.tiered)
     });
     const selected = costs.plans.find((p) => p.id === planId) || costs.plans[0];
 
@@ -1259,38 +1175,19 @@ function recalculate() {
 
     renderPlanTable(costs.plans, selected.id);
 
-    const budget = calculateMaxItemsForBudget({
-      budgetUsd,
-      planId: selected.id,
-      ratePer1K,
-      startFeeUsd
-    });
-    byId("budget-result").textContent = "Up to " + (budget.maxItems === Infinity ? "∞" : budget.maxItems.toLocaleString()) + " items/run";
+    const maxItems = maxItemsForBudget(budgetUsd, selected);
+    byId("budget-result").textContent = "Up to " + (maxItems === Infinity ? "∞" : maxItems.toLocaleString()) + " items/run";
 
-    const compute = estimateComputeCost({ memoryMb, durationSeconds, cuPriceUsd });
-    const profit = calculateCreatorProfit({
-      itemsPerRun,
-      runs,
-      ratePer1K,
-      startFeeUsd,
-      planId: selected.id,
-      computeCostPerRunUsd: compute.computeCostUsd
-    });
+    const compute = estimateComputeCost({ memoryMb, durationSeconds, cuPriceUsd, freeWindowSeconds: startFeeUsd > 0 ? FREE_COMPUTE_WINDOW_SECONDS : 0 });
+    const profit = calculateCreatorProfit(selected, runs, compute.computeCostUsd);
 
     byId("creator-gross").textContent = formatUsd(profit.grossRevenueUsd, { minDecimals: 2, maxDecimals: 5 });
     byId("creator-fee").textContent = formatUsd(profit.apifyFeeUsd, { minDecimals: 2, maxDecimals: 5 });
     byId("creator-compute").textContent = formatUsd(profit.totalComputeCostUsd, { minDecimals: 2, maxDecimals: 5 });
     byId("creator-net").textContent = formatUsd(profit.netPayoutUsd, { minDecimals: 2, maxDecimals: 5 });
-    byId("creator-margin").textContent = profit.netMarginPct.toFixed(1) + "%";
+    byId("creator-margin").textContent = profit.grossRevenueUsd > 0 ? profit.netMarginPct.toFixed(1) + "%" : "—";
 
-    const snippet = buildBudgetSnippet({
-      presetId: activePresetId === "custom" ? null : activePresetId,
-      itemsPerRun,
-      planId: selected.id,
-      ratePer1K,
-      startFeeUsd,
-      bufferPct
-    });
+    const snippet = buildBudgetSnippet(preset, itemsPerRun, selected.maxTotalChargeUsd);
 
     latestSnippetText = snippet.snippetText;
     latestInputJson = snippet.inputJson;
@@ -1311,6 +1208,12 @@ function recalculate() {
   }
 }
 
+function setDefaultComputeRate() {
+  const tier = APIFY_PLANS.find(plan => plan.id === byId("plan-select").value);
+  const tiered = getPresetById(activePresetId)?.tiered;
+  byId("cu-price").value = (tiered ? tier.cuPriceUsd : DEFAULT_CU_PRICE_USD).toFixed(2);
+}
+
 function applyPreset(presetId) {
   activePresetId = presetId;
   document.querySelectorAll('#preset-list button[data-preset-id]').forEach(btn => {
@@ -1324,6 +1227,7 @@ function applyPreset(presetId) {
       byId('memory-mb').value = String(preset.defaultMemoryMb);
     }
   }
+  setDefaultComputeRate();
   recalculate();
   track('preset_selected', { presetId });
 }
@@ -1359,7 +1263,12 @@ document.getElementById('preset-list').addEventListener('click', (e) => {
   }
 });
 
-['items-per-run', 'runs-count', 'plan-select', 'buffer-pct', 'budget-usd', 'memory-mb', 'duration-sec', 'cu-price'].forEach(id => {
+byId("plan-select").addEventListener("change", () => {
+  setDefaultComputeRate();
+  recalculate();
+});
+
+['items-per-run', 'runs-count', 'buffer-pct', 'budget-usd', 'memory-mb', 'duration-sec', 'cu-price'].forEach(id => {
   const el = byId(id);
   if (el) {
     el.addEventListener('input', recalculate);
@@ -1371,7 +1280,10 @@ document.getElementById('preset-list').addEventListener('click', (e) => {
   const el = byId(id);
   if (el) {
     el.addEventListener('input', () => {
-      activePresetId = 'custom';
+      if (activePresetId !== 'custom') {
+        activePresetId = 'custom';
+        setDefaultComputeRate();
+      }
       document.querySelectorAll('#preset-list button[data-preset-id]').forEach(btn => {
         btn.setAttribute('aria-pressed', btn.dataset.presetId === 'custom' ? 'true' : 'false');
       });

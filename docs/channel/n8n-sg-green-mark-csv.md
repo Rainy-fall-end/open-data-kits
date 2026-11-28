@@ -1,156 +1,73 @@
-# Singapore BCA Green Mark Buildings → n8n → Google Sheets / CSV
-## 新加坡 BCA Green Mark 建筑 → n8n → Google Sheets / CSV 快速入门
+# Singapore buildings with Platinum Green Mark certification with n8n
 
-**English overview:** Import the n8n workflow, call the Apify Actor for normalized Singapore BCA Green Mark certificate data, append rows to Google Sheets, and/or convert items to CSV. Use `maxTotalChargeUsd=0.25` as a hard budget cap and never hardcode tokens.
+Find up to five BCA certificate records rated `Platinum`. Compare certificate references and certification dates, and check the reported expiry date before making a shortlist.
 
-**中文摘要：** 导入 n8n 工作流，调用 Apify Actor 获取新加坡 BCA Green Mark 证书结构化数据，写入 Google Sheets 或转换为 CSV。使用 `maxTotalChargeUsd=0.25` 限制费用，禁止硬编码 Token。
+默认查询最多五条白金级建筑认证，保留证书编号、认证日期、到期日和数据来源。工作流只需在 n8n 中绑定一次 Header Auth 凭证。可直接下载 CSV，或把结果逐行追加到 Google Sheets。
 
-**Quick links / 快速链接**
-- Asset: Singapore BCA Green Mark Buildings (`perceptive_city_af7~sg-green-mark-buildings`)
-- Actor ID: `Z3ioK0wOAeczj6nCx`
-- Apify Store: https://apify.com/perceptive_city_af7/sg-green-mark-buildings
-- Apify Pricing: https://apify.com/perceptive_city_af7/sg-green-mark-buildings/pricing
-- Workflow JSON: [Download workflow](./n8n-sg-green-mark-csv.json)
-- Sync API endpoint: `https://api.apify.com/v2/acts/Z3ioK0wOAeczj6nCx/run-sync-get-dataset-items?maxTotalChargeUsd=0.25`
-- RapidAPI Hub Live: https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings
+## Run the five-record example
 
----
+1. Download the JSON and choose **Import from File** in the menu of a new n8n workflow. [Download workflow JSON](https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sg-green-mark-csv.json) · [n8n import guide](https://docs.n8n.io/workflows/export-import/)
+2. Open **Fetch SG Green Mark Buildings (Apify)**. Under **Generic Credential Type → Header Auth**, create or select a credential. For a new credential set **Name** to `Authorization`, and **Value** to `Bearer` followed by one space and your Apify API token. Save the credential in n8n. [Apify token settings](https://console.apify.com/settings/integrations) · [n8n Header Auth](https://docs.n8n.io/integrations/builtin/credentials/httprequest/)
+3. Choose **Execute workflow** once. The HTTP Request output contains one JSON item per returned record. Open **Convert to CSV (Google Sheets Ready) → Binary → data** to download `sg-green-mark-buildings.csv`.
+4. To send the same JSON items to a spreadsheet, connect **Google Sheets → Append Row** directly to the HTTP Request output. Select your spreadsheet, create the desired column headings, and map the fields by name. [Google Sheets node](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googlesheets/)
 
-## 2. n8n Import & Google Sheets / CSV Setup
-## n8n 导入与 Google Sheets / CSV 配置
+在 HTTP Request 节点选择 Header Auth 凭证，执行一次后可在 CSV 节点的 **Binary → data** 中下载文件。写入表格时，请把 Google Sheets 接到 HTTP Request 节点。
 
-1. Download the workflow JSON: [Download workflow](./n8n-sg-green-mark-csv.json).
-2. In n8n: **Workflows → Import from File** and select the JSON.
-3. Configure Apify auth safely — **NEVER hardcode tokens**:
-   - Use a **Header Auth credential** with `Authorization: Bearer <APIFY_TOKEN>`, or
-   - Reference the `APIFY_TOKEN` environment variable from your n8n deployment.
-4. Confirm the HTTP Request node calls:
-   `https://api.apify.com/v2/acts/Z3ioK0wOAeczj6nCx/run-sync-get-dataset-items?maxTotalChargeUsd=0.25`
-5. Confirm the body uses the validated workflow input:
-   `{"query":"Plaza","rating":"Platinum","maxItems":25}`
-6. The HTTP Request node outputs structured JSON items ready for **Google Sheets Append Row** and feeds **Convert to CSV**.
-7. For Google Sheets: create a sheet with the 12 output columns, then map fields by name in **Append Row**.
-8. For CSV: connect the HTTP Request output to **Convert to CSV**, include headers, and keep all attribution columns.
+## Input and fields
 
-**中文摘要：** 导入 JSON 后，用 Header Auth 或 `APIFY_TOKEN` 环境变量配置认证；HTTP Request 输出结构化 JSON，可直接追加到 Google Sheets，或交给 Convert to CSV 生成 CSV。
+The HTTP Request node posts this input to the Actor. [Actor input](https://apify.com/perceptive_city_af7/sg-green-mark-buildings/input)
 
-**Supported inputs / 支持参数**
-
-| Parameter | Values / notes |
-|---|---|
-| `query` | Project name or certificate reference; Chinese rating keywords like `白金级` also work when `rating` is empty |
-| `rating` | `""`, `Platinum`, `Goldplus`, `Gold`, `Certified` |
-| `expiresWithinDays` | `0`–`3650`; optional rolling expiry window for retrofit lead-gen |
-| `maxItems` | `1`–`1000` |
-
-**Output fields / 输出字段 (12 normalized fields):**  
-`referenceNo, projectName, projectType, rating, certifiedOn, expiresOn, sourceDataset, sourcePublisher, sourceUrl, accessedOn, licenceUrl, attribution`
-
----
-
-## 3. `curl` Quickstart
-## curl 快速开始
-
-```bash
-curl -sS -X POST \
-  "https://api.apify.com/v2/acts/Z3ioK0wOAeczj6nCx/run-sync-get-dataset-items?maxTotalChargeUsd=0.25" \
-  -H "Authorization: Bearer $APIFY_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"query":"Plaza","rating":"Platinum","maxItems":25}'
+```json
+{
+  "rating": "Platinum",
+  "maxItems": 5
+}
 ```
 
-**中文摘要：** 使用 `$APIFY_TOKEN` 调用同步接口，并通过 URL 参数 `maxTotalChargeUsd=0.25` 限制费用。
+For a first sheet, use `referenceNo`, `projectName`, `projectType`, `rating`, `certifiedOn`, `expiresOn`, `sourceUrl`, `accessedOn`, `licenceUrl`, `attribution`. Use `referenceNo` as the record identifier. The rating filter selects certificates of that grade. Use `expiresOn` to assess validity on a particular date. Add `query` for a project name or reference number, or set `expiresWithinDays` to narrow the expiry window.
 
----
+## Cost per run
 
-## 4. `Python` Quickstart
-## Python 快速开始
+The included manual workflow requests up to five records. At the Free plan rate, five saved records cost **$0.01005** in Actor event charges, based on one **$0.00005** start event plus **$0.002** per saved record. The request sets `maxTotalChargeUsd=0.05` and disables automatic HTTP retries. If the HTTP request times out, check the Actor run in Apify before executing again. [Actor pricing](https://apify.com/perceptive_city_af7/sg-green-mark-buildings/pricing)
+
+首次运行上限为五条，生成五条时的 Free 档事件费用为 **$0.01005**。每次运行设置 **$0.05** 的 Actor 计费上限，HTTP 节点已关闭自动重试。
+
+The workflow imported into n8n 1.80.5. With a local test endpoint and a test Header Auth credential, one manual execution sent one POST and returned two sample JSON items and a downloadable two-row CSV. Executing the workflow against Apify uses your account.
+
+## Using the same input from the API
+
+For the shell and Python examples, set `APIFY_TOKEN` in your own shell. Each command starts a separate billable run. [Apify sync endpoint](https://docs.apify.com/api/v2/actor-run-sync-get-dataset-items-post)
+
+```bash
+curl --fail-with-body -X POST \
+  'https://api.apify.com/v2/acts/Z3ioK0wOAeczj6nCx/run-sync-get-dataset-items?maxTotalChargeUsd=0.05&timeout=120&format=json&clean=true' \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H 'Content-Type: application/json' \
+  --data '{"rating":"Platinum","maxItems":5}'
+```
 
 ```python
 import os
+
 import requests
 
-ACTOR_ID = "Z3ioK0wOAeczj6nCx"
-url = f"https://api.apify.com/v2/acts/{ACTOR_ID}/run-sync-get-dataset-items"
-token = os.environ["APIFY_TOKEN"]
-
 payload = {
-    "query": "Plaza",
     "rating": "Platinum",
-    "maxItems": 25,
+    "maxItems": 5
 }
-
-resp = requests.post(
-    url,
-    params={"maxTotalChargeUsd": "0.25"},
-    headers={
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json",
-    },
+response = requests.post(
+    "https://api.apify.com/v2/acts/Z3ioK0wOAeczj6nCx/run-sync-get-dataset-items",
+    params={"maxTotalChargeUsd": "0.05", "timeout": "120", "format": "json", "clean": "true"},
+    headers={"Authorization": f"Bearer {os.environ['APIFY_TOKEN']}"},
     json=payload,
-    timeout=120,
+    timeout=150,
 )
-resp.raise_for_status()
-items = resp.json()
-
-print(len(items), "certificates")
-for row in items:
-    print(row["referenceNo"], row["projectName"], row["rating"])
+response.raise_for_status()
+print(len(response.json()))
 ```
 
-**中文摘要：** 使用 `os.environ["APIFY_TOKEN"]` 读取 Token，并通过 `maxTotalChargeUsd=0.25` 限制单次运行费用。
+[Singapore BCA Green Mark Buildings on RapidAPI](https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings) offers a separate integration with its own credentials and pricing.
 
----
+## Source and attribution
 
-## 5. RapidAPI Hub REST Alternative
-## RapidAPI Hub REST 替代方式
-
-Use the RapidAPI Hub page for credentials and host details:  
-https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings
-
-REST endpoint:
-
-```text
-GET /v1/sg-green-mark/certificates
-```
-
-Example shape — use the exact host and key shown on your RapidAPI Hub page:
-
-```bash
-curl -sS "https://<RAPIDAPI_HOST>/v1/sg-green-mark/certificates?query=Plaza&rating=Platinum&maxItems=25" \
-  -H "X-RapidAPI-Key: $RAPIDAPI_KEY" \
-  -H "X-RapidAPI-Host: <RAPIDAPI_HOST>"
-```
-
-**中文摘要：** 也可通过 RapidAPI Hub 调用 `GET /v1/sg-green-mark/certificates`；Host 与 Key 以 Hub 页面为准。
-
----
-
-## 6. Cost Cap, Pricing & Singapore Open Data Licence v1.0 Attribution
-## 费用上限、定价与新加坡开放数据许可 v1.0 署名
-
-- Pricing model: **Pay-per-event (PPE)**.
-- Cost: `$0.00005` per Actor start + `$0.002` per saved certificate (`$2.00 / 1,000 records`).
-- Example: 25 certificates ≈ `$0.05005`.
-- Hard cap used here: `maxTotalChargeUsd=0.25`.
-- The workflow uses `retryOnFail: false` to avoid unintended paid retries.
-
-**License & attribution / 许可与署名**
-
-Contains information from **Green Mark Buildings** by the **Building and Construction Authority (BCA), Singapore**, obtained from `data.gov.sg`  
-(https://data.gov.sg/datasets/d_c4bd082b48fa7611713f39e23d250c27/view)  
-under the **Singapore Open Data Licence version 1.0**  
-(https://developers.data.gov.sg/open-data-licence).
-
-Zero PII. Independent tool with no BCA endorsement. Keep `sourceUrl`, `accessedOn`, `licenceUrl`, and `attribution` columns when redistributing.
-
-**中文摘要：** 按事件计费，25 条约 `$0.05005`，硬性上限 `maxTotalChargeUsd=0.25`；再分发时保留 `sourceUrl`、`accessedOn`、`licenceUrl`、`attribution`。
-
----
-
-## 7. Validation Note
-## 验证说明
-
-The workflow JSON was validated locally against the real Actor `input_schema.json`. Executing the workflow or API calls bills your own Apify account.
-
-**中文摘要：** 工作流 JSON 已在本地对照真实 Actor 的 `input_schema.json` 验证；实际执行会从你自己的 Apify 账户计费。
+Keep `sourceUrl`, `accessedOn`, `licenceUrl`, and `attribution` with records you redistribute. [BCA Green Mark dataset](https://data.gov.sg/datasets/d_c4bd082b48fa7611713f39e23d250c27/view) · [Singapore Open Data Licence](https://developers.data.gov.sg/open-data-licence)

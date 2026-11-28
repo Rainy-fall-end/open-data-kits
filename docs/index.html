@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Apify Works — Open Government &amp; Public Data Tools, Apify Actors, REST APIs &amp; MCP Server</title>
-<meta name="description" content="One hub for open government and public data: 3 free browser-only developer tools, 8 paid Apify Actors, 4 RapidAPI REST APIs, 3 zero-dependency SDKs, and the official MCP Registry v1.0.2 server.">
+<title>Open Data Kits | Supplier lists, jobs, filings and public data</title>
+<meta name="description" content="Try preconfigured Apify searches for European suppliers, German rentals, hiring signals, US filings and public contracts. Preview fields and download n8n workflows.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; form-action 'none'; base-uri 'none'; img-src data:">
-<meta name="referrer" content="no-referrer">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="https://rainy-fall-end.github.io/open-data-kits/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Apify Works">
-<meta property="og:title" content="Apify Works — Open Government &amp; Public Data Tools, Actors, APIs &amp; MCP">
-<meta property="og:description" content="3 free browser-only tools, 8 paid Apify Actors, 4 RapidAPI REST APIs, 3 zero-dependency SDKs, and the official MCP Registry v1.0.2 server. Enter the Unified Developer &amp; Buyer Hub.">
+<meta property="og:title" content="Open Data Kits | Supplier lists, jobs, filings and public data">
+<meta property="og:description" content="Try preconfigured Apify searches for European suppliers, German rentals, hiring signals, US filings and public contracts. Preview fields and download n8n workflows.">
 <meta property="og:url" content="https://rainy-fall-end.github.io/open-data-kits/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Apify Works — Open Government &amp; Public Data Hub">
-<meta name="twitter:description" content="Free browser tools, paid Apify Actors, RapidAPI REST APIs, SDKs and an official MCP server for open public data.">
+<meta name="twitter:title" content="Open Data Kits | Supplier lists, jobs, filings and public data">
+<meta name="twitter:description" content="Try preconfigured Apify searches for European suppliers, German rentals, hiring signals, US filings and public contracts. Preview fields and download n8n workflows.">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -45,7 +45,7 @@
       "@id": "https://rainy-fall-end.github.io/open-data-kits/#webpage",
       "url": "https://rainy-fall-end.github.io/open-data-kits/",
       "name": "Apify Works — Open Government & Public Data Tools, Actors, APIs & MCP",
-      "description": "Root landing page linking the Unified Developer & Buyer Hub, 3 free browser tools, 8 paid Apify Actors, 4 RapidAPI REST APIs, 3 SDKs and MCP Registry v1.0.2.",
+      "description": "Root landing page linking the Unified Developer & Buyer Hub, 3 free browser tools, 17 public Apify Actors, 4 RapidAPI REST APIs, 3 SDKs and MCP Registry v1.0.2.",
       "isPartOf": { "@id": "https://rainy-fall-end.github.io/open-data-kits/#website" },
       "publisher": { "@id": "https://rainy-fall-end.github.io/open-data-kits/#organization" },
       "mainEntity": {
@@ -57,7 +57,7 @@
           { "@type": "ListItem", "position": 2, "name": "Open Gov API Playground (free)", "url": "https://rainy-fall-end.github.io/open-data-kits/tools/open-gov-api-playground/" },
           { "@type": "ListItem", "position": 3, "name": "PPE Cost Calculator (free)", "url": "https://rainy-fall-end.github.io/open-data-kits/tools/ppe-calculator/" },
           { "@type": "ListItem", "position": 4, "name": "JSONL to CSV Converter (free)", "url": "https://rainy-fall-end.github.io/open-data-kits/tools/jsonl-to-csv/" },
-          { "@type": "ListItem", "position": 5, "name": "SEC EDGAR Corporate Filings Actor (8LFIbRbidiHPknMz5, $4.00/1K)", "url": "https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper" },
+          { "@type": "ListItem", "position": 5, "name": "SEC EDGAR Corporate Filings Actor (8LFIbRbidiHPknMz5, $2.50/1K)", "url": "https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper" },
           { "@type": "ListItem", "position": 6, "name": "ClinicalTrials.gov Studies Actor (KchE3qKKrwU0rCe9f, $3.50/1K)", "url": "https://apify.com/perceptive_city_af7/clinical-trials-scraper" },
           { "@type": "ListItem", "position": 7, "name": "UK Gov Tenders OCDS Actor (txnvyTckeQx4hVBc6, $5.00/1K)", "url": "https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper" },
           { "@type": "ListItem", "position": 8, "name": "Singapore BCA Green Mark Actor (Z3ioK0wOAeczj6nCx, $2.00/1K)", "url": "https://apify.com/perceptive_city_af7/sg-green-mark-buildings" },
@@ -274,6 +274,15 @@
   .links .src a{color:var(--cyan)}
   .links .src a.alt{color:var(--accent)}
 
+  .trial-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1rem}
+  .trial-grid .panel {min-width:0}
+  .trial-list {list-style:none;padding:0;margin:1rem 0 0}
+  .trial-list li+li {margin-top:1rem}
+  .trial-list li>a {font-weight:650}
+  .trial-list span {display:block;font-size:.91rem;color:var(--muted);margin-top:.2rem}
+  .trial-list li>a.trial-alt {display:inline-block;font-size:.9rem;font-weight:450;margin-top:.25rem}
+  .trial-file {white-space:nowrap;margin-left:.25rem;text-decoration:underline}
+
   /* ---------- Footer ---------- */
   footer.site{padding:38px 0 60px;color:var(--muted);font-size:13.4px}
   .footer-top{display:flex;flex-wrap:wrap;gap:14px 28px;justify-content:space-between;align-items:flex-start}
@@ -313,7 +322,7 @@
       <nav class="nav-links" aria-label="Primary">
         <a href="./tools/">Tools Hub</a>
         <a href="#free-tools">Free Tools</a>
-        <a href="#actors">Apify Actors</a>
+        <a href="#buyer-trials">Try an Actor</a>
         <a href="./houzz/">Houzz lead lists</a>
         <a href="#rapidapi">RapidAPI</a>
         <a href="#mcp">MCP</a>
@@ -324,86 +333,80 @@
 </header>
 
 <main id="main">
-<section id="vertical-guides" style="max-width:1120px;margin:1.5rem auto;padding:1.25rem;border:1px solid #d0d7de;border-radius:12px;background:#fff;">
-  <h2 style="margin-top:0;">Interactive API Guides &amp; Code Generators</h2>
-  <ul style="line-height:1.9;margin:0;padding-left:1.25rem;">
-    <li><a href="./tools/ats-jobs-hiring-signals/">Greenhouse, Lever &amp; Ashby Public Jobs API — Hiring Signals &amp; Salary Tracker</a></li>
-    <li><a href="./tools/sec-form-d-funding-tracker/">SEC Form D Startup Funding Tracker &amp; XBRL Financial Statements API Guide</a></li>
-    <li><a href="./tools/global-tenders-procurement-api/">Global Government Tenders &amp; Grants API (US, UK, EU TED, World Bank, Canada, Australia)</a></li>
-    <li><a href="./tools/pharma-drug-pipeline-api/">Pharma &amp; Biotech Drug Pipeline API (ClinicalTrials + openFDA + ChEMBL + Europe PMC)</a></li>
-  </ul>
-</section>
-
-<section id="flagships" style="max-width:1120px;margin:2rem auto;padding:1.5rem;border:1px solid #d0d7de;border-radius:12px;background:#f6f8fa;">
-  <h2 style="margin-top:0;">New Flagship Deep-Intelligence APIs &amp; Scrapers (Live on Apify Store)</h2>
-  <p style="margin-bottom:1rem;">High-value multi-source intelligence products built on official public JSON/XML APIs — zero browser, zero cookies, zero PII.</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;">
-    <article style="background:#fff;padding:1rem;border:1px solid #d0d7de;border-radius:8px;">
-      <h3 style="margin-top:0;">ATS Jobs &amp; Hiring Signals</h3>
-      <p>Greenhouse, Lever &amp; Ashby official JSON job boards. 22 AI/tech leaders + custom boards, salary ranges &amp; GTM hiring signals ($4/1K).</p>
-      <a href="https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper">Apify Actor &rarr;</a> · <a href="https://rapidapi.com/fallRainy/api/ats-jobs-hiring-signals-greenhouse-lever-ashby">RapidAPI REST &rarr;</a>
-    </article>
-    <article style="background:#fff;padding:1rem;border:1px solid #d0d7de;border-radius:8px;">
-      <h3 style="margin-top:0;">SEC EDGAR v2.0 (Form D + XBRL)</h3>
-      <p>Live Form D startup funding XML rounds, audited 10-K/10-Q XBRL financials &amp; corporate filings ($4/1K).</p>
-      <a href="https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper">Apify Actor &rarr;</a> · <a href="https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings">RapidAPI 3-in-1 REST &rarr;</a>
-    </article>
-    <article style="background:#fff;padding:1rem;border:1px solid #d0d7de;border-radius:8px;">
-      <h3 style="margin-top:0;">Global Tenders &amp; Grants (7 Countries)</h3>
-      <p>Unified US, UK, EU TED, World Bank, Canada &amp; Australia public procurement opportunities in one schema ($8/1K).</p>
-      <a href="https://apify.com/perceptive_city_af7/global-public-tenders-grants-aggregator">Open on Apify &rarr;</a>
-    </article>
-    <article style="background:#fff;padding:1rem;border:1px solid #d0d7de;border-radius:8px;">
-      <h3 style="margin-top:0;">Pharma &amp; Biotech Pipeline Intel</h3>
-      <p>Cross-linked ClinicalTrials + openFDA + ChEMBL SMILES + Europe PMC drug dossiers ($10/1K).</p>
-      <a href="https://apify.com/perceptive_city_af7/pharma-biotech-pipeline-intelligence">Open on Apify &rarr;</a>
-    </article>
-    <article style="background:#fff;padding:1rem;border:1px solid #d0d7de;border-radius:8px;">
-      <h3 style="margin-top:0;">USASpending Federal Contracts</h3>
-      <p>US federal prime contract awards, NAICS/PSC codes, contractor names &amp; agency spend ($5/1K).</p>
-      <a href="https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper">Open on Apify &rarr;</a>
-    </article>
-    <article style="background:#fff;padding:1rem;border:1px solid #d0d7de;border-radius:8px;">
-      <h3 style="margin-top:0;">Cyber KEV, EPSS &amp; CVE Threat Intel</h3>
-      <p>Cross-linked CISA KEV + FIRST EPSS exploit probability + Google OSV + NVD risk scoring (0-100).</p>
-      <a href="https://apify.com/perceptive_city_af7/cyber-kev-epss-cve-intelligence">Apify Actor &rarr;</a> · <a href="https://rapidapi.com/fallRainy/api/cyber-kev-epss-cve-threat-intelligence-cisa-first-osv">RapidAPI REST &rarr;</a>
-    </article>
-  </div>
-</section>
-
-
   <!-- ================= HERO ================= -->
   <section class="hero">
     <div class="wrap">
-      <span class="badge"><span class="dot" aria-hidden="true"></span> MCP Registry v1.0.2 · Live &amp; Verified</span>
-      <h1>Open government data, <em>ready to ship</em>.</h1>
-      <p class="lede">
-        Apify Works is the single entry point to a verified stack of public-data products:
-        <strong>3 free browser-only tools</strong>, <strong>8 paid Apify Actors</strong>,
-        <strong>4 RapidAPI REST APIs</strong>, <strong>3 zero-dependency SDKs</strong>, and an
-        <strong>official Model Context Protocol server</strong> — all pointing at real, licensed open data.
-      </p>
+
+      <h1>Find public data for your next <em>shortlist or report</em>.</h1>
+      <p class="lede">Find suppliers, compare job openings, look up contract awards or check a public filing. Start with a small Apify search, then export the results or reuse the workflow in n8n.</p>
 
       <div class="cta-row">
-        <a class="btn btn-primary" href="./tools/">Enter the Tools &amp; Buyer Hub →</a>
-        <a class="btn btn-secondary" href="#actors">Browse 8 Apify Actors</a>
+        <a class="btn btn-primary" href="#buyer-trials">Choose a sample search →</a>
+        <a class="btn btn-secondary" href="./tools/">Open the developer tools</a>
         <a class="btn btn-ghost" href="#mcp">MCP config</a>
       </div>
 
       <div class="micro">
         <span>No signup for free tools</span>
         <span>Pay-per-event, cost-capped</span>
-        <span>No Playwright, no headless browsers</span>
-        <span>Public-domain &amp; open-licence sources</span>
+        <span>Editable search inputs</span>
+        <span>Links to source records where available</span>
       </div>
 
       <div class="stats">
         <div class="stat"><b>3</b><span>Free tools</span></div>
-        <div class="stat"><b>8</b><span>Apify Actors</span></div>
+        <div class="stat"><b>17</b><span>Apify Actors</span></div>
         <div class="stat"><b>4</b><span>RapidAPI APIs</span></div>
         <div class="stat"><b>8</b><span>MCP tools</span></div>
         <div class="stat"><b>3</b><span>SDK packages</span></div>
       </div>
+    </div>
+  </section>
+
+  <section class="band" id="buyer-trials" aria-labelledby="trial-heading">
+    <div class="wrap">
+      <h2 id="trial-heading">Try a search with the filters already set</h2>
+      <p class="section-lede">Choose a market or a research question. Each link opens an Apify example with editable inputs, the output fields and a run budget. Where available, download the matching n8n workflow to repeat the search.</p>
+      <div class="trial-grid" id="flagships">
+        <section class="panel">
+          <h3>Sales, hiring and property</h3>
+          <ul class="trial-list">
+            <li><a href="https://apify.com/perceptive_city_af7/youtube-channel-email-scraper/examples/compare-apify-and-n8n-youtube-channel-activity?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=compare-apify-and-n8n-youtube-channel-activity">Compare two YouTube channels</a><span>Subscribers, recent uploads and average views. <a class="trial-file" download href="./channel/n8n-youtube-channel-activity-csv.json" aria-label="Download n8n workflow: Compare two YouTube channels">n8n workflow</a></span><a class="trial-alt" href="https://apify.com/perceptive_city_af7/youtube-channel-email-scraper/examples/find-business-coaching-youtube-channels?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-business-coaching-youtube-channels">Find coaching channels for sponsorship research</a></li>
+            <li><a href="https://apify.com/perceptive_city_af7/europages-scraper/examples/find-italian-packaging-suppliers-with-websites?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-italian-packaging-suppliers-with-websites">Find Italian packaging suppliers</a><span>Company websites and supplier type. <a class="trial-file" download href="./channel/n8n-europages-packaging-suppliers-csv.json" aria-label="Download n8n workflow: Find Italian packaging suppliers">n8n workflow</a></span><a class="trial-alt" href="https://apify.com/perceptive_city_af7/europages-scraper/examples/find-german-cnc-machining-suppliers?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-german-cnc-machining-suppliers">Find German CNC suppliers</a></li>
+            <li><a href="https://apify.com/perceptive_city_af7/immowelt-scraper/examples/compare-hamburg-apartment-rents-under-1600-eur?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=compare-hamburg-apartment-rents-under-1600-eur">Compare Hamburg apartment rents up to €1,600</a><span>Rent, area and price per square metre. <a class="trial-file" download href="./channel/n8n-immowelt-hamburg-rents-csv.json" aria-label="Download n8n workflow: Compare Hamburg apartment rents up to €1,600">n8n workflow</a></span><a class="trial-alt" href="https://apify.com/perceptive_city_af7/immowelt-scraper/examples/find-agencies-selling-berlin-apartments?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-agencies-selling-berlin-apartments">Find agencies selling Berlin apartments</a></li>
+            <li><a href="https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper/examples/find-fintech-saas-account-executive-jobs?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-fintech-saas-account-executive-jobs">Find account executive jobs at fintech and SaaS companies</a><span>Job title, employer and application link. <a class="trial-file" download href="./channel/n8n-ats-account-executive-jobs-csv.json" aria-label="Download n8n workflow: Find account executive jobs at fintech and SaaS companies">n8n workflow</a></span><a class="trial-alt" href="https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper/examples/find-jobs-at-ai-companies?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-jobs-at-ai-companies">Browse open jobs at AI companies</a></li>
+          </ul>
+        </section>
+        <section class="panel">
+          <h3>Filings, grants and contracts</h3>
+          <ul class="trial-list">
+            <li><a href="https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper/examples/find-form-d-offerings-at-least-1m?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-form-d-offerings-at-least-1m">Find SEC Form D offerings of at least $1M</a><span>Disclosed offering size, amount sold and original filing. <a class="trial-file" download href="./channel/n8n-sec-edgar-filings-csv.json" aria-label="Download n8n workflow: Find SEC Form D offerings of at least $1M">n8n workflow</a></span><a class="trial-alt" href="https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper/examples/get-apple-xbrl-financial-statements?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=get-apple-xbrl-financial-statements">Compare Apple financial statements</a></li>
+            <li><a href="https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/examples/research-uk-contract-awards-and-suppliers?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=research-uk-contract-awards-and-suppliers">Research UK contract awards and suppliers</a><span>Award value, supplier and Contracts Finder notice. <a class="trial-file" download href="./channel/n8n-uk-gov-tenders-csv.json" aria-label="Download n8n workflow: Research UK contract awards and suppliers">n8n workflow</a></span><a class="trial-alt" href="https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/examples/find-uk-contracts-finder-tender-notices?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-uk-contracts-finder-tender-notices">Look up tender notices</a></li>
+            <li><a href="https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper/examples/find-us-federal-software-contract-awards?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-us-federal-software-contract-awards">Find US federal software contract awards</a><span>Recipient, agency and award amount using the FY 2026 activity filter. <a class="trial-file" download href="./channel/n8n-usaspending-contracts-csv.json" aria-label="Download n8n workflow: Find US federal software contract awards">n8n workflow</a></span></li>
+            <li><a href="https://apify.com/perceptive_city_af7/global-public-tenders-grants-aggregator/examples/compare-us-grant-opportunities-and-awards?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=compare-us-grant-opportunities-and-awards">Compare US grant notices and federal awards</a><span>Grants.gov and USAspending records identified by source and type.</span></li>
+          </ul>
+        </section>
+        <section class="panel">
+          <h3>Asian markets and platforms</h3>
+          <ul class="trial-list">
+            <li><a href="https://apify.com/perceptive_city_af7/cn-finance-news-scraper/examples/export-cls-china-financial-news-wire?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=export-cls-china-financial-news-wire">Read the CLS China finance wire</a><span>Chinese-language bulletin text, publication time and source. <a class="trial-file" download href="./channel/n8n-cn-finance-news-csv.json" aria-label="Download n8n workflow: Read the CLS China finance wire">n8n workflow</a></span></li>
+            <li><a href="https://apify.com/perceptive_city_af7/modelscope-scraper/examples/compare-qwen-model-downloads?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=compare-qwen-model-downloads">Compare Qwen models on ModelScope</a><span>Model IDs, download counts and source links. <a class="trial-file" download href="./channel/n8n-modelscope-csv.json" aria-label="Download n8n workflow: Compare Qwen models on ModelScope">n8n workflow</a></span></li>
+            <li><a href="https://apify.com/perceptive_city_af7/taptap-scraper/examples/export-taptap-android-hot-chart?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=export-taptap-android-hot-chart">Export the TapTap Android hot chart</a><span>Chart positions, game titles and links. <a class="trial-file" download href="./channel/n8n-taptap-rankings-csv.json" aria-label="Download n8n workflow: Export the TapTap Android hot chart">n8n workflow</a></span></li>
+            <li><a href="https://apify.com/perceptive_city_af7/smzdm-deals-scraper/examples/compare-smzdm-featured-deal-prices?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=compare-smzdm-featured-deal-prices">Compare featured SMZDM deal prices</a><span>Deal titles, listed prices and source links. <a class="trial-file" download href="./channel/n8n-smzdm-deals-csv.json" aria-label="Download n8n workflow: Compare featured SMZDM deal prices">n8n workflow</a></span></li>
+          </ul>
+        </section>
+        <section class="panel">
+          <h3>Research and compliance</h3>
+          <ul class="trial-list">
+            <li><a href="https://apify.com/perceptive_city_af7/clinical-trials-scraper/examples/find-recruiting-type-2-diabetes-studies?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-recruiting-type-2-diabetes-studies">Find recruiting type 2 diabetes studies</a><span>Study identifiers, listed sponsors and recruitment status. <a class="trial-file" download href="./channel/n8n-clinical-trials-csv.json" aria-label="Download n8n workflow: Find recruiting type 2 diabetes studies">n8n workflow</a></span></li>
+            <li><a href="https://apify.com/perceptive_city_af7/pharma-biotech-pipeline-intelligence/examples/look-up-semaglutide-trials-and-regulatory-records?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=look-up-semaglutide-trials-and-regulatory-records">Look up semaglutide trials and regulatory records</a><span>A drug dossier with trial counts, FDA counts and source availability.</span></li>
+            <li><a href="https://apify.com/perceptive_city_af7/sg-green-mark-buildings/examples/check-singapore-green-mark-certificates?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=check-singapore-green-mark-certificates">Check Singapore Green Mark Platinum buildings</a><span>Certificate references, ratings and expiry dates. <a class="trial-file" download href="./channel/n8n-sg-green-mark-csv.json" aria-label="Download n8n workflow: Check Singapore Green Mark Platinum buildings">n8n workflow</a></span></li>
+            <li><a href="https://apify.com/perceptive_city_af7/cyber-kev-epss-cve-intelligence/examples/review-cisa-kev-remediation-deadlines?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=review-cisa-kev-remediation-deadlines">Review CISA remediation deadlines</a><span>KEV catalog records for patch planning.</span></li>
+          </ul>
+        </section>
+      </div>
+      <p class="link-row"><a href="./houzz/">Houzz contractor and design studio shortlists</a></p>
+      <div id="vertical-guides" class="link-row" aria-label="Interactive API guides"><a href="./tools/ats-jobs-hiring-signals/">ATS API guide</a> <a href="./tools/sec-form-d-funding-tracker/">SEC EDGAR API guide</a> <a href="./tools/global-tenders-procurement-api/">Procurement API guide</a> <a href="./tools/pharma-drug-pipeline-api/">Drug dossier API guide</a></div>
     </div>
   </section>
 
@@ -453,7 +456,7 @@
   <section class="band" id="actors">
     <div class="wrap">
       <p class="kicker">Apify Store · Pay-per-event</p>
-      <h2>8 live public paid Apify Actors</h2>
+      <h2>Government and Asia-Pacific data integrations</h2>
       <p class="section-lede">
         All eight run on Apify with pay-per-event billing and zero Playwright dependency — pure HTTP against official
         public-data endpoints. Each card lists the actor ID, per-1,000-result price and the governing source licence.
@@ -465,7 +468,7 @@
           <p>US public-company filings, forms and metadata straight from EDGAR.</p>
           <div class="tags">
             <span class="tag tag-id">8LFIbRbidiHPknMz5</span>
-            <span class="tag tag-price">$4.00 / 1K</span>
+            <span class="tag tag-price">$2.50 / 1K</span>
             <span class="tag tag-lic">US Public Domain</span>
           </div>
           <a class="card-link" href="https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper">Open on Apify →</a>
@@ -495,7 +498,7 @@
 
         <article class="card">
           <h3>Singapore BCA Green Mark</h3>
-          <p>Certified green buildings, ratings, addresses and award years.</p>
+          <p>Singapore BCA certificate references, ratings, certification dates and expiry dates.</p>
           <div class="tags">
             <span class="tag tag-id">Z3ioK0wOAeczj6nCx</span>
             <span class="tag tag-price">$2.00 / 1K</span>
@@ -690,19 +693,19 @@
         <span class="src"><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/BUYER_CATALOG.md">Public KVS</a> · <a href="./channel/BUYER_CATALOG.md">local</a></span>
       </li>
       <li>
-        <span class="file"><code>n8n-sec-edgar-filings-csv.json</code> — SEC EDGAR → CSV · <code>maxTotalChargeUsd=0.25</code></span>
+        <span class="file"><code>n8n-sec-edgar-filings-csv.json</code> — SEC EDGAR → CSV · <code>maxTotalChargeUsd=0.05</code></span>
         <span class="src"><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sec-edgar-filings-csv.json">Public KVS</a> · <a href="./channel/n8n-sec-edgar-filings-csv.json">local</a></span>
       </li>
       <li>
-        <span class="file"><code>n8n-clinical-trials-csv.json</code> — ClinicalTrials.gov → CSV · <code>maxTotalChargeUsd=0.25</code></span>
+        <span class="file"><code>n8n-clinical-trials-csv.json</code> — ClinicalTrials.gov → CSV · <code>maxTotalChargeUsd=0.05</code></span>
         <span class="src"><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-clinical-trials-csv.json">Public KVS</a> · <a href="./channel/n8n-clinical-trials-csv.json">local</a></span>
       </li>
       <li>
-        <span class="file"><code>n8n-uk-gov-tenders-csv.json</code> — UK Gov Tenders OCDS → CSV · <code>maxTotalChargeUsd=0.25</code></span>
+        <span class="file"><code>n8n-uk-gov-tenders-csv.json</code> — UK Gov Tenders OCDS → CSV · <code>maxTotalChargeUsd=0.05</code></span>
         <span class="src"><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-uk-gov-tenders-csv.json">Public KVS</a> · <a href="./channel/n8n-uk-gov-tenders-csv.json">local</a></span>
       </li>
       <li>
-        <span class="file"><code>n8n-sg-green-mark-csv.json</code> — Singapore BCA Green Mark → CSV · <code>maxTotalChargeUsd=0.25</code></span>
+        <span class="file"><code>n8n-sg-green-mark-csv.json</code> — Singapore BCA Green Mark → CSV · <code>maxTotalChargeUsd=0.05</code></span>
         <span class="src"><a href="https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sg-green-mark-csv.json">Public KVS</a> · <a href="./channel/n8n-sg-green-mark-csv.json">local</a></span>
       </li>
     </ul>

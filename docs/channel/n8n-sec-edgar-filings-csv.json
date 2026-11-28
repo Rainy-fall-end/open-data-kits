@@ -1,5 +1,5 @@
 {
-  "name": "SEC EDGAR Corporate Filings -> CSV / Google Sheets (Cost-Capped $0.25)",
+  "name": "SEC Form D offerings of at least $1 million to CSV or Google Sheets",
   "nodes": [
     {
       "id": "11111111-1111-4111-8111-111111111111",
@@ -22,9 +22,9 @@
         -320
       ],
       "parameters": {
-        "content": "## Cost-Capped SEC EDGAR Scraper\n- **Cost guard:** `maxTotalChargeUsd=0.25` + `maxItems: 25` ensures max spend $0.25 per run.\n- **Estimated cost per run:** ~$0.10005 (start $0.00005 + 25 × $0.004).\n- **Retry policy:** `retryOnFail: false` – no automatic retries to avoid unexpected charges.\n- **Auth setup:** Set environment variable `APIFY_TOKEN` in n8n (n8n → Settings → Environment Variables). Never hardcode tokens in workflow!\n- **License:** US Government Public Domain (U.S. SEC EDGAR, zero PII). Commercial use allowed. If redistributing, keep the `attribution` column.\n- **Export CSV:** The Convert to CSV node is already connected. Alternatively, connect a Google Sheets node directly to the HTTP Request node's JSON items output.\n- **RapidAPI alternative:** https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings (GET /v1/sec-edgar/filings)\n- **Actor store:** https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper",
-        "width": 820,
-        "height": 260,
+        "content": "## SEC Form D offerings of at least $1 million\nReview up to five original Form D filings with a reported total offering of at least $1 million. The example excludes amendments and pooled investment funds.\n\n1. Select a **Header Auth** credential on the HTTP Request node. Use header name `Authorization` and value `Bearer <your Apify token>`.\n2. Run once. Check the HTTP node for one JSON item per record or download `sec-edgar-filings.csv` from **Convert to CSV → Binary → data**. A Google Sheets **Append Row** node can also use the HTTP output.\n\nWith five saved results at the Free plan rate: **$0.01255**. The Actor charge cap is **$0.05** per run. Automatic HTTP retries are off. [Actor pricing](https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper/pricing).",
+        "width": 790,
+        "height": 270,
         "color": 4
       }
     },
@@ -40,24 +40,15 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items?maxTotalChargeUsd=0.25",
-        "authentication": "none",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "=Bearer {{$env.APIFY_TOKEN}}"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
+        "url": "https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.05"
+            },
             {
               "name": "format",
               "value": "json"
@@ -68,16 +59,23 @@
             },
             {
               "name": "timeout",
-              "value": "60"
+              "value": "120"
             }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\"mode\":\"search\",\"query\":\"artificial intelligence\",\"forms\":\"10-K,10-Q,8-K\",\"startDate\":\"2025-01-01\",\"maxItems\":25}",
+        "jsonBody": "{\n  \"mode\": \"form_d_funding\",\n  \"minOfferingAmountUsd\": 1000000,\n  \"excludePooledFunds\": true,\n  \"includeAmendments\": false,\n  \"maxItems\": 5\n}",
         "options": {
-          "timeout": 90000
-        }
+          "timeout": 150000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        },
+        "genericAuthType": "httpHeaderAuth",
+        "contentType": "json"
       }
     },
     {

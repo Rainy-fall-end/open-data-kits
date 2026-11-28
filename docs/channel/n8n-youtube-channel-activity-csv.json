@@ -1,0 +1,108 @@
+{
+  "name": "Compare Apify and n8n YouTube channel activity",
+  "nodes": [
+    {
+      "id": "7d9bfc0c-8b67-5778-b3e9-7330c4a2d380",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "b2f7290e-36a6-57de-a274-aa33537fa0cd",
+      "name": "Download YouTube channel activity",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/actors/zEyPLDcG6UlWmnkXj/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "format",
+              "value": "csv"
+            },
+            {
+              "name": "attachment",
+              "value": "true"
+            },
+            {
+              "name": "limit",
+              "value": "2"
+            },
+            {
+              "name": "fields",
+              "value": "channelName,channelUrl,subscriberCount,lastUploadDate,uploadsLast30Days,recentVideosSampled,avgViewsRecentVideos,latestVideoUrl"
+            },
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.03"
+            },
+            {
+              "name": "timeout",
+              "value": "120"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"queries\": [],\n  \"startUrls\": [\n    \"https://www.youtube.com/channel/UCTgwcoeGGKmZ3zzCXN2qo_A\",\n    \"https://www.youtube.com/channel/UCiHVTkJtWSdc9N3h0nUGWLg\"\n  ],\n  \"minSubscribers\": 0,\n  \"maxSubscribers\": 3000000,\n  \"uploadedWithinDays\": 365,\n  \"recentVideosSampleSize\": 5,\n  \"maxItems\": 2,\n  \"smartZeroResultFallback\": false,\n  \"enableWebsiteEnrichment\": false,\n  \"enableSerpEnrichment\": false,\n  \"proxyConfiguration\": {\n    \"useApifyProxy\": false\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "37bb836c-7700-5b2e-95b4-463b079d2201",
+      "name": "Using this workflow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -90,
+        -390
+      ],
+      "parameters": {
+        "content": "## Compare Apify and n8n YouTube channel activity\nCompare two official YouTube channels using subscriber counts, recent upload activity and average views over the latest five sampled videos.\n\n[Preview the preset on Apify](https://apify.com/perceptive_city_af7/youtube-channel-email-scraper/examples/compare-apify-and-n8n-youtube-channel-activity)\n\n1. Open **Download YouTube channel activity** and select a **Header Auth** credential. Set its name to `Authorization` and its value to `Bearer YOUR_APIFY_TOKEN`.\n2. Click **Execute Workflow** once. This starts one Actor run on your Apify account, capped at **$0.03** and **2 rows**.\n3. Open the HTTP node’s **Output → Binary → data** and download the CSV. If the request times out, check [your Apify runs](https://console.apify.com/actors/runs) before starting a second run.",
+        "width": 590,
+        "height": 340,
+        "color": 5
+      }
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Download YouTube channel activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

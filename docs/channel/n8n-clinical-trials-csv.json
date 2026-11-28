@@ -1,5 +1,5 @@
 {
-  "name": "ClinicalTrials.gov Studies -> CSV / Google Sheets (Cost-Capped $0.25)",
+  "name": "Recruiting type 2 diabetes studies from ClinicalTrials.gov to CSV or Google Sheets",
   "nodes": [
     {
       "id": "55555555-5555-4555-8555-555555555555",
@@ -22,9 +22,9 @@
         -320
       ],
       "parameters": {
-        "content": "## Cost-Capped ClinicalTrials.gov Scraper\n- **Cost guard:** `maxTotalChargeUsd=0.25` + `maxItems: 25` ensures max spend $0.25 per run.\n- **Estimated cost per run:** ~$0.08755 (start $0.00005 + 25 × $0.0035).\n- **Retry policy:** `retryOnFail: false` – no automatic retries to avoid unexpected charges.\n- **Auth setup:** Set environment variable `APIFY_TOKEN` in n8n. Never hardcode tokens!\n- **License:** US Government Public Domain (NIH / U.S. National Library of Medicine, zero PII). Commercial use allowed. Keep `attribution` column if redistributing.\n- **Export CSV:** Convert to CSV node is already connected. Alternatively, connect Google Sheets node directly to HTTP Request node's JSON output.\n- **RapidAPI alternative:** https://rapidapi.com/fallRainy/api/clinicaltrials-gov-studies-trials (GET /v1/clinical-trials/studies)\n- **Actor store:** https://apify.com/perceptive_city_af7/clinical-trials-scraper",
-        "width": 820,
-        "height": 260,
+        "content": "## Recruiting type 2 diabetes studies from ClinicalTrials.gov\nFind up to five type 2 diabetes studies whose registry status is `RECRUITING`. Compare sponsors, study phase, enrollment and the last registry update.\n\n1. Select a **Header Auth** credential on the HTTP Request node. Use header name `Authorization` and value `Bearer <your Apify token>`.\n2. Run once. Check the HTTP node for one JSON item per record or download `clinical-trials-studies.csv` from **Convert to CSV → Binary → data**. A Google Sheets **Append Row** node can also use the HTTP output.\n\nWith five saved results at the Free plan rate: **$0.01755**. The Actor charge cap is **$0.05** per run. Automatic HTTP retries are off. [Actor pricing](https://apify.com/perceptive_city_af7/clinical-trials-scraper/pricing).",
+        "width": 790,
+        "height": 270,
         "color": 4
       }
     },
@@ -40,24 +40,15 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://api.apify.com/v2/acts/KchE3qKKrwU0rCe9f/run-sync-get-dataset-items?maxTotalChargeUsd=0.25",
-        "authentication": "none",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "=Bearer {{$env.APIFY_TOKEN}}"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
+        "url": "https://api.apify.com/v2/acts/KchE3qKKrwU0rCe9f/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.05"
+            },
             {
               "name": "format",
               "value": "json"
@@ -68,16 +59,23 @@
             },
             {
               "name": "timeout",
-              "value": "60"
+              "value": "120"
             }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\"condition\":\"type 2 diabetes\",\"status\":\"RECRUITING\",\"queryTerm\":\"GLP-1\",\"maxItems\":25}",
+        "jsonBody": "{\n  \"condition\": \"type 2 diabetes\",\n  \"status\": \"RECRUITING\",\n  \"maxItems\": 5\n}",
         "options": {
-          "timeout": 90000
-        }
+          "timeout": 150000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        },
+        "genericAuthType": "httpHeaderAuth",
+        "contentType": "json"
       }
     },
     {

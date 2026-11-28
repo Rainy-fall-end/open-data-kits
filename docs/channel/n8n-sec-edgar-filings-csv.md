@@ -1,113 +1,79 @@
-# SEC EDGAR Corporate Filings → CSV with n8n / SEC EDGAR 公司披露 → CSV（n8n 快速入门）
+# SEC Form D offerings of at least $1 million with n8n
 
-**English overview:** Production quickstart for importing the n8n workflow that calls Apify Actor `perceptive_city_af7~sec-edgar-filings-scraper` (`8LFIbRbidiHPknMz5`), retrieves normalized SEC EDGAR filing rows, and writes them to Google Sheets or CSV.
+Review up to five original Form D filings with a reported total offering of at least $1 million. The example excludes amendments and pooled investment funds.
 
-**中文摘要：** 本指南说明如何导入 n8n 工作流、安全配置 Apify Token、调用 SEC EDGAR Actor，将 18 个标准化字段写入 Google Sheets 或 CSV；包含 curl、Python、RapidAPI 示例、费用上限与许可归属说明。
+默认筛选申报发行总额至少 100 万美元的首次 Form D，排除修订和集合投资基金。工作流只需在 n8n 中绑定一次 Header Auth 凭证。可直接下载 CSV，或把结果逐行追加到 Google Sheets。
 
-**Quick links / 快速链接**
-- Asset: `perceptive_city_af7~sec-edgar-filings-scraper`
-- Actor ID: `8LFIbRbidiHPknMz5`
-- Apify Store: `https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper`
-- Apify Pricing: `https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper/pricing`
-- RapidAPI Hub Live URL: `https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings`
-- Workflow JSON: [Download workflow](./n8n-sec-edgar-filings-csv.json)
-- Sync API endpoint: `https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items?maxTotalChargeUsd=0.25`
+## Run the five-record example
 
-## 2. n8n Import & Google Sheets / CSV Setup / n8n 导入与 Google Sheets / CSV 设置
+1. Download the JSON and choose **Import from File** in the menu of a new n8n workflow. [Download workflow JSON](https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-sec-edgar-filings-csv.json) · [n8n import guide](https://docs.n8n.io/workflows/export-import/)
+2. Open **Fetch SEC EDGAR Filings (Apify)**. Under **Generic Credential Type → Header Auth**, create or select a credential. For a new credential set **Name** to `Authorization`, and **Value** to `Bearer` followed by one space and your Apify API token. Save the credential in n8n. [Apify token settings](https://console.apify.com/settings/integrations) · [n8n Header Auth](https://docs.n8n.io/integrations/builtin/credentials/httprequest/)
+3. Choose **Execute workflow** once. The HTTP Request output contains one JSON item per returned record. Open **Convert to CSV (Google Sheets Ready) → Binary → data** to download `sec-edgar-filings.csv`.
+4. To send the same JSON items to a spreadsheet, connect **Google Sheets → Append Row** directly to the HTTP Request output. Select your spreadsheet, create the desired column headings, and map the fields by name. [Google Sheets node](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googlesheets/)
 
-1. Import [Download workflow](./n8n-sec-edgar-filings-csv.json) into n8n.
-2. Configure authentication securely:
-   - Set `APIFY_TOKEN` as an n8n environment variable and reference it in the HTTP Request node header, **or**
-   - Use an n8n **Header Auth** credential with `Authorization: Bearer <APIFY_TOKEN>`.
-   - **NEVER hardcode tokens** in workflow JSON, node fields, code, or docs.
-3. The HTTP Request node calls the sync endpoint with a hard cap:
-   `https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items?maxTotalChargeUsd=0.25`
-4. Keep `retryOnFail: false` to avoid duplicate billed runs.
-5. The HTTP Request outputs structured JSON items ready for a **Google Sheets Append Row** node, and feeds directly into **Convert to CSV**.
-6. For Google Sheets, create headers matching the 18 normalized fields below; map each field into Append Row.
-7. For CSV, connect the HTTP Request output directly to the Convert to CSV node.
+在 HTTP Request 节点选择 Header Auth 凭证，执行一次后可在 CSV 节点的 **Binary → data** 中下载文件。写入表格时，请把 Google Sheets 接到 HTTP Request 节点。
 
-**Valid input JSON used in the workflow:**
+## Input and fields
+
+The HTTP Request node posts this input to the Actor. [Actor input](https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper/input)
 
 ```json
-{"mode":"search","query":"artificial intelligence","forms":"10-K,10-Q,8-K","startDate":"2025-01-01","maxItems":25}
+{
+  "mode": "form_d_funding",
+  "minOfferingAmountUsd": 1000000,
+  "excludePooledFunds": true,
+  "includeAmendments": false,
+  "maxItems": 5
+}
 ```
 
-**Company-mode example / 公司模式示例:**
+For a first sheet, use `accessionNumber`, `issuerName`, `filingDate`, `formType`, `isAmendment`, `isPooledInvestmentFund`, `totalOfferingAmountUsd`, `totalAmountSoldUsd`, `industryGroup`, `filingUrl`, `xmlUrl`, `sourceName`, `sourceLicense`. Use `accessionNumber` as the record identifier. `totalOfferingAmountUsd` is the amount offered. Compare it with `totalAmountSoldUsd` when researching funds raised. Open `filingUrl` or `xmlUrl` to inspect the underlying notice. The Actor’s company and XBRL modes have different fields.
 
-```json
-{"mode":"company","ticker":"AAPL","forms":"10-K,10-Q,8-K,4"}
-```
+## Cost per run
 
-**Output fields (18 normalized fields):** `accessionNumber, cik, companyName, tickers, form, filingDate, reportDate, fileNumber, items, documentType, documentDescription, sic, sicDescription, stateOfIncorporation, businessLocation, filingUrl, documentUrl, attribution`
+The included manual workflow requests up to five records. At the Free plan rate, five saved records cost **$0.01255** in Actor event charges, based on one **$0.00005** start event plus **$0.0025** per saved record. The request sets `maxTotalChargeUsd=0.05` and disables automatic HTTP retries. If the HTTP request times out, check the Actor run in Apify before executing again. [Actor pricing](https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper/pricing)
 
-## 3. `curl` Quickstart / curl 快速开始
+首次运行上限为五条，生成五条时的 Free 档事件费用为 **$0.01255**。每次运行设置 **$0.05** 的 Actor 计费上限，HTTP 节点已关闭自动重试。
+
+The workflow imported into n8n 1.80.5. With a local test endpoint and a test Header Auth credential, one manual execution sent one POST and returned two sample JSON items and a downloadable two-row CSV. Executing the workflow against Apify uses your account.
+
+## Using the same input from the API
+
+For the shell and Python examples, set `APIFY_TOKEN` in your own shell. Each command starts a separate billable run. [Apify sync endpoint](https://docs.apify.com/api/v2/actor-run-sync-get-dataset-items-post)
 
 ```bash
-export APIFY_TOKEN="<your_apify_token>"  # never commit real tokens
-
-curl -sS --fail \
-  -X POST \
-  "https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items?maxTotalChargeUsd=0.25" \
+curl --fail-with-body -X POST \
+  'https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items?maxTotalChargeUsd=0.05&timeout=120&format=json&clean=true' \
   -H "Authorization: Bearer $APIFY_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"mode":"search","query":"artificial intelligence","forms":"10-K,10-Q,8-K","startDate":"2025-01-01","maxItems":25}'
+  -H 'Content-Type: application/json' \
+  --data '{"mode":"form_d_funding","minOfferingAmountUsd":1000000,"excludePooledFunds":true,"includeAmendments":false,"maxItems":5}'
 ```
-
-The sync endpoint returns a JSON array of structured filing items.
-
-## 4. `Python` Quickstart / Python 快速开始
 
 ```python
 import os
-import httpx
 
-APIFY_TOKEN = os.environ["APIFY_TOKEN"]  # do not hardcode
-
-url = "https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items"
-params = {"maxTotalChargeUsd": "0.25"}
+import requests
 
 payload = {
-    "mode": "search",
-    "query": "artificial intelligence",
-    "forms": "10-K,10-Q,8-K",
-    "startDate": "2025-01-01",
-    "maxItems": 25,
+    "mode": "form_d_funding",
+    "minOfferingAmountUsd": 1000000,
+    "excludePooledFunds": True,
+    "includeAmendments": False,
+    "maxItems": 5
 }
-
-headers = {
-    "Authorization": f"Bearer {APIFY_TOKEN}",
-    "Content-Type": "application/json",
-}
-
-with httpx.Client(timeout=120) as client:
-    response = client.post(url, params=params, headers=headers, json=payload)
-    response.raise_for_status()
-    items = response.json()
-
-print(f"records={len(items)}")
-print(items[:1])
+response = requests.post(
+    "https://api.apify.com/v2/acts/8LFIbRbidiHPknMz5/run-sync-get-dataset-items",
+    params={"maxTotalChargeUsd": "0.05", "timeout": "120", "format": "json", "clean": "true"},
+    headers={"Authorization": f"Bearer {os.environ['APIFY_TOKEN']}"},
+    json=payload,
+    timeout=150,
+)
+response.raise_for_status()
+print(len(response.json()))
 ```
 
-You can use `requests` or `urllib` similarly; keep the token in `os.environ["APIFY_TOKEN"]` and keep `maxTotalChargeUsd=0.25` in the request.
+[SEC EDGAR Corporate Filings on RapidAPI](https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings) offers a separate integration with its own credentials and pricing.
 
-## 5. RapidAPI Hub REST Alternative / RapidAPI REST 替代方案
+## Source and attribution
 
-- RapidAPI Hub Live URL: `https://rapidapi.com/fallRainy/api/sec-edgar-corporate-filings`
-- REST endpoint: `GET /v1/sec-edgar/filings`
-
-Use the RapidAPI dashboard to obtain the required `X-RapidAPI-Key` and `X-RapidAPI-Host` headers. Do not hardcode RapidAPI keys in code or workflow exports. Use the dashboard’s generated request example for the exact host and authentication headers.
-
-## 6. Cost Cap, Pricing & License Attribution / 费用上限、定价与许可归属
-
-- Pricing model: Pay-per-event (PPE).
-- Cost: `$0.00005` per Actor start + `$0.004` per saved record (`$4.00 / 1,000 records`).
-- 25 records ≈ `$0.10005`.
-- Hard cap in this guide/workflow: `maxTotalChargeUsd=0.25`.
-- Workflow setting: `retryOnFail: false`.
-- License & attribution: U.S. Securities and Exchange Commission (SEC EDGAR) — US Government Public Domain, zero PII, SEC Fair Access compliant.
-- Keep the `attribution` field when redistributing results.
-
-## 7. Honest Validation Note / 验证说明
-
-The workflow JSON was validated locally against the real Actor `input_schema.json`; executing the workflow bills your own Apify account.
+Retain `sourceName`, `sourceLicense`, and `filingUrl` when sharing results. A Form D is an issuer's notice of an exempt offering.

@@ -1,5 +1,5 @@
 {
-  "name": "UK Gov Tenders & Procurement -> CSV / Google Sheets (Cost-Capped $0.25)",
+  "name": "UK Contracts Finder award notices to CSV or Google Sheets",
   "nodes": [
     {
       "id": "99999999-9999-4999-8999-999999999999",
@@ -22,9 +22,9 @@
         -320
       ],
       "parameters": {
-        "content": "## Cost-Capped UK Gov Tenders Scraper\n- **Cost guard:** `maxTotalChargeUsd=0.25` + `maxItems: 25` ensures max spend $0.25 per run.\n- **Estimated cost per run:** ~$0.12505 (start $0.00005 + 25 × $0.005).\n- **Retry policy:** `retryOnFail: false` – no automatic retries to avoid unexpected charges.\n- **Auth setup:** Set environment variable `APIFY_TOKEN` in n8n. Never hardcode tokens!\n- **License:** UK Open Government Licence v3.0 (Cabinet Office Contracts Finder OCDS). Commercial reuse permitted with attribution; zero PII (contactPoint excluded). Keep `attribution` column.\n- **Export CSV:** Convert to CSV node is already connected. Alternatively, connect Google Sheets node directly to HTTP Request node's JSON output.\n- **RapidAPI note:** No separate RapidAPI listing yet, but direct sync REST API & Apify MCP Server supported via Apify Store.\n- **Actor store:** https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper",
-        "width": 820,
-        "height": 260,
+        "content": "## UK Contracts Finder award notices\nReview up to five public award notices on Contracts Finder. Compare the buyer, published award value, and suppliers when the source supplies those fields.\n\n1. Select a **Header Auth** credential on the HTTP Request node. Use header name `Authorization` and value `Bearer <your Apify token>`.\n2. Run once. Check the HTTP node for one JSON item per record or download `uk-gov-tenders.csv` from **Convert to CSV → Binary → data**. A Google Sheets **Append Row** node can also use the HTTP output.\n\nWith five saved results at the Free plan rate: **$0.02505**. The Actor charge cap is **$0.05** per run. Automatic HTTP retries are off. [Actor pricing](https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/pricing).",
+        "width": 790,
+        "height": 270,
         "color": 4
       }
     },
@@ -40,24 +40,15 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/run-sync-get-dataset-items?maxTotalChargeUsd=0.25",
-        "authentication": "none",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "=Bearer {{$env.APIFY_TOKEN}}"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
+        "url": "https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.05"
+            },
             {
               "name": "format",
               "value": "json"
@@ -68,16 +59,23 @@
             },
             {
               "name": "timeout",
-              "value": "60"
+              "value": "120"
             }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\"keyword\":\"software\",\"stages\":\"tender\",\"minValue\":50000,\"maxItems\":25}",
+        "jsonBody": "{\n  \"stages\": \"award\",\n  \"maxItems\": 5\n}",
         "options": {
-          "timeout": 90000
-        }
+          "timeout": 150000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        },
+        "genericAuthType": "httpHeaderAuth",
+        "contentType": "json"
       }
     },
     {

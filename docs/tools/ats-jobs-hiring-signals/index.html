@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; media-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
-  <meta name="referrer" content="no-referrer">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="description" content="Turn public Greenhouse, Lever, and Ashby job boards into normalized salary, remote-work, skill, and AI/GTM hiring signals for 22 tech leaders or custom companies.">
   <meta property="og:type" content="website">
@@ -33,7 +33,7 @@
       "description": "Turn public Greenhouse, Lever, and Ashby job boards into normalized salary, remote-work, skill, and AI/GTM hiring signals for 22 tech leaders or custom companies.",
       "offers": {
         "@type": "Offer",
-        "price": "4.00",
+        "price": "1.20",
         "priceCurrency": "USD",
         "description": "1,000 normalized job records"
       },
@@ -75,7 +75,7 @@
           "name": "What does a 50-job run cost?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "At $0.004 per saved job plus the $0.00005 start event, 50 returned jobs cost about $0.20005. The generated request also sets maxTotalChargeUsd to $0.25."
+            "text": "At $0.0012 per saved job plus the $0.00005 start event, 50 returned jobs cost about $0.06005. The generated request also sets maxTotalChargeUsd to $0.25."
           }
         }
       ]
@@ -99,15 +99,15 @@
             <p class="eyebrow">ATS JOBS AND HIRING SIGNALS API</p>
             <h1>See where fast-moving companies are hiring before the market catches up.</h1>
             <p class="lede">One clean feed across Greenhouse, Lever, and Ashby. Track 22 curated tech leaders or add any public board, then filter for salary bands, AI roles, GTM expansion, skills, and remote work.</p>
-            <div class="actions"><a class="btn btn-primary" href="https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper" rel="noopener noreferrer" target="_blank" rel="noopener noreferrer">Run the ATS jobs Actor</a></div>
+            <div class="actions"><a class="btn btn-primary" href="https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper/examples/find-fintech-saas-account-executive-jobs?utm_source=github_pages&amp;utm_medium=referral&amp;utm_campaign=portfolio_trials&amp;utm_content=find-fintech-saas-account-executive-jobs" target="_blank" rel="noopener">Try the account executive search</a></div>
           </div>
           <aside class="hero-card" aria-label="Price and coverage">
-            <span class="price">$4 / 1,000 jobs</span>
-            <p>plus $0.00005 per run. The generator below applies a hard $0.25 spend cap.</p>
+            <span class="price">$1.20 / 1,000 jobs</span>
+            <p>plus a minimum $0.00005 start charge at default memory. The generator below applies a hard $0.25 spend cap.</p>
             <div class="chips"><span class="chip">Greenhouse</span><span class="chip">Lever</span><span class="chip">Ashby</span><span class="chip">Salary bands</span><span class="chip">AI and GTM signals</span></div>
           </aside>
         </div>
-        <div class="proof" aria-label="Key facts"><div><strong>3</strong><span>public ATS platforms</span></div><div><strong>22</strong><span>curated tech leaders</span></div><div><strong>$4</strong><span>per 1,000 jobs</span></div><div><strong>0</strong><span>browser sessions</span></div></div>
+        <div class="proof" aria-label="Key facts"><div><strong>3</strong><span>public ATS platforms</span></div><div><strong>22</strong><span>curated tech leaders</span></div><div><strong>$1.20</strong><span>per 1,000 jobs</span></div><div><strong>0</strong><span>browser sessions</span></div></div>
       </div>
     </section>
 
@@ -181,7 +181,7 @@
         <p class="section-label">TRANSPARENT COST COMPARISON</p>
         <h2>Know what the unit price includes.</h2>
         <p class="section-intro">Known costs are shown directly. Alternatives without public unit pricing are labeled instead of estimated.</p>
-        <div class="table-wrap"><table><caption class="sr-only">Cost and coverage comparison for 1,000 records</caption><thead><tr><th>Option</th><th>Cost per 1,000 records</th><th>Coverage</th><th>What to account for</th></tr></thead><tbody><tr><td><strong>This ATS Actor</strong></td><td>$4.00005</td><td>Greenhouse + Lever + Ashby; presets + custom boards</td><td>Pay only for saved normalized jobs</td></tr><tr><td>Direct ATS integrations</td><td>$0 upstream data fee</td><td>Whatever your team builds</td><td>Engineering, hosting, retries, and schema maintenance excluded</td></tr><tr><td>Quote-based jobs vendor</td><td>Request a current quote</td><td>Vendor-dependent</td><td>Confirm salary coverage, reuse rights, and minimum commitment</td></tr></tbody></table></div>
+        <div class="table-wrap"><table><caption class="sr-only">Cost and coverage comparison for 1,000 records</caption><thead><tr><th>Option</th><th>Cost per 1,000 records</th><th>Coverage</th><th>What to account for</th></tr></thead><tbody><tr><td><strong>This ATS Actor</strong></td><td>$1.20005</td><td>Greenhouse + Lever + Ashby; presets + custom boards</td><td>Includes one minimum start charge</td></tr><tr><td>Direct ATS integrations</td><td>$0 upstream data fee</td><td>Whatever your team builds</td><td>Engineering, hosting, retries, and schema maintenance excluded</td></tr><tr><td>Quote-based jobs vendor</td><td>Request a current quote</td><td>Vendor-dependent</td><td>Confirm salary coverage, reuse rights, and minimum commitment</td></tr></tbody></table></div>
       </div>
     </section>
 
@@ -189,7 +189,7 @@
       <div class="wrap">
         <p class="section-label">FREQUENTLY ASKED QUESTIONS</p>
         <h2>What buyers ask before the first run.</h2>
-        <div class="faq" style="margin-top:2rem"><details><summary>Which job boards are supported?</summary><p>Greenhouse, Lever, and Ashby public career boards are supported. Use a preset for 22 curated tech leaders or provide custom public board identifiers.</p></details><details><summary>Can I filter for AI or go-to-market hiring?</summary><p>Yes. Keyword and department filters work alongside deterministic hiring-signal categories and detected skills in each normalized record.</p></details><details><summary>Are salary fields inferred?</summary><p>No. Salary minimum, maximum, currency, and compensation summary are populated only when the public board supplies enough information; otherwise values remain null.</p></details><details><summary>What does a 50-job run cost?</summary><p>At $0.004 per saved job plus the $0.00005 start event, 50 returned jobs cost about $0.20005. The generated request also sets maxTotalChargeUsd to $0.25.</p></details></div>
+        <div class="faq" style="margin-top:2rem"><details><summary>Which job boards are supported?</summary><p>Greenhouse, Lever, and Ashby public career boards are supported. Use a preset for 22 curated tech leaders or provide custom public board identifiers.</p></details><details><summary>Can I filter for AI or go-to-market hiring?</summary><p>Yes. Keyword and department filters work alongside deterministic hiring-signal categories and detected skills in each normalized record.</p></details><details><summary>Are salary fields inferred?</summary><p>No. Salary minimum, maximum, currency, and compensation summary are populated only when the public board supplies enough information; otherwise values remain null.</p></details><details><summary>What does a 50-job run cost?</summary><p>At $0.0012 per saved job plus the $0.00005 start event, 50 returned jobs cost about $0.06005. The generated request also sets maxTotalChargeUsd to $0.25.</p></details></div>
       </div>
     </section>
 

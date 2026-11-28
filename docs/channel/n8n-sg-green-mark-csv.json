@@ -1,5 +1,5 @@
 {
-  "name": "Singapore BCA Green Mark Buildings -> CSV / Google Sheets (Cost-Capped $0.25)",
+  "name": "Singapore buildings with Platinum Green Mark certification to CSV or Google Sheets",
   "nodes": [
     {
       "id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
@@ -22,9 +22,9 @@
         -320
       ],
       "parameters": {
-        "content": "## Cost-Capped Singapore BCA Green Mark Scraper\n- **Cost guard:** `maxTotalChargeUsd=0.25` + `maxItems: 25` ensures max spend $0.25 per run.\n- **Estimated cost per run:** ~$0.05005 (start $0.00005 + 25 × $0.002).\n- **Retry policy:** `retryOnFail: false` – no automatic retries to avoid unexpected charges.\n- **Auth setup:** Set environment variable `APIFY_TOKEN` in n8n. Never hardcode tokens!\n- **License:** Singapore Open Data Licence v1.0 (Building and Construction Authority via data.gov.sg). Commercial reuse with attribution; zero PII. Keep `attribution` column.\n- **Export CSV:** Convert to CSV node is already connected. Alternatively, connect Google Sheets node directly to HTTP Request node's JSON output.\n- **RapidAPI alternative:** https://rapidapi.com/fallRainy/api/singapore-bca-green-mark-buildings (GET /v1/sg-green-mark/certificates)\n- **Actor store:** https://apify.com/perceptive_city_af7/sg-green-mark-buildings",
-        "width": 820,
-        "height": 260,
+        "content": "## Singapore buildings with Platinum Green Mark certification\nFind up to five BCA certificate records rated `Platinum`. Compare certificate references and certification dates, and check the reported expiry date before making a shortlist.\n\n1. Select a **Header Auth** credential on the HTTP Request node. Use header name `Authorization` and value `Bearer <your Apify token>`.\n2. Run once. Check the HTTP node for one JSON item per record or download `sg-green-mark-buildings.csv` from **Convert to CSV → Binary → data**. A Google Sheets **Append Row** node can also use the HTTP output.\n\nWith five saved results at the Free plan rate: **$0.01005**. The Actor charge cap is **$0.05** per run. Automatic HTTP retries are off. [Actor pricing](https://apify.com/perceptive_city_af7/sg-green-mark-buildings/pricing).",
+        "width": 790,
+        "height": 270,
         "color": 4
       }
     },
@@ -40,24 +40,15 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://api.apify.com/v2/acts/Z3ioK0wOAeczj6nCx/run-sync-get-dataset-items?maxTotalChargeUsd=0.25",
-        "authentication": "none",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "=Bearer {{$env.APIFY_TOKEN}}"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
+        "url": "https://api.apify.com/v2/acts/Z3ioK0wOAeczj6nCx/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.05"
+            },
             {
               "name": "format",
               "value": "json"
@@ -68,16 +59,23 @@
             },
             {
               "name": "timeout",
-              "value": "60"
+              "value": "120"
             }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\"query\":\"Plaza\",\"rating\":\"Platinum\",\"maxItems\":25}",
+        "jsonBody": "{\n  \"rating\": \"Platinum\",\n  \"maxItems\": 5\n}",
         "options": {
-          "timeout": 90000
-        }
+          "timeout": 150000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        },
+        "genericAuthType": "httpHeaderAuth",
+        "contentType": "json"
       }
     },
     {

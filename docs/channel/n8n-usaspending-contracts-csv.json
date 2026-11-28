@@ -1,5 +1,5 @@
 {
-  "name": "USASpending Federal Contracts & Grants -> CSV / Google Sheets (Cost-Capped $0.25)",
+  "name": "USAspending FY2026 software contract activity to CSV or Google Sheets",
   "nodes": [
     {
       "id": "3f2a8b4c-1d2e-4f0a-9b8c-7d6e5f4a3b2c",
@@ -22,9 +22,9 @@
         -320
       ],
       "parameters": {
-        "content": "## Cost-Capped Apify → CSV / Sheets\n\n- **Cost guard**: URL includes `?maxTotalChargeUsd=0.25`; body includes `\"maxItems\":25` → max 25 records.\n- **Estimated cost**: USASpending: $0.00005 start + 25 × $0.005 = ~$0.12505.\n- **Retry policy**: `retryOnFail: false` on HTTP Request node.\n- **Auth**: Uses `{{$env.APIFY_TOKEN}}` env var; never hardcode tokens.\n- **License & attribution**: US Government Public Domain (17 U.S.C. § 105) via U.S. Treasury USAspending.gov API v2. Commercial reuse allowed; zero PII; keep `attribution` column.\n- **Export**: Convert to CSV ready for Google Sheets.\n- **MCP / direct sync**: You can also sync directly via Apify MCP: https://mcp.apify.com/?tools=perceptive_city_af7%2Fusaspending-gov-contracts-scraper or REST API.\n- **Actor store**: https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper",
-        "width": 820,
-        "height": 260,
+        "content": "## USAspending FY2026 software contract activity\nFind up to five federal contract awards matching `software` with activity in US fiscal year 2026, October 1, 2025 through September 30, 2026. Results sort by award amount descending.\n\n1. Select a **Header Auth** credential on the HTTP Request node. Use header name `Authorization` and value `Bearer <your Apify token>`.\n2. Run once. Check the HTTP node for one JSON item per record or download `usaspending-gov-contracts.csv` from **Convert to CSV → Binary → data**. A Google Sheets **Append Row** node can also use the HTTP output.\n\nWith five saved results at the Free plan rate: **$0.02505**. The Actor charge cap is **$0.05** per run. Automatic HTTP retries are off. [Actor pricing](https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper/pricing).",
+        "width": 790,
+        "height": 270,
         "color": 4
       }
     },
@@ -40,24 +40,15 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items?maxTotalChargeUsd=0.25",
-        "authentication": "none",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "=Bearer {{$env.APIFY_TOKEN}}"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
+        "url": "https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.05"
+            },
             {
               "name": "format",
               "value": "json"
@@ -68,16 +59,23 @@
             },
             {
               "name": "timeout",
-              "value": "60"
+              "value": "120"
             }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\"keyword\":\"artificial intelligence\",\"awardCategory\":\"contracts\",\"startDate\":\"2025-01-01\",\"endDate\":\"2026-12-31\",\"sortOrder\":\"desc\",\"maxItems\":25}",
+        "jsonBody": "{\n  \"awardCategory\": \"contracts\",\n  \"keyword\": \"software\",\n  \"startDate\": \"2025-10-01\",\n  \"endDate\": \"2026-09-30\",\n  \"sortOrder\": \"desc\",\n  \"maxItems\": 5\n}",
         "options": {
-          "timeout": 90000
-        }
+          "timeout": 150000,
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        },
+        "genericAuthType": "httpHeaderAuth",
+        "contentType": "json"
       }
     },
     {

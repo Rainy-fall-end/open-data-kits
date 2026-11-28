@@ -7,6 +7,19 @@ Production-ready, **zero-dependency** developer kits, analyst connectors, and fr
 
 ---
 
+## Small searches you can run on Apify
+
+| Research question | Preset search | Download |
+|---|---|---|
+| Compare two YouTube channels | [Open the Apify example](https://apify.com/perceptive_city_af7/youtube-channel-email-scraper/examples/compare-apify-and-n8n-youtube-channel-activity?utm_source=github&utm_medium=referral&utm_campaign=portfolio_trials&utm_content=compare-apify-and-n8n-youtube-channel-activity) | [n8n CSV workflow](docs/channel/n8n-youtube-channel-activity-csv.json) |
+| Find Italian packaging suppliers | [Open the Apify example](https://apify.com/perceptive_city_af7/europages-scraper/examples/find-italian-packaging-suppliers-with-websites?utm_source=github&utm_medium=referral&utm_campaign=portfolio_trials&utm_content=find-italian-packaging-suppliers-with-websites) | [n8n CSV workflow](docs/channel/n8n-europages-packaging-suppliers-csv.json) |
+| Compare Hamburg apartment rents up to €1,600 | [Open the Apify example](https://apify.com/perceptive_city_af7/immowelt-scraper/examples/compare-hamburg-apartment-rents-under-1600-eur?utm_source=github&utm_medium=referral&utm_campaign=portfolio_trials&utm_content=compare-hamburg-apartment-rents-under-1600-eur) | [n8n CSV workflow](docs/channel/n8n-immowelt-hamburg-rents-csv.json) |
+| Find account executive jobs at fintech and SaaS companies | [Open the Apify example](https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper/examples/find-fintech-saas-account-executive-jobs?utm_source=github&utm_medium=referral&utm_campaign=portfolio_trials&utm_content=find-fintech-saas-account-executive-jobs) | [n8n CSV workflow](docs/channel/n8n-ats-account-executive-jobs-csv.json) |
+| Find SEC Form D offerings of at least $1M | [Open the Apify example](https://apify.com/perceptive_city_af7/sec-edgar-filings-scraper/examples/find-form-d-offerings-at-least-1m?utm_source=github&utm_medium=referral&utm_campaign=portfolio_trials&utm_content=find-form-d-offerings-at-least-1m) | [n8n CSV workflow](docs/channel/n8n-sec-edgar-filings-csv.json) |
+| Research UK contract awards and suppliers | [Open the Apify example](https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/examples/research-uk-contract-awards-and-suppliers?utm_source=github&utm_medium=referral&utm_campaign=portfolio_trials&utm_content=research-uk-contract-awards-and-suppliers) | [n8n CSV workflow](docs/channel/n8n-uk-gov-tenders-csv.json) |
+
+[See all sample searches, including Asian market data, funding and clinical research](https://rainy-fall-end.github.io/open-data-kits/#buyer-trials).
+
 ## Houzz shortlists for suppliers and agencies
 
 | What are you looking for? | Try it on Apify | Import into n8n |
@@ -51,7 +64,7 @@ Production-ready, **zero-dependency** developer kits, analyst connectors, and fr
 | **Postman v2.1, Insomnia v4 & Bruno Collections** | API Developers & QA | Ready-to-import collections with assertions & `$0.25` spend caps | [`packages/open-gov-api-collections/`](packages/open-gov-api-collections/) |
 | **AI Agent Function-Calling & RAG Toolpack (Python)** | OpenAI, Anthropic & Gemini Agents | JSON tool schemas + grounded provenance citations, zero deps | [`packages/open-gov-ai-tools-py/`](packages/open-gov-ai-tools-py/) |
 | **MCP Server (Stdio, Node 20+)** | Claude Desktop, Cursor, Windsurf | Exposes all live public APIs via Model Context Protocol | [`packages/mcp-server-open-gov-data/`](packages/mcp-server-open-gov-data/) |
-| **n8n Community Node & CSV Templates** | No-Code Automation Teams | Cost-capped (`maxTotalChargeUsd=0.25`) workflows + custom node | [`packages/n8n-nodes-open-gov-data/`](packages/n8n-nodes-open-gov-data/) & [`docs/channel/`](docs/channel/) |
+| **n8n Community Node & CSV Templates** | No-Code Automation Teams | Cost-capped workflows + custom node | [`packages/n8n-nodes-open-gov-data/`](packages/n8n-nodes-open-gov-data/) & [`docs/channel/`](docs/channel/) |
 | **Python SDK (`open-gov-data-py`)** | Data Engineers & Quant Teams | Pure stdlib PEP 621 client for Apify + RapidAPI | [`packages/open-gov-data-py/`](packages/open-gov-data-py/) |
 | **TypeScript / JS SDK (`open-gov-data-js`)** | Full-Stack & Node.js Teams | Full `.d.ts` typings, zero runtime dependencies | [`packages/open-gov-data-js/`](packages/open-gov-data-js/) |
 | **GitHub Action CI/CD** | Automated Scheduled Data Sync | Secret masking (`::add-mask::`) + JSON/CSV export | [`packages/open-gov-data-github-action/`](packages/open-gov-data-github-action/) |

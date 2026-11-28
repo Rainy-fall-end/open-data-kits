@@ -1,0 +1,108 @@
+{
+  "name": "Export Italian packaging suppliers with websites",
+  "nodes": [
+    {
+      "id": "61ea4286-ba60-52c3-aaad-3e097ccc4bc1",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "7782c8ac-8c3c-597d-96e5-cf3507f47ecb",
+      "name": "Download Italian packaging suppliers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/actors/VUDj2inUU6EOdlTx8/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "format",
+              "value": "csv"
+            },
+            {
+              "name": "attachment",
+              "value": "true"
+            },
+            {
+              "name": "limit",
+              "value": "5"
+            },
+            {
+              "name": "fields",
+              "value": "companyName,city,countryCode,websiteUrl,profileUrl"
+            },
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.03"
+            },
+            {
+              "name": "timeout",
+              "value": "120"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"queries\": [\n    \"packaging\"\n  ],\n  \"countries\": [\n    \"IT\"\n  ],\n  \"maxItems\": 5,\n  \"requireWebsite\": true,\n  \"smartZeroResultFallback\": false,\n  \"enableProfileEnrichment\": true,\n  \"enableWebsiteEnrichment\": false,\n  \"enableSerpEnrichment\": false,\n  \"proxyConfiguration\": {\n    \"useApifyProxy\": false\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "8f9e333c-e567-5d26-bfe6-8755b2a4a86d",
+      "name": "Using this workflow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -90,
+        -390
+      ],
+      "parameters": {
+        "content": "## Export Italian packaging suppliers with websites\nShortlist up to five Italian packaging suppliers. Each qualifying Europages profile has a company website. Use the city and profile link to review suppliers.\n\n[Preview the preset on Apify](https://apify.com/perceptive_city_af7/europages-scraper/examples/find-italian-packaging-suppliers-with-websites)\n\n1. Open **Download Italian packaging suppliers** and select a **Header Auth** credential. Set its name to `Authorization` and its value to `Bearer YOUR_APIFY_TOKEN`.\n2. Click **Execute Workflow** once. This starts one Actor run on your Apify account, capped at **$0.03** and **5 rows**.\n3. Open the HTTP node’s **Output → Binary → data** and download the CSV. If the request times out, check [your Apify runs](https://console.apify.com/actors/runs) before starting a second run.",
+        "width": 590,
+        "height": 340,
+        "color": 5
+      }
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Download Italian packaging suppliers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

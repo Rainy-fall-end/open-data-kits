@@ -1,96 +1,81 @@
-# n8n USAspending.gov Contracts Scraper Quickstart | n8n USAspending.gov 合同抓取器快速开始
+# USAspending FY2026 software contract activity with n8n
 
-Import and run the n8n workflow for Apify Actor `usaspending-gov-contracts-scraper` to fetch USAspending.gov contracts, grants, or IDVs and write normalized results to Google Sheets or CSV through Apify’s sync API.
+Find up to five federal contract awards matching `software` with activity in US fiscal year 2026, October 1, 2025 through September 30, 2026. Results sort by award amount descending.
 
-本指南说明如何导入并运行 n8n 工作流，通过 Apify 同步 API 获取 USAspending.gov 合同/拨款/IDV 数据，并写入 Google Sheets 或 CSV。
+默认查询 2025 年 10 月 1 日至 2026 年 9 月 30 日之间有活动的软件合同，按授标金额降序。返回合同的起始日期可能早于该财年。工作流只需在 n8n 中绑定一次 Header Auth 凭证。可直接下载 CSV，或把结果逐行追加到 Google Sheets。
 
-## 1. Quick Links | 快速链接
+## Run the five-record example
 
-- Apify Store: `https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper`
-- Apify Pricing: `https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper/pricing`
-- Workflow JSON: [Download workflow](./n8n-usaspending-contracts-csv.json)
-- Sync API endpoint: `https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items?maxTotalChargeUsd=0.25`
-- Asset: `perceptive_city_af7~usaspending-gov-contracts-scraper`
-- Actor ID: `eQQ2beomyLlW4DTGM`
+1. Download the JSON and choose **Import from File** in the menu of a new n8n workflow. [Download workflow JSON](https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-usaspending-contracts-csv.json) · [n8n import guide](https://docs.n8n.io/workflows/export-import/)
+2. Open **Fetch USASpending Awards (Apify)**. Under **Generic Credential Type → Header Auth**, create or select a credential. For a new credential set **Name** to `Authorization`, and **Value** to `Bearer` followed by one space and your Apify API token. Save the credential in n8n. [Apify token settings](https://console.apify.com/settings/integrations) · [n8n Header Auth](https://docs.n8n.io/integrations/builtin/credentials/httprequest/)
+3. Choose **Execute workflow** once. The HTTP Request output contains one JSON item per returned record. Open **Convert to CSV (Google Sheets Ready) → Binary → data** to download `usaspending-gov-contracts.csv`.
+4. To send the same JSON items to a spreadsheet, connect **Google Sheets → Append Row** directly to the HTTP Request output. Select your spreadsheet, create the desired column headings, and map the fields by name. [Google Sheets node](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googlesheets/)
 
-### Input Parameters | 输入参数
+在 HTTP Request 节点选择 Header Auth 凭证，执行一次后可在 CSV 节点的 **Binary → data** 中下载文件。写入表格时，请把 Google Sheets 接到 HTTP Request 节点。
 
-| Field | Type | Notes |
-|---|---|---|
-| `keyword` | string | Search keyword |
-| `awardCategory` | string | `contracts`, `grants`, `idvs` |
-| `startDate` | string | `YYYY-MM-DD` |
-| `endDate` | string | `YYYY-MM-DD` |
-| `awardingAgency` | string | Agency filter |
-| `minAwardAmount` | number | Minimum award amount |
-| `naicsCode` | string | NAICS code filter |
-| `sortOrder` | string | `desc`, `asc` |
-| `maxItems` | integer | 1–5000 |
+## Input and fields
 
-### Valid Workflow Input | 工作流有效输入
+The HTTP Request node posts this input to the Actor. [Actor input](https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper/input)
 
 ```json
-{"keyword":"artificial intelligence","awardCategory":"contracts","startDate":"2025-01-01","endDate":"2026-12-31","sortOrder":"desc","maxItems":25}
+{
+  "awardCategory": "contracts",
+  "keyword": "software",
+  "startDate": "2025-10-01",
+  "endDate": "2026-09-30",
+  "sortOrder": "desc",
+  "maxItems": 5
+}
 ```
 
-### Output Fields | 输出字段
+For a first sheet, use `generatedInternalId`, `awardId`, `recipientName`, `awardingAgency`, `awardAmount`, `startDate`, `endDate`, `description`, `awardUrl`, `attribution`. Use `generatedInternalId` as the record identifier. The input dates select award activity during FY2026. A returned award can have an earlier `startDate`. `awardAmount` is an award-level amount. Consult `awardUrl` for transaction details when calculating spending within the fiscal year.
 
-`generatedInternalId, awardId, awardCategory, recipientName, awardAmount, startDate, endDate, awardingAgency, awardingSubAgency, awardType, description, placeOfPerformanceCityCode, placeOfPerformanceStateCode, placeOfPerformanceCountryCode, naicsCode, naicsDescription, awardUrl, attribution`
+## Cost per run
 
-## 2. n8n Import & Google Sheets / CSV Setup | n8n 导入与 Google Sheets / CSV 设置
+The included manual workflow requests up to five records. At the Free plan rate, five saved records cost **$0.02505** in Actor event charges, based on one **$0.00005** start event plus **$0.005** per saved record. The request sets `maxTotalChargeUsd=0.05` and disables automatic HTTP retries. If the HTTP request times out, check the Actor run in Apify before executing again. [Actor pricing](https://apify.com/perceptive_city_af7/usaspending-gov-contracts-scraper/pricing)
 
-- Import `./n8n-usaspending-contracts-csv.json` into n8n.
-- Configure `APIFY_TOKEN` via environment variable or Header Auth credential. **NEVER hardcode tokens.**
-- Verify the HTTP Request node uses `maxTotalChargeUsd=0.25` and `retryOnFail: false`.
-- Google Sheets Append Row: map all 18 output fields in the listed order to matching columns; `generatedInternalId` is the stable row key.
-- Convert to CSV: export the same 18 fields with a header row; keep the `attribution` column.
-- 中文要点：导入工作流；用环境变量或 Header Auth 配置 `APIFY_TOKEN`，严禁硬编码；确认 `maxTotalChargeUsd=0.25` 与 `retryOnFail: false`；Google Sheets 追加行/CSV 转换映射全部 18 个字段并保留 `attribution`。
+首次运行上限为五条，生成五条时的 Free 档事件费用为 **$0.02505**。每次运行设置 **$0.05** 的 Actor 计费上限，HTTP 节点已关闭自动重试。
 
-## 3. `curl` Quickstart | `curl` 快速开始
+The workflow imported into n8n 1.80.5. With a local test endpoint and a test Header Auth credential, one manual execution sent one POST and returned two sample JSON items and a downloadable two-row CSV. Executing the workflow against Apify uses your account.
+
+## Using the same input from the API
+
+For the shell and Python examples, set `APIFY_TOKEN` in your own shell. Each command starts a separate billable run. [Apify sync endpoint](https://docs.apify.com/api/v2/actor-run-sync-get-dataset-items-post)
 
 ```bash
-export APIFY_TOKEN="<your-apify-token>"
-
-curl --request POST \
-  "https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items?maxTotalChargeUsd=0.25" \
-  --header "Authorization: Bearer $APIFY_TOKEN" \
-  --header "Content-Type: application/json" \
-  --data '{"keyword":"artificial intelligence","awardCategory":"contracts","startDate":"2025-01-01","endDate":"2026-12-31","sortOrder":"desc","maxItems":25}'
+curl --fail-with-body -X POST \
+  'https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items?maxTotalChargeUsd=0.05&timeout=120&format=json&clean=true' \
+  -H "Authorization: Bearer $APIFY_TOKEN" \
+  -H 'Content-Type: application/json' \
+  --data '{"awardCategory":"contracts","keyword":"software","startDate":"2025-10-01","endDate":"2026-09-30","sortOrder":"desc","maxItems":5}'
 ```
-
-## 4. Python Quickstart | Python 快速开始
 
 ```python
 import os
-import httpx
 
-token = os.environ["APIFY_TOKEN"]
-url = "https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items?maxTotalChargeUsd=0.25"
-headers = {
-    "Authorization": f"Bearer {token}",
-    "Content-Type": "application/json",
+import requests
+
+payload = {
+    "awardCategory": "contracts",
+    "keyword": "software",
+    "startDate": "2025-10-01",
+    "endDate": "2026-09-30",
+    "sortOrder": "desc",
+    "maxItems": 5
 }
-payload = {"keyword":"artificial intelligence","awardCategory":"contracts","startDate":"2025-01-01","endDate":"2026-12-31","sortOrder":"desc","maxItems":25}
-
-response = httpx.post(url, headers=headers, json=payload, timeout=120)
+response = requests.post(
+    "https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items",
+    params={"maxTotalChargeUsd": "0.05", "timeout": "120", "format": "json", "clean": "true"},
+    headers={"Authorization": f"Bearer {os.environ['APIFY_TOKEN']}"},
+    json=payload,
+    timeout=150,
+)
 response.raise_for_status()
-print(response.json())
+print(len(response.json()))
 ```
 
-## 5. REST & AI Agent (MCP) Integration Option | REST 与 AI Agent（MCP）集成选项
+In an authenticated MCP client, connect to the [Apify MCP server](https://mcp.apify.com/?tools=perceptive_city_af7%2Fusaspending-gov-contracts-scraper).
 
-- Apify sync REST: `POST https://api.apify.com/v2/acts/eQQ2beomyLlW4DTGM/run-sync-get-dataset-items?maxTotalChargeUsd=0.25`
-- Apify MCP Server: `https://mcp.apify.com/?tools=perceptive_city_af7%2Fusaspending-gov-contracts-scraper`
+## Source and attribution
 
-## 6. Cost Cap, Pricing & License Attribution | 费用上限、定价与许可归属
-
-- Pay-per-event (PPE): `$0.00005` per Actor start + `$0.005` per saved record (`$5.00 / 1,000 records`).
-- 25 records ≈ `$0.12505` (`0.00005 + 25 * 0.005`). Hard cap: `maxTotalChargeUsd=0.25`; set `retryOnFail: false`.
-- License & attribution: U.S. Treasury USAspending.gov Official Public API v2 (`https://api.usaspending.gov/api/v2/search/spending_by_award/`), **US Government Public Domain (17 U.S.C. § 105)**. Commercial reuse allowed; zero PII. Keep the `attribution` column when redistributing.
-- 中文要点：PPE 计费；25 条约 `$0.12505`；硬上限 `$0.25`；数据来自 USAspending.gov 公共 API，公共领域，可商用，无 PII，转发时保留 `attribution`。
-
-## 7. Honest Validation Note | 真实验证说明
-
-Validated locally against the real Actor `input_schema.json`. Executing the workflow calls the Apify API and bills your own Apify account.
-
-已基于真实 Actor 的 `input_schema.json` 在本地验证；运行工作流会调用 Apify API 并计入你自己的 Apify 账户费用。
+Keep `attribution` and `awardUrl` with exported records so readers can trace them to the U.S. Treasury source. [USAspending award search](https://www.usaspending.gov/search)

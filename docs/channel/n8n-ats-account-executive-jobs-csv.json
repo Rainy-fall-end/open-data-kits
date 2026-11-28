@@ -1,0 +1,108 @@
+{
+  "name": "Export fintech and SaaS account executive jobs",
+  "nodes": [
+    {
+      "id": "71dfea25-0eda-5dab-8fe1-4e38098b7202",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "8eb951af-c6af-59ea-800e-1d19c89a2cb3",
+      "name": "Download account executive jobs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/actors/CRulq5dak4mqAUmMn/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "format",
+              "value": "csv"
+            },
+            {
+              "name": "attachment",
+              "value": "true"
+            },
+            {
+              "name": "limit",
+              "value": "5"
+            },
+            {
+              "name": "fields",
+              "value": "companyName,title,location,workplaceType,atsPlatform,publishedAt,applyUrl"
+            },
+            {
+              "name": "maxTotalChargeUsd",
+              "value": "0.05"
+            },
+            {
+              "name": "timeout",
+              "value": "120"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"preset\": \"fintech_saas\",\n  \"titleFilter\": \"account executive\",\n  \"maxItems\": 5\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "data"
+            }
+          },
+          "timeout": 150000
+        }
+      },
+      "retryOnFail": false
+    },
+    {
+      "id": "48e833fa-6d3c-503a-b613-e6b723ef9e60",
+      "name": "Using this workflow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -90,
+        -390
+      ],
+      "parameters": {
+        "content": "## Export fintech and SaaS account executive jobs\nExport up to five openings whose titles contain “account executive” from the fintech and SaaS company preset. Open the application URL to review each role.\n\n[Preview the preset on Apify](https://apify.com/perceptive_city_af7/ats-jobs-hiring-signals-scraper/examples/find-fintech-saas-account-executive-jobs)\n\n1. Open **Download account executive jobs** and select a **Header Auth** credential. Set its name to `Authorization` and its value to `Bearer YOUR_APIFY_TOKEN`.\n2. Click **Execute Workflow** once. This starts one Actor run on your Apify account, capped at **$0.05** and **5 rows**.\n3. Open the HTTP node’s **Output → Binary → data** and download the CSV. If the request times out, check [your Apify runs](https://console.apify.com/actors/runs) before starting a second run.",
+        "width": 590,
+        "height": 340,
+        "color": 5
+      }
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Download account executive jobs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

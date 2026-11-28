@@ -1,160 +1,73 @@
-# UK Gov Tenders & Procurement — Contracts Finder OCDS CSV Quickstart
+# UK Contracts Finder award notices with n8n
 
-**English:** Production quickstart for `perceptive_city_af7~uk-gov-tenders-scraper` (Actor ID `txnvyTckeQx4hVBc6`). Import the n8n workflow, call the Apify synchronous REST endpoint with a hard `$0.25` spend cap, append structured tender notices to Google Sheets, or convert them to CSV. Built for UK public-sector tender monitoring and B2G lead generation.
+Review up to five public award notices on Contracts Finder. Compare the buyer, published award value, and suppliers when the source supplies those fields.
 
-**中文摘要：** 本指南用于 `perceptive_city_af7~uk-gov-tenders-scraper`（Actor ID `txnvyTckeQx4hVBc6`）。通过 n8n 导入工作流，同步调用 Apify REST 接口，硬性限制 `$0.25` 费用，将结构化招标数据写入 Google Sheets 或转换为 CSV，适用于英国政府招标监控与 B2G 线索生成。
+默认查询最多五条授标公告，用于查看采购方和已披露的中标金额或供应商。工作流只需在 n8n 中绑定一次 Header Auth 凭证。可直接下载 CSV，或把结果逐行追加到 Google Sheets。
 
-## Quick links / 快速链接
+## Run the five-record example
 
-- **Apify Store:** `https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper`
-- **Apify Pricing:** `https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/pricing`
-- **Workflow JSON:** [Download workflow](./n8n-uk-gov-tenders-csv.json)
-- **Sync API endpoint:** `https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/run-sync-get-dataset-items?maxTotalChargeUsd=0.25`
-- **Asset:** `perceptive_city_af7~uk-gov-tenders-scraper`
-- **Actor ID:** `txnvyTckeQx4hVBc6`
+1. Download the JSON and choose **Import from File** in the menu of a new n8n workflow. [Download workflow JSON](https://api.apify.com/v2/key-value-stores/RdnBqv2mkrx9GM8bt/records/n8n-uk-gov-tenders-csv.json) · [n8n import guide](https://docs.n8n.io/workflows/export-import/)
+2. Open **Fetch UK Gov Tenders (Apify)**. Under **Generic Credential Type → Header Auth**, create or select a credential. For a new credential set **Name** to `Authorization`, and **Value** to `Bearer` followed by one space and your Apify API token. Save the credential in n8n. [Apify token settings](https://console.apify.com/settings/integrations) · [n8n Header Auth](https://docs.n8n.io/integrations/builtin/credentials/httprequest/)
+3. Choose **Execute workflow** once. The HTTP Request output contains one JSON item per returned record. Open **Convert to CSV (Google Sheets Ready) → Binary → data** to download `uk-gov-tenders.csv`.
+4. To send the same JSON items to a spreadsheet, connect **Google Sheets → Append Row** directly to the HTTP Request output. Select your spreadsheet, create the desired column headings, and map the fields by name. [Google Sheets node](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googlesheets/)
 
-### Input parameters / 输入参数
+在 HTTP Request 节点选择 Header Auth 凭证，执行一次后可在 CSV 节点的 **Binary → data** 中下载文件。写入表格时，请把 Google Sheets 接到 HTTP Request 节点。
 
-| Parameter | Meaning |
-|---|---|
-| `keyword` | Search keyword / 搜索关键词 |
-| `stages` | `tender`, `planning`, `award`, or `planning,tender,award` |
-| `minValue` | GBP minimum contract value / 最低合同金额（英镑） |
-| `publishedFrom` | ISO 8601 date, e.g. `2026-11-01` |
-| `maxItems` | 1–2000 items / 返回条数上限 |
+## Input and fields
 
-Valid input JSON used in the workflow:
+The HTTP Request node posts this input to the Actor. [Actor input](https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/input)
 
 ```json
-{"keyword":"software","stages":"tender","minValue":50000,"maxItems":25}
+{
+  "stages": "award",
+  "maxItems": 5
+}
 ```
 
-### Output fields / 输出字段
+For a first sheet, use `ocid`, `releaseId`, `title`, `stage`, `publishedDate`, `buyerName`, `awardDate`, `awardValueAmount`, `currency`, `suppliers`, `noticeUrl`, `licenceName`, `licenceUrl`, `attribution`. Use `ocid` as the record identifier. `awardValueAmount` is the disclosed value of the award. `valueAmount` describes the tender. Optional fields can be empty. Set `stages` to `tender` for notices at the tender stage.
 
-`ocid, releaseId, tenderId, title, stage, status, publishedDate, deadlineDate, valueAmount, minValueAmount, currency, procurementCategory, cpvCode, cpvDescription, smeSuitable, buyerId, buyerName, buyerLocality, buyerCountry, noticeUrl, sourceDataset, sourcePublisher, sourceUrl, accessedOn, licenceName, licenceUrl, attribution`
+## Cost per run
 
----
+The included manual workflow requests up to five records. At the Free plan rate, five saved records cost **$0.02505** in Actor event charges, based on one **$0.00005** start event plus **$0.005** per saved record. The request sets `maxTotalChargeUsd=0.05` and disables automatic HTTP retries. If the HTTP request times out, check the Actor run in Apify before executing again. [Actor pricing](https://apify.com/perceptive_city_af7/uk-gov-tenders-scraper/pricing)
 
-## 2. n8n Import & Google Sheets / CSV Setup | n8n 导入与 Google Sheets / CSV 设置
+首次运行上限为五条，生成五条时的 Free 档事件费用为 **$0.02505**。每次运行设置 **$0.05** 的 Actor 计费上限，HTTP 节点已关闭自动重试。
 
-1. Import `[Download workflow](./n8n-uk-gov-tenders-csv.json)` into n8n.
-2. Configure authentication safely:
-   - Preferred: set the `APIFY_TOKEN` environment variable in n8n and reference it in the HTTP Request node.
-   - Alternative: use an n8n **Header Auth** credential with `Authorization: Bearer <APIFY_TOKEN>`.
-   - **NEVER hardcode tokens** in workflow JSON, node parameters, or exported files.
-3. Confirm the HTTP Request node calls the synchronous endpoint with the hard cap:
-   - `https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/run-sync-get-dataset-items?maxTotalChargeUsd=0.25`
-4. Keep the workflow body as the validated input:
+The workflow imported into n8n 1.80.5. With a local test endpoint and a test Header Auth credential, one manual execution sent one POST and returned two sample JSON items and a downloadable two-row CSV. Executing the workflow against Apify uses your account.
 
-```json
-{"keyword":"software","stages":"tender","minValue":50000,"maxItems":25}
-```
+## Using the same input from the API
 
-5. The HTTP Request node outputs structured JSON items ready for **Google Sheets Append Row** and feeds **Convert to CSV**.
-6. Map output fields to sheet columns. Keep `licenceName`, `licenceUrl`, and `attribution` when redistributing.
-7. For CSV export, connect HTTP Request → Convert to CSV → your storage node, e.g. Google Drive or Write Binary File.
-8. Keep `retryOnFail: false` to avoid unintended duplicate charges. Personal `contactPoint` details are excluded from the source output, so the dataset is zero-PII for this integration.
-
-**中文要点：** 导入工作流后，用环境变量或 Header Auth 管理 `APIFY_TOKEN`，禁止硬编码。HTTP Request 返回结构化 JSON，可直接写入 Google Sheets 或转为 CSV。保留许可证与署名列，保持 `retryOnFail: false`。
-
----
-
-## 3. `curl` Quickstart | `curl` 快速开始
+For the shell and Python examples, set `APIFY_TOKEN` in your own shell. Each command starts a separate billable run. [Apify sync endpoint](https://docs.apify.com/api/v2/actor-run-sync-get-dataset-items-post)
 
 ```bash
-export APIFY_TOKEN="<your-apify-token>"
-
-curl --fail-with-body -sS -X POST \
-  "https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/run-sync-get-dataset-items?maxTotalChargeUsd=0.25" \
+curl --fail-with-body -X POST \
+  'https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/run-sync-get-dataset-items?maxTotalChargeUsd=0.05&timeout=120&format=json&clean=true' \
   -H "Authorization: Bearer $APIFY_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"keyword":"software","stages":"tender","minValue":50000,"maxItems":25}'
+  -H 'Content-Type: application/json' \
+  --data '{"stages":"award","maxItems":5}'
 ```
-
-**中文要点：** 使用 `$APIFY_TOKEN` 环境变量，不把令牌写入命令历史或脚本。`maxTotalChargeUsd=0.25` 为硬性费用上限。
-
----
-
-## 4. Python Quickstart | Python 快速开始
 
 ```python
 import os
-import httpx
 
-APIFY_TOKEN = os.environ["APIFY_TOKEN"]
-
-url = (
-    "https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/"
-    "run-sync-get-dataset-items?maxTotalChargeUsd=0.25"
-)
+import requests
 
 payload = {
-    "keyword": "software",
-    "stages": "tender",
-    "minValue": 50000,
-    "maxItems": 25,
+    "stages": "award",
+    "maxItems": 5
 }
-
-headers = {
-    "Authorization": f"Bearer {APIFY_TOKEN}",
-    "Content-Type": "application/json",
-}
-
-response = httpx.post(url, json=payload, headers=headers, timeout=120.0)
+response = requests.post(
+    "https://api.apify.com/v2/acts/txnvyTckeQx4hVBc6/run-sync-get-dataset-items",
+    params={"maxTotalChargeUsd": "0.05", "timeout": "120", "format": "json", "clean": "true"},
+    headers={"Authorization": f"Bearer {os.environ['APIFY_TOKEN']}"},
+    json=payload,
+    timeout=150,
+)
 response.raise_for_status()
-
-items = response.json()
-print(f"Returned {len(items)} notice(s)")
+print(len(response.json()))
 ```
 
-**中文要点：** 使用 `os.environ["APIFY_TOKEN"]` 读取令牌，使用同步接口并保持 `maxTotalChargeUsd=0.25`。返回 JSON 数组可直接写入表格、数据库或 CSV。
+In an authenticated MCP client, connect to the [Apify MCP server](https://mcp.apify.com/?tools=perceptive_city_af7%2Fuk-gov-tenders-scraper).
 
----
+## Source and attribution
 
-## 5. REST & AI Agent (MCP) Integration Option | REST 与 AI Agent（MCP）集成选项
-
-Use Apify’s synchronous REST endpoint above for deterministic workflows, scripts, and n8n HTTP Request nodes.
-
-For AI B2G lead-gen agents, connect via the Apify MCP Server:
-
-`https://mcp.apify.com/?tools=perceptive_city_af7%2Fuk-gov-tenders-scraper`
-
-See `BUYER_CATALOG.md` for our full Apify + RapidAPI Hub catalog.
-
-**中文要点：** 同步 REST 适合自动化流程与脚本；AI Agent 可通过 Apify MCP Server 接入。完整目录见 `BUYER_CATALOG.md`。
-
----
-
-## 6. Cost Cap, Pricing & Open Government Licence v3.0 Attribution | 费用上限、定价与 OGL v3.0 署名
-
-### Pricing / 定价
-
-- Pay-per-event (PPE):
-  - `$0.00005` per Actor start
-  - `$0.005` per saved notice
-  - Equivalent to `$5.00 / 1,000 notices`
-- 25 notices ≈ `$0.12505`
-- Hard cap: `maxTotalChargeUsd=0.25`
-- Workflow setting: `retryOnFail: false`
-
-### Licence & attribution / 许可证与署名
-
-Source: **Cabinet Office UK Government Contracts Finder OCDS API**, licensed under the **Open Government Licence v3.0**:
-
-`http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/`
-
-Commercial reuse is permitted with attribution. Required attribution text:
-
-> Contains public sector information licensed under the Open Government Licence v3.0.
-
-Personal `contactPoint` details are excluded (zero PII). Keep `licenceName`, `licenceUrl`, and `attribution` columns when redistributing.
-
-**中文要点：** 按事件付费，`$0.005/条`，25 条约 `$0.12505`，硬性上限 `$0.25`。数据来自 Cabinet Office Contracts Finder OCDS API，采用 Open Government Licence v3.0；商用需署名，再分发时保留许可证与署名列。
-
----
-
-## 7. Honest Validation Note | 真实验证说明
-
-The workflow JSON was validated locally against the real Actor `input_schema.json`. Executing the workflow calls the Apify API and bills your own Apify account.
-
-**中文说明：** 工作流 JSON 已在本地依据真实 Actor 的 `input_schema.json` 验证。实际执行会调用 Apify API，并计入你自己的 Apify 账户费用。
+Retain `licenceName`, `licenceUrl`, and `attribution` when redistributing. Contains public sector information licensed under the Open Government Licence v3.0. [Contracts Finder](https://www.contractsfinder.service.gov.uk/) · [Open Government Licence](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
